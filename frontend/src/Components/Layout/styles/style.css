@@ -1,0 +1,174 @@
+.container {
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #154314;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  
+  .filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .filter-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .filter-button.active {
+    background-color: #1c5739;
+    color: #fff;
+  }
+  
+  .card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+  }
+  
+  .card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #154314;
+  }
+  
+  .card p {
+    margin: 5px 0;
+  }
+  
+  .loading-text {
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+  }
+
+  /* baptism */
+  
+  .baptism-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+  }
+  
+  .baptism-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #154314;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .baptism-filters {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .baptism-filter-button {
+    padding: 10px 15px;
+    margin: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #154314;
+  }
+  
+  .baptism-filter-button.active {
+    background-color: #1c5739;
+    color: #fff;
+    border-color: #1c5739;
+  }
+  
+  .loading-text,
+  .empty-text {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+    margin-top: 20px;
+  }
+  
+  .baptism-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .baptism-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-left: 6px solid;
+  }
+  
+  .baptism-card.pending {
+    border-left-color: #ffd700;
+  }
+  
+  .baptism-card.confirmed {
+    border-left-color: #4caf50;
+  }
+  
+  .baptism-card.declined {
+    border-left-color: #ff5722;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  
+  .baptism-card.pending .status-badge {
+    background-color: #ffd700;
+  }
+  
+  .baptism-card.confirmed .status-badge {
+    background-color: #4caf50;
+  }
+  
+  .baptism-card.declined .status-badge {
+    background-color: #ff5722;
+  }
+  
+  .card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #154314;
+    margin-bottom: 10px;
+  }
+  
+  .card-details p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+  }
+  
