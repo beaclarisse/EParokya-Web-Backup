@@ -1,69 +1,93 @@
 
 /* WeddingList */
-.container {
-    padding: 20px;
-    background-color: #f9f9f9;
-  }
-  
-  h1 {
-    font-size: 24px;
-    font-weight: bold;
-    color: #154314;
-    text-align: center;
-    margin-bottom: 16px;
-  }
-  
-  .filter-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .filter-button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    background-color: #ddd;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .filter-button.active {
-    background-color: #1c5739;
-    color: #fff;
-  }
-  
-  .card {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 10px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: box-shadow 0.3s;
-  }
-  
-  .card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .card h3 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #154314;
-  }
-  
-  .card p {
-    margin: 5px 0;
-  }
-  
-  .loading-text {
-    text-align: center;
-    font-size: 16px;
-    color: #666;
-  }
+.wedding-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #154314;
+  margin-bottom: 20px;
+}
+
+.wedding-filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.wedding-filter-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ddd;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.wedding-filter-button.active {
+  background-color: #1c5739;
+  color: #fff;
+}
+
+.wedding-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.wedding-card {
+  background-color: #fff;
+  border-left: 6px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  padding: 16px;
+}
+
+.wedding-card.confirmed {
+  border-left-color: #4caf50;
+}
+
+.wedding-card.pending {
+  border-left-color: #ffd700;
+}
+
+.wedding-card.declined {
+  border-left-color: #ff5722;
+}
+
+.status-badge {
+  background-color: #e8f5e9;
+  color: #154314;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #154314;
+}
+
+.card-details p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.loading-text,
+.empty-text,
+.error-text {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+}
+
 
   /* baptismList */
   
@@ -131,12 +155,10 @@
   .baptism-card.pending {
     border-left-color: #ffd700;
   }
-  
   .baptism-card.confirmed {
     border-left-color: #4caf50;
   }
-  
-  .baptism-card.declined {
+  .baptism-card.cancelled {
     border-left-color: #ff5722;
   }
   

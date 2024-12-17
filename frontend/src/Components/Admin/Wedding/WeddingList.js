@@ -34,7 +34,7 @@ const WeddingList = ({ navigateToDetails }) => {
 
     const handleCardClick = (item) => {
         if (navigateToDetails) {
-            navigateToDetails(item._id); 
+            navigateToDetails(item._id);
         } else {
             console.log("Details page navigation is not set up.");
         }
@@ -52,34 +52,32 @@ const WeddingList = ({ navigateToDetails }) => {
 
         const statusColor =
             weddingStatus === "Confirmed"
-                ? "#28a745"
+                ? "#4caf50"
                 : weddingStatus === "Declined"
-                    ? "#dc3545"
-                    : "#ffc107";
+                    ? "#ff5722"
+                    : "#ffd700";
 
         return (
             <div
                 key={item._id}
-                className="card"
-                style={{ borderLeft: `6px solid ${statusColor}` }}
+                className={`wedding-card ${weddingStatus?.toLowerCase() || ""}`}
                 onClick={() => handleCardClick(item)}
+                style={{ borderLeft: `6px solid ${statusColor}` }}
             >
-                <h3>{bride && groom ? `${bride} & ${groom}` : "Names not available"}</h3>
-                <p>
-                    <strong>Wedding Date:</strong>{" "}
-                    {weddingDate ? new Date(weddingDate).toLocaleDateString() : "N/A"}
-                </p>
-                <p>
-                    <strong>Status:</strong>{" "}
-                    <span style={{ color: statusColor }}>{weddingStatus || "N/A"}</span>
-                </p>
-                <p>
-                    <strong>Attendees:</strong> {attendees ?? "N/A"}
-                </p>
-                <p>
-                    <strong>Flower Girl:</strong> {flowerGirl || "N/A"} |{" "}
-                    <strong>Ring Bearer:</strong> {ringBearer || "N/A"}
-                </p>
+                <div className="status-badge">{weddingStatus || "Unknown"}</div>
+                <h3 className="card-title">{bride && groom ? `${bride} & ${groom}` : "Names not available"}</h3>
+                <div className="card-details">
+                    <p>
+                        <strong>Wedding Date:</strong> {weddingDate ? new Date(weddingDate).toLocaleDateString() : "N/A"}
+                    </p>
+                    <p>
+                        <strong>Attendees:</strong> {attendees ?? "N/A"}
+                    </p>
+                    <p>
+                        <strong>Flower Girl:</strong> {flowerGirl || "N/A"} |{" "}
+                        <strong>Ring Bearer:</strong> {ringBearer || "N/A"}
+                    </p>
+                </div>
             </div>
         );
     };
@@ -88,22 +86,14 @@ const WeddingList = ({ navigateToDetails }) => {
         <div style={{ display: "flex", height: "100vh" }}>
             <SideBar />
             <div style={{ flex: 1, padding: "20px", overflowY: "auto" }}>
-                <h1>Submitted Wedding Forms</h1>
+                <h1 className="wedding-title">Wedding Forms</h1>
 
-                <div className="filter-container" style={{ marginBottom: "20px" }}>
+                <div className="wedding-filters">
                     {["All", "Confirmed", "Pending", "Declined"].map((status) => (
                         <button
                             key={status}
-                            className={`filter-button ${filteredStatus === status ? "active" : ""}`}
+                            className={`wedding-filter-button ${filteredStatus === status ? "active" : ""}`}
                             onClick={() => setFilteredStatus(status)}
-                            style={{
-                                marginRight: "10px",
-                                padding: "10px 15px",
-                                cursor: "pointer",
-                                border: "1px solid #ccc",
-                                backgroundColor: filteredStatus === status ? "#007bff" : "#fff",
-                                color: filteredStatus === status ? "#fff" : "#000",
-                            }}
                         >
                             {status}
                         </button>
@@ -113,14 +103,13 @@ const WeddingList = ({ navigateToDetails }) => {
                 {loading ? (
                     <p className="loading-text">Loading...</p>
                 ) : (
-                    <div className="wedding-list" style={{ display: "grid", gap: "20px" }}>
+                    <div className="wedding-list">
                         {filterWeddingForms(filteredStatus).map(renderWeddingForm)}
                     </div>
                 )}
             </div>
         </div>
     );
-
 };
 
 export default WeddingList;

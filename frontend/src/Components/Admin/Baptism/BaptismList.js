@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../Layout/styles/style.css";
+import SideBar from "../SideBar";
 
 const BaptismList = () => {
   const [baptismForms, setBaptismForms] = useState([]);
@@ -43,64 +44,64 @@ const BaptismList = () => {
   }
 
   return (
-    <div className="baptism-container">
-      <h1 className="baptism-title">Baptism Forms</h1>
+    <div style={{ display: "flex", height: "100vh" }}>
+      <SideBar />
+      <div style={{ flex: 1, padding: "20px", overflowY: "auto" }}>
+        <h1 className="baptism-title">Baptism Forms</h1>
 
-      {/* Filter Buttons */}
-      <div className="baptism-filters">
-        {["All", "Pending", "Confirmed", "Declined"].map((status) => (
-          <button
-            key={status}
-            className={`baptism-filter-button ${
-              activeFilter === status ? "active" : ""
-            }`}
-            onClick={() => filterForms(status)}
-          >
-            {status}
-          </button>
-        ))}
-      </div>
-
-     {loading ? (
-        <p className="loading-text">Loading baptism forms...</p>
-      ) : filteredForms.length === 0 ? (
-        <p className="empty-text">No baptism forms available.</p>
-      ) : (
-        <div className="baptism-list">
-          {filteredForms.map((item, index) => (
-            <div
-              key={item._id}
-              className={`baptism-card ${
-                item.binyagStatus.toLowerCase()
-              }`}
+        <div className="baptism-filters">
+          {["All", "Pending", "Confirmed", "Cancelled"].map((status) => (
+            <button
+              key={status}
+              className={`baptism-filter-button ${activeFilter === status ? "active" : ""
+                }`}
+              onClick={() => filterForms(status)}
             >
-              <div className="status-badge">{item.binyagStatus}</div>
-              <h3 className="card-title">Form #{index + 1}</h3>
-              <div className="card-details">
-                <p>
-                  <strong>Child Name:</strong> {item.child.fullName}
-                </p>
-                <p>
-                  <strong>Father's Name:</strong> {item.parents.fatherFullName}
-                </p>
-                <p>
-                  <strong>Mother's Name:</strong> {item.parents.motherFullName}
-                </p>
-                <p>
-                  <strong>Address:</strong> {item.parents.address}
-                </p>
-                <p>
-                  <strong>Contact Info:</strong> {item.parents.contactInfo}
-                </p>
-                <p>
-                  <strong>Baptism Date:</strong>{" "}
-                  {new Date(item.baptismDate).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
+              {status}
+            </button>
           ))}
         </div>
-      )}
+
+        {loading ? (
+          <p className="loading-text">Loading baptism forms...</p>
+        ) : filteredForms.length === 0 ? (
+          <p className="empty-text">No baptism forms available.</p>
+        ) : (
+          <div className="baptism-list">
+            {filteredForms.map((item, index) => (
+              <div
+                key={item._id}
+                className={`baptism-card ${item.binyagStatus.toLowerCase()
+                  }`}
+              >
+                <div className="status-badge">{item.binyagStatus}</div>
+                <h3 className="card-title">Form #{index + 1}</h3>
+                <div className="card-details">
+                  <p>
+                    <strong>Child Name:</strong> {item.child.fullName}
+                  </p>
+                  <p>
+                    <strong>Father's Name:</strong> {item.parents.fatherFullName}
+                  </p>
+                  <p>
+                    <strong>Mother's Name:</strong> {item.parents.motherFullName}
+                  </p>
+                  <p>
+                    <strong>Address:</strong> {item.parents.address}
+                  </p>
+                  <p>
+                    <strong>Contact Info:</strong> {item.parents.contactInfo}
+                  </p>
+                  <p>
+                    <strong>Baptism Date:</strong>{" "}
+                    {new Date(item.baptismDate).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
