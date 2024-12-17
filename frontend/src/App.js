@@ -33,6 +33,7 @@ import EventPostUpdate from './Components/Admin/EventPost/UpdateEventPost';
 
 import WeddingList from './Components/Admin/Wedding/WeddingList';
 import BaptismList from './Components/Admin/Baptism/BaptismList';
+import FuneralList from './Components/Admin/Funeral/FuneralList';
 
 
 //Guest View
@@ -72,6 +73,7 @@ function App() {
 
         <Route path="/admin/weddingList" element={<ProtectedRoute isAdmin={true}><WeddingList /></ProtectedRoute>} />
         <Route path="/admin/baptismList" element={<ProtectedRoute isAdmin={true}><BaptismList /></ProtectedRoute>} />
+        <Route path="/admin/funeralList" element={<ProtectedRoute isAdmin={true}><FuneralList /></ProtectedRoute>} />
 
 
         {/* Guest View */}

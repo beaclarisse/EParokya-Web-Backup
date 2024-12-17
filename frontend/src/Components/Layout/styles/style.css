@@ -1,3 +1,5 @@
+
+/* WeddingList */
 .container {
     padding: 20px;
     background-color: #f9f9f9;
@@ -63,7 +65,7 @@
     color: #666;
   }
 
-  /* baptism */
+  /* baptismList */
   
   .baptism-container {
     max-width: 1200px;
@@ -172,3 +174,102 @@
     font-size: 0.95rem;
   }
   
+  /* FuneralList */
+
+  /* Container */
+.funeral-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+/* Title */
+.funeral-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #154314;
+  margin-bottom: 20px;
+}
+
+/* Filters */
+.funeral-filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.funeral-filter-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ddd;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.funeral-filter-button.active {
+  background-color: #1c5739;
+  color: #fff;
+}
+
+/* Cards */
+.funeral-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.funeral-card {
+  background-color: #fff;
+  border-left: 6px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  padding: 16px;
+}
+
+.funeral-card.pending {
+  border-left-color: #ffd700;
+}
+.funeral-card.confirmed {
+  border-left-color: #4caf50;
+}
+.funeral-card.cancelled {
+  border-left-color: #ff5722;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #154314;
+}
+
+.card-details p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.status-badge {
+  background-color: #e8f5e9;
+  color: #154314;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+/* Misc */
+.loading-text,
+.empty-text,
+.error-text {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+}
+
+

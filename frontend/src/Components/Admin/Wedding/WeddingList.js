@@ -34,7 +34,7 @@ const WeddingList = ({ navigateToDetails }) => {
 
     const handleCardClick = (item) => {
         if (navigateToDetails) {
-            navigateToDetails(item._id); // Pass wedding ID to navigate
+            navigateToDetails(item._id); 
         } else {
             console.log("Details page navigation is not set up.");
         }

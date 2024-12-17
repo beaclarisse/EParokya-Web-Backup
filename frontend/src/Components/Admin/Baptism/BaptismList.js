@@ -61,8 +61,7 @@ const BaptismList = () => {
         ))}
       </div>
 
-      {/* Forms List */}
-      {loading ? (
+     {loading ? (
         <p className="loading-text">Loading baptism forms...</p>
       ) : filteredForms.length === 0 ? (
         <p className="empty-text">No baptism forms available.</p>

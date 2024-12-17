@@ -39,6 +39,11 @@ const SideBar = () => {
               Baptism List
             </Link>
           </Nav.Item>
+          <Nav.Item>
+            <Link to="/admin/funeralList" className="sidebar-link" style={styles.sidebarLink}>
+              Funeral List
+            </Link>
+          </Nav.Item>
         </Nav>
       </Card.Body>
     </Card>
