@@ -30,6 +30,11 @@ const SideBar = () => {
             </Link>
           </Nav.Item>
           <Nav.Item>
+            <Link to="/admin/adminDate" className="sidebar-link" style={styles.sidebarLink}>
+              Set Available Date
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
             <Link to="/admin/weddingList" className="sidebar-link" style={styles.sidebarLink}>
               Wedding List
             </Link>

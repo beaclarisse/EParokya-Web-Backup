@@ -294,4 +294,221 @@
   color: #666;
 }
 
+/* WeddingDetails Layout */
+.wedding-details-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+}
+
+.wedding-details-page .wedding-details-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  border-radius: 8px;
+}
+
+.wedding-details-page .wedding-details-content h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #154314;
+  margin-bottom: 20px;
+}
+
+.wedding-details-page .details {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.wedding-details-page .details p {
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+.wedding-details-page .admin-section {
+  margin-bottom: 20px;
+}
+
+.wedding-details-page .admin-section h2 {
+  font-size: 1.5rem;
+  color: #154314;
+  margin-bottom: 10px;
+}
+
+.wedding-details-page input,
+.wedding-details-page select,
+.wedding-details-page textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.wedding-details-page .button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.wedding-details-page .button-container button {
+  padding: 10px 15px;
+  background-color: #1c5739;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.wedding-details-page .button-container button:hover {
+  background-color: #154314;
+}
+
+/* General Styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+h2, h3 {
+  color: #555;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  margin: 5px 0;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* SideBar Styles */
+.sidebar {
+  width: 250px;
+  background-color: #2c3e50;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: white;
+  padding: 10px 15px;
+  margin: 5px 0;
+  border-radius: 5px;
+}
+
+.sidebar a:hover {
+  background-color: #34495e;
+}
+
+/* Main Content Styles */
+.baptism-details-page {
+  display: flex;
+}
+
+.baptism-details {
+  margin-left: 260px;
+  padding: 20px;
+  flex: 1;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.baptism-details h2 {
+  font-size: 1.8em;
+  margin-bottom: 20px;
+}
+
+.baptism-details p {
+  margin: 5px 0;
+  line-height: 1.6;
+}
+
+/* Form Styles */
+form {
+  margin: 20px 0;
+  background-color: #f4f4f4;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+form h3 {
+  margin-bottom: 15px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+form button {
+  background-color: #27ae60;
+  color: white;
+  font-weight: bold;
+}
+
+/* Comments Section */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+ul li {
+  margin-bottom: 15px;
+  padding: 15px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+ul li p {
+  margin: 5px 0;
+}
+
+/* Actions Section */
+.actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.actions button {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+}
+
+.actions button:last-child {
+  background-color: #e74c3c;
+}
+
+
 

@@ -21,6 +21,7 @@ import UpdateUser from './Components/Admin/User/UserUpdate';
 
 //Calendar
 import Calendar from './Components/Admin/Calendar/Calendar';
+import AdminDate from './Components/Admin/AdminDate';
 
 //Post
 import CreatePost from './Components/Admin/Post/Post';
@@ -32,7 +33,10 @@ import EventPostLists from './Components/Admin/EventPost/EventPostList';
 import EventPostUpdate from './Components/Admin/EventPost/UpdateEventPost';
 
 import WeddingList from './Components/Admin/Wedding/WeddingList';
+import WeddingDetails from './Components/Admin/Wedding/WeddingDetails';
+
 import BaptismList from './Components/Admin/Baptism/BaptismList';
+import BaptismDetails from './Components/Admin/Baptism/BapstismDetails';
 import FuneralList from './Components/Admin/Funeral/FuneralList';
 
 
@@ -70,10 +74,14 @@ function App() {
         <Route path="/admin/eventpostlist" element={<ProtectedRoute isAdmin={true}><EventPostLists /></ProtectedRoute>} />
         <Route path="/admin/editevent/:id" element={<ProtectedRoute isAdmin={true}><EventPostUpdate /></ProtectedRoute>} />
 
+        <Route path="/admin/adminDate" element={<ProtectedRoute isAdmin={true}><AdminDate /></ProtectedRoute>} />
 
         <Route path="/admin/weddingList" element={<ProtectedRoute isAdmin={true}><WeddingList /></ProtectedRoute>} />
         <Route path="/admin/baptismList" element={<ProtectedRoute isAdmin={true}><BaptismList /></ProtectedRoute>} />
         <Route path="/admin/funeralList" element={<ProtectedRoute isAdmin={true}><FuneralList /></ProtectedRoute>} />
+
+        <Route path="/admin/weddingDetails/:weddingId" element={<ProtectedRoute isAdmin={true}><WeddingDetails /></ProtectedRoute>} />
+        <Route path="/admin/baptismDetails/:baptismId" element={<ProtectedRoute isAdmin={true}><BaptismDetails /></ProtectedRoute>} />
 
 
         {/* Guest View */}

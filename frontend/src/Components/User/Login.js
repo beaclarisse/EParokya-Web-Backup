@@ -3,9 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
-
 import { authenticate } from '../../Utils/helpers'
-
 import Loader from '../Layout/Loader'
 import Metadata from '../Layout/MetaData'
 

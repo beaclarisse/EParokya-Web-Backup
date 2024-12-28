@@ -8,6 +8,8 @@ const wedding = require('./routes/wedding')
 const baptism = require('./routes/Binyag')
 const funeral = require('./routes/Funeral')
 
+const adminDate = require('./routes/adminDate')
+
 const post = require('./routes/post')
 const evenpost = require('./routes/EventPost')
 
@@ -27,7 +29,6 @@ app.use('/api/v1', post);
 app.use('/api/v1', evenpost);
 app.use('/api/v1', baptism);
 app.use('/api/v1', funeral);
-
-
+app.use('/api/v1', adminDate);
 
 module.exports = app

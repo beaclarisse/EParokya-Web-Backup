@@ -4,7 +4,9 @@ const { User } = require('../../models/user');
 
 exports.getAllWeddings = async (req, res) => {
   try {
-    const weddingList = await Wedding.find({}, 'bride groom weddingDate weddingStatus attendees flowerGirl ringBearer user'); // Include all required fields
+    const weddingList = await Wedding.find({}, 'bride groom weddingDate weddingStatus attendees flowerGirl ringBearer userId')
+    .populate('userId', 'name');
+
     console.log("Fetched Weddings:", weddingList);
     if (!weddingList) {
       return res.status(500).json({ success: false });
@@ -18,9 +20,9 @@ exports.getAllWeddings = async (req, res) => {
 
 
 exports.getWeddingById = async (req, res) => {
-  console.log("Request ID:", req.params.id);
+  console.log("Request ID:", req.params.weddingId);
   try {
-    const wedding = await Wedding.findById(req.params.id).populate('userId');
+    const wedding = await Wedding.findById(req.params.weddingId).populate('userId');
 
     if (!wedding) {
       return res.status(404).json({ message: 'The wedding with the given ID was not found.' });
@@ -205,16 +207,26 @@ exports.submitWeddingForm = async (req, res) => {
 // };
 
 exports.confirmWedding = async (req, res) => {
-  const weddingId = req.params.id;
+  const { weddingId } = req.params;  
+  
+  if (!mongoose.Types.ObjectId.isValid(weddingId)) {
+    return res.status(400).json({ message: "Invalid wedding ID format" });
+  }
+
   const wedding = await Wedding.findById(weddingId);
+
   if (!wedding) {
     return res.status(404).json({ message: "Wedding not found" });
   }
-  wedding.weddingStatus = "Confirmed";  
+
+  wedding.weddingStatus = "Confirmed";
+  wedding.confirmedAt = new Date();  
 
   await wedding.save();
+
   res.status(200).json({ message: "Wedding confirmed" });
 };
+
 
 exports.declineWedding = async (req, res) => {
   const weddingId = req.params.weddingId;
