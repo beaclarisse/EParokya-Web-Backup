@@ -21,6 +21,7 @@ const AdminDates = () => {
     const fetchDates = async () => {
         try {
             const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllDates`);
+            console.log('Fetched Dates:', response.data);
             setDates(response.data);
         } catch (error) {
             console.error('Failed to fetch dates', error);
@@ -30,6 +31,7 @@ const AdminDates = () => {
     useEffect(() => {
         fetchDates();
     }, [location]);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
@@ -50,22 +52,18 @@ const AdminDates = () => {
 
     const handleToggleDate = async (adminDateId) => {
         try {
-            console.log('Before toggle:', dates);
             const toggleUrl = `${process.env.REACT_APP_API}/api/v1/${adminDateId}/toggle`;
-            console.log('Request URL:', toggleUrl);  // Log the URL
             const response = await axios.patch(toggleUrl);
             if (response.status === 200) {
                 const updatedDates = dates.map(date =>
                     date._id === adminDateId ? { ...date, isEnabled: !date.isEnabled } : date
                 );
                 setDates(updatedDates);
-                console.log('After toggle:', updatedDates);
             }
         } catch (error) {
             console.error('Failed to toggle date', error);
         }
     };
-
 
     const handleDeleteDate = async (adminDateId) => {
         try {
@@ -188,8 +186,10 @@ const AdminDates = () => {
                                     )}
                                 </td>
                                 <td style={{ border: '1px solid #ddd', padding: '8px' }}>{date.confirmedParticipants}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{/* Implement submitted logic */}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{/* Calculate available */}</td>
+                                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{date.submittedParticipants || 0}</td>
+                                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                                    {date.maxParticipants - (date.confirmedParticipants || 0) - (date.submittedParticipants || 0)}
+                                </td>
                                 <td style={{ border: '1px solid #ddd', padding: '8px' }}>{date.isEnabled ? 'Enabled' : 'Disabled'}</td>
                                 <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
                                     <button

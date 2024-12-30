@@ -26,11 +26,19 @@ const dateSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    submittedParticipants: {
+        type: Number,
+        default: 0, // total submissions
+    },
     createdAt: {
         type: Date,
         default: Date.now,
     },
 });
+
+dateSchema.methods.calculateAvailable = function() {
+    return this.maxParticipants - this.confirmedParticipants;
+};
 
 dateSchema.methods.canAcceptParticipants = function () {
     return this.confirmedParticipants < this.maxParticipants;
