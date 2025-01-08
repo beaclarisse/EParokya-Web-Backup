@@ -7,6 +7,7 @@ const { isAuthenticatedUser, authorizeAdmin } = require('../middleware/auth');
 router.post('/submit',  WeddingFormController.submitWeddingForm);
 router.get('/getAllWeddings', isAuthenticatedUser, authorizeAdmin("admin"), WeddingFormController.getAllWeddings);
 router.get('/confirmed', isAuthenticatedUser, authorizeAdmin("admin"), WeddingFormController.getConfirmedWeddings);
+router.get('/stats/weddingsPerMonth', isAuthenticatedUser, WeddingFormController.getWeddingsPerMonth);
 
 router.get('/weddingDate',  WeddingFormController.getAvailableDates);
 router.post('/book/date',  WeddingFormController.bookDate);

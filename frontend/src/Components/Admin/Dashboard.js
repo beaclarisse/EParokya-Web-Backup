@@ -1,97 +1,95 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Card, Col, Row } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MetaData from "../Layout/MetaData";
-import { getToken } from "../../Utils/helpers"
-import Loader from "../Layout/Loader";
 import SideBar from "./SideBar";
-import { Calendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment';
-const localizer = momentLocalizer(moment);
+import {
+  Chart as ChartJS,
+  CategoryScale, 
+  LinearScale,   
+  BarElement,    
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
-  const [events, setEvents] = useState([]);
-  const [selectedWedding, setSelectedWedding] = useState(null); // State to store selected wedding details
+  const [weddingData, setWeddingData] = useState([]);
+  const [baptismData, setBaptismData] = useState([]);
+  const [funeralData, setFuneralData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const config = {
     withCredentials: true,
-    // headers: {
-    //   'Content-Type': 'application/json',
-    //   Authorization: `Bearer ${getToken()}`,
-    // },
   };
 
   useEffect(() => {
-    const fetchWeddings = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllWeddings`, config);
-        const weddingEvents = response.data.map(wedding => ({
-          id: wedding._id, // Store the wedding ID
-          title: `${wedding.bride} & ${wedding.groom} Wedding`,
-          start: new Date(wedding.weddingDate),
-          end: new Date(wedding.weddingDate),
-        }));
-        setEvents(weddingEvents);
+        const weddingRes = await axios.get(`${process.env.REACT_APP_API}/api/v1/stats/weddingsPerMonth`, config);
+        console.log("Weddings Data:", weddingRes.data); // Log data
+        setWeddingData(weddingRes.data);
+  
+        const baptismRes = await axios.get(`${process.env.REACT_APP_API}/api/v1/stats/baptismsPerMonth`, config);
+        console.log("Baptisms Data:", baptismRes.data); // Log data
+        setBaptismData(baptismRes.data);
+  
+        const funeralRes = await axios.get(`${process.env.REACT_APP_API}/api/v1/stats/funeralsPerMonth`, config);
+        console.log("Funerals Data:", funeralRes.data); // Log data
+        setFuneralData(funeralRes.data);
+  
+        setLoading(false);
       } catch (error) {
-        console.error('Error fetching wedding events:', error);
+        console.error("Error fetching chart data:", error);
       }
     };
-
-    fetchWeddings();
+  
+    fetchData();
   }, []);
+  
 
-  // Fetch wedding details by ID when an event is clicked
-  const fetchWeddingDetails = async (weddingId) => {
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getWedding/${weddingId}`, config);
-      setSelectedWedding(response.data);
-    } catch (error) {
-      console.error('Error fetching wedding details:', error);
-    }
+  const generateChartData = (label, data, color) => ({
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    datasets: [
+      {
+        label,
+        data,
+        backgroundColor: color,
+      },
+    ],
+  });
+  
+  const options = {
+    scales: {
+      x: {
+        type: 'category', 
+      },
+      y: {
+        beginAtZero: true,
+      },
+    },
   };
-
-  // Handle event click to show wedding details
-  const handleEventClick = (event) => {
-    fetchWeddingDetails(event.id);
-  };
-
-  // Customize event colors or styles dynamically
-  const eventPropGetter = (event) => {
-    const backgroundColor = 'blue';
-    return { style: { backgroundColor, color: 'white' } };
-  };
-
+  
   return (
-    <div style={{ display: 'flex' }}>
-      {/* Sidebar */}
-      <SideBar />
+    <div style={{ display: "flex" }}>
+      <SideBar></SideBar>
+      <div style={{ flex: 1, padding: "20px" }}>
+        <MetaData title={"Dashboard"} />
+        <h1>Statistics Dashboard</h1>
 
-      {/* Calendar Content */}
-      <div style={{ flex: 1, padding: '20px' }}>
-        <MetaData title={'Calendar'} />
-        <h1>Calendar Events</h1>
-        <div style={{ height: '700px', marginTop: '20px' }}>
-          <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            defaultView="month"
-            views={['month', 'week', 'day', 'agenda']}
-            eventPropGetter={eventPropGetter}
-            onSelectEvent={handleEventClick} // Event click handler
-            style={{ height: '100%' }}
-          />
-        </div>
+        {loading ? (
+          <p>Loading charts...</p>
+        ) : (
+          <div>
+            <h2>Confirmed Weddings Per Month</h2>
+            <Bar data={generateChartData("Weddings", weddingData, "rgba(75, 192, 192, 0.6)")} options={options} />
 
-        {/* Display selected wedding details */}
-        {selectedWedding && (
-          <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ccc' }}>
-            <h2>Wedding Details</h2>
-            <p><strong>Name 1:</strong> {selectedWedding.bride}</p>
-            <p><strong>Name 2:</strong> {selectedWedding.groom}</p>
-            <p><strong>Date:</strong> {new Date(selectedWedding.weddingDate).toLocaleDateString()}</p>
-            {/* Add any other details you'd like to display */}
+            <h2>Confirmed Baptisms Per Month</h2>
+            <Bar data={generateChartData("Baptisms", baptismData, "rgba(153, 102, 255, 0.6)")} options={options}/>
+
+            <h2>Confirmed Funerals Per Month</h2>
+            <Bar data={generateChartData("Funerals", funeralData, "rgba(255, 99, 132, 0.6)")} options={options}/>
           </div>
         )}
       </div>
@@ -99,4 +97,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard
+export default Dashboard;

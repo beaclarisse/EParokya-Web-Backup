@@ -350,6 +350,23 @@ exports.getMySubmittedForms = async (req, res) => {
   }
 };
 
+exports.getWeddingsPerMonth = async (req, res) => {
+  const data = await Wedding.aggregate([
+    {
+      $group: {
+        _id: { $month: "$weddingDate" },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+  const result = Array(12).fill(0);
+  data.forEach(({ _id, count }) => {
+    result[_id - 1] = count; 
+  });
+  res.json(result);
+};
+
 
 
 

@@ -235,3 +235,20 @@ exports.getMySubmittedForms = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch submitted baptism forms." });
   }
 };
+
+exports.getBaptismPerMonth = async (req, res) => {
+  const data = await Baptism.aggregate([
+    {
+      $group: {
+        _id: { $month: "$baptismDate" },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+  const result = Array(12).fill(0);
+  data.forEach(({ _id, count }) => {
+    result[_id - 1] = count; 
+  });
+  res.json(result);
+};
