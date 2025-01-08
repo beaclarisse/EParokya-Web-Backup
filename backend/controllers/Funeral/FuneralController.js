@@ -83,7 +83,7 @@ exports.createFuneral = async (req, res) => {
 
 exports.getFunerals = async (req, res) => {
     try {
-        const funerals = await Funeral.find().populate('userId', 'name email');
+        const funerals = await Funeral.find().populate('userId', 'name');
         res.status(200).json(funerals);
     } catch (err) {
         console.error('Error fetching funeral entries:', err);

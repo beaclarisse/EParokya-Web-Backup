@@ -108,14 +108,11 @@ exports.submitBaptismForm = async (req, res) => {
 
 exports.listBaptismForms = async (req, res) => {
   try {
-    // Retrieve all baptism forms from the database
-    const baptismForms = await Baptism.find().sort({ createdAt: -1 }); // Sorting by newest first
+    const baptismForms = await Baptism.find().sort({ createdAt: -1 }).populate('userId', 'name'); 
 
     if (baptismForms.length === 0) {
       return res.status(404).json({ message: "No baptism forms found." });
     }
-
-    // Send the retrieved baptism forms
     return res.status(200).json({
       message: "Baptism forms retrieved successfully.",
       baptismForms,

@@ -4,11 +4,12 @@ import "../../Layout/styles/style.css";
 import SideBar from "../SideBar";
 
 const FuneralList = () => {
-    const [funeralList, setFuneralList] = useState([]); 
-    const [filteredFuneralList, setFilteredFuneralList] = useState([]); 
+    const [funeralList, setFuneralList] = useState([]);
+    const [filteredFuneralList, setFilteredFuneralList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeFilter, setActiveFilter] = useState("All");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchFunerals = async () => {
         setLoading(true);
@@ -21,8 +22,8 @@ const FuneralList = () => {
             );
 
             if (response.data && Array.isArray(response.data)) {
-                setFuneralList(response.data); 
-                setFilteredFuneralList(response.data); 
+                setFuneralList(response.data);
+                setFilteredFuneralList(response.data);
             } else {
                 setFuneralList([]);
                 setFilteredFuneralList([]);
@@ -37,15 +38,20 @@ const FuneralList = () => {
 
     const filterFunerals = (status) => {
         setActiveFilter(status);
-        if (status === "All") {
-            setFilteredFuneralList(funeralList);
-        } else {
-            const filtered = funeralList.filter(
-                (funeral) => funeral.funeralStatus === status
-            );
-            setFilteredFuneralList(filtered);
-        }
+        const filtered = status === "All" ? funeralList : funeralList.filter((funeral) => funeral.funeralStatus === status);
+        setFilteredFuneralList(filtered);
     };
+
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        const lowercasedQuery = query.toLowerCase();
+        const filtered = funeralList.filter((funeral) => {
+            const fullName = `${funeral?.name?.firstName || ""} ${funeral?.name?.middleName || ""} ${funeral?.name?.lastName || ""} ${funeral?.name?.suffix || ""}`.toLowerCase();
+            return fullName.includes(lowercasedQuery);
+        });
+        setFilteredFuneralList(filtered);
+    };
+
     useEffect(() => {
         fetchFunerals();
     }, []);
@@ -55,16 +61,25 @@ const FuneralList = () => {
             <SideBar />
             <div style={{ flex: 1, padding: "20px", overflowY: "auto" }}>
                 <h1 className="funeral-title">Funeral Records</h1>
-                <div className="funeral-filters">
-                    {["All", "Pending", "Confirmed", "Cancelled"].map((status) => (
-                        <button
-                            key={status}
-                            className={`funeral-filter-button ${activeFilter === status ? "active" : ""}`}
-                            onClick={() => filterFunerals(status)}
-                        >
-                            {status}
-                        </button>
-                    ))}
+                <div className="funeral-controls">
+                    <div className="funeral-filters">
+                        {["All", "Pending", "Confirmed", "Cancelled"].map((status) => (
+                            <button
+                                key={status}
+                                className={`funeral-filter-button ${activeFilter === status ? "active" : ""}`}
+                                onClick={() => filterFunerals(status)}
+                            >
+                                {status}
+                            </button>
+                        ))}
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search by name..."
+                        value={searchQuery}
+                        onChange={(e) => handleSearch(e.target.value)}
+                        className="search-bar"
+                    />
                 </div>
 
                 {loading ? (
@@ -77,7 +92,7 @@ const FuneralList = () => {
                     <div className="funeral-list">
                         {filteredFuneralList.map((item, index) => (
                             <div
-                                key={item._id || index} 
+                                key={item._id || index}
                                 className={`funeral-card ${item.funeralStatus?.toLowerCase() || ""}`}
                             >
                                 <div className="status-badge">{item.funeralStatus || "Unknown"}</div>
@@ -101,6 +116,15 @@ const FuneralList = () => {
                                     </p>
                                     <p>
                                         <strong>Service Type:</strong> {item.serviceType || "N/A"}
+                                    </p>
+                                    <p>
+                                        <strong>Submitted By:</strong>
+                                    </p>
+                                    <p>
+                                        <strong>Name:</strong> {item.userId?.name || "Unknown"}
+                                    </p>
+                                    <p>
+                                        <strong>User ID:</strong> {item.userId?._id || "Unknown"}
                                     </p>
                                 </div>
                             </div>
