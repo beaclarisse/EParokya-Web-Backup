@@ -22,6 +22,8 @@ import UpdateUser from './Components/Admin/User/UserUpdate';
 //Calendar
 import Calendar from './Components/Admin/Calendar/Calendar';
 import AdminDate from './Components/Admin/AdminDate';
+import AddEvent from './Components/Admin/Calendar/AddEvent';
+
 
 //Post
 import CreatePost from './Components/Admin/Post/Post';
@@ -62,7 +64,7 @@ function App() {
         <Route path="/admin/user/:id" element={<ProtectedRoute isAdmin={true}><UpdateUser /></ProtectedRoute>} />
 
         {/* calendar */}
-        <Route path="/admin/calendar" element={<ProtectedRoute isAdmin={true}><Calendar /></ProtectedRoute>} />
+        <Route path="/calendar" element={<ProtectedRoute isAdmin={true}><Calendar /></ProtectedRoute>} />
 
         {/* Post */}
         <Route path="/admin/post/create" element={<ProtectedRoute isAdmin={true}><CreatePost /></ProtectedRoute>} />
@@ -75,6 +77,7 @@ function App() {
         <Route path="/admin/editevent/:id" element={<ProtectedRoute isAdmin={true}><EventPostUpdate /></ProtectedRoute>} />
 
         <Route path="/admin/adminDate" element={<ProtectedRoute isAdmin={true}><AdminDate /></ProtectedRoute>} />
+        <Route path="/admin/addEvent" element={<ProtectedRoute isAdmin={true}><AddEvent /></ProtectedRoute>} />
 
         <Route path="/admin/weddingList" element={<ProtectedRoute isAdmin={true}><WeddingList /></ProtectedRoute>} />
         <Route path="/admin/baptismList" element={<ProtectedRoute isAdmin={true}><BaptismList /></ProtectedRoute>} />

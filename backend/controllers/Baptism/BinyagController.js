@@ -178,7 +178,9 @@ exports.declineBaptism = async (req, res) => {
 
 exports.getConfirmedBaptisms = async (req, res) => {
   try {
+    console.log("Fetching confirmed baptisms...");
     const confirmedBaptisms = await Baptism.find({ baptismStatus: "Confirmed" });
+    console.log("Query result:", confirmedBaptisms);
 
     res.status(200).json(confirmedBaptisms);
   } catch (error) {
@@ -186,6 +188,7 @@ exports.getConfirmedBaptisms = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
 
 exports.addBaptismComment = async (req, res) => {
   const baptismId = req.params.id;
