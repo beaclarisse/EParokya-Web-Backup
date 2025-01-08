@@ -15,7 +15,7 @@ const SideBar = () => {
             </Link>
           </Nav.Item>
           <Nav.Item>
-            <Link to="/admin/calendar" className="sidebar-link" style={styles.sidebarLink}>
+            <Link to="/calendar" className="sidebar-link" style={styles.sidebarLink}>
               Calendar
             </Link>
           </Nav.Item>

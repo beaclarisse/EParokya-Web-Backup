@@ -204,7 +204,7 @@ export const Home = () => {
                               onClick={() => handlePreviousImageEvent(event._id)}
                               style={styles.carouselButton}
                             >
-                              Previous
+                              <span style={styles.carouselButtonIcon}>←</span>
                             </button>
                             <span style={styles.carouselCounter}>
                               {(currentIndexess[event._id] || 0) + 1} / {event.images.length}
@@ -213,7 +213,7 @@ export const Home = () => {
                               onClick={() => handleNextImageEvent(event._id)}
                               style={styles.carouselButton}
                             >
-                              Next
+                             <span style={styles.carouselButtonIcon}>→</span>
                             </button>
                           </div>
                         </div>
@@ -240,7 +240,6 @@ const styles = {
   homediv: {
     padding: "15px",
     backgroundColor: '#c2d8be',
-
   },
   contentContainer: {
     display: 'flex',
@@ -272,9 +271,9 @@ const styles = {
   bannerImage: {
     width: '100%',
     maxWidth: '1500px',
-    height: '500px', // This defines a specific height for the banner
+    height: '500px',
     borderRadius: '10px',
-    objectFit: 'cover', // Ensures the image covers the whole area without distorting
+    objectFit: 'cover',
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
   },
   sectionTitle: {
@@ -288,7 +287,6 @@ const styles = {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
     gap: '20px',
-    // backgroundColor: '#c2d8be',
     padding: '20px',
     borderRadius: '10px',
   },
@@ -325,13 +323,22 @@ const styles = {
     marginTop: '10px',
   },
   carouselButton: {
-    backgroundColor: '#007bff',
-    color: '#fff',
+    // backgroundColor: '#007bff',
+    // color: '#fff',
     border: 'none',
-    padding: '5px 10px',
+    padding: '10px 15px',
     margin: '0 5px',
     cursor: 'pointer',
-    borderRadius: '5px',
+    borderRadius: '50%',
+    fontSize: '16px',  
+    transition: 'background-color 0.3s ease',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  carouselButtonIcon: {
+    fontSize: '18px',
+    fontWeight: 'bold',
   },
   carouselCounter: {
     fontSize: '14px',
@@ -341,7 +348,6 @@ const styles = {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
     gap: '20px',
-    // backgroundColor: '#c2d8be',
     padding: '30px',
     borderRadius: '10px',
   },
@@ -364,7 +370,7 @@ const styles = {
   eventDate: {
     color: '#ccc',
   },
-
 };
+
 
 export default Home;

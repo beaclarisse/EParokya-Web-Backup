@@ -22,7 +22,7 @@ const GuestSideBar = () => {
 
 const styles = {
   sidebarContainer: {
-    backgroundColor: '#A8D5BA', // Light green background
+    backgroundColor: '#26562e', 
     padding: '20px',
     width: '200px',
     height: '100vh',
@@ -30,21 +30,22 @@ const styles = {
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
   },
   title: {
-    color: '#FFFFFF', // White text for title
+    color: '#FFFFFF',
     fontSize: '24px',
     fontWeight: 'bold',
     marginBottom: '20px',
-    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)', // Slight shadow for emphasis
+    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)', 
   },
   menuList: {
     listStyleType: 'none',
     padding: 0,
   },
   menuItem: {
+    backgroundColor:' #c7ddb5',
     marginBottom: '15px',
   },
   link: {
-    color: '#FFFFFF', // White text for links
+    color: 'black', 
     fontSize: '18px',
     fontWeight: '500',
     textDecoration: 'none',

@@ -42,3 +42,16 @@ exports.deleteCustomEvent = async (req, res) => {
     res.status(500).json({ message: "Failed to delete event", error: error.message });
   }
 };
+
+exports.getCustomEventById = async (req, res) => {
+try {
+  const event = await CustomEvent.findById(req.params.customEventId);
+  if (!event) {
+    return res.status(404).json({ message: 'Event not found' });
+  }
+  res.json(event);
+} catch (error) {
+  console.error('Error fetching custom event:', error);
+  res.status(500).json({ message: 'Failed to fetch event details' });
+}
+};

@@ -28,15 +28,15 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const weddingRes = await axios.get(`${process.env.REACT_APP_API}/api/v1/stats/weddingsPerMonth`, config);
-        console.log("Weddings Data:", weddingRes.data); // Log data
+        // console.log("Weddings Data:", weddingRes.data); 
         setWeddingData(weddingRes.data);
   
         const baptismRes = await axios.get(`${process.env.REACT_APP_API}/api/v1/stats/baptismsPerMonth`, config);
-        console.log("Baptisms Data:", baptismRes.data); // Log data
+        // console.log("Baptisms Data:", baptismRes.data); 
         setBaptismData(baptismRes.data);
   
         const funeralRes = await axios.get(`${process.env.REACT_APP_API}/api/v1/stats/funeralsPerMonth`, config);
-        console.log("Funerals Data:", funeralRes.data); // Log data
+        // console.log("Funerals Data:", funeralRes.data); 
         setFuneralData(funeralRes.data);
   
         setLoading(false);
@@ -73,27 +73,34 @@ const Dashboard = () => {
   
   return (
     <div style={{ display: "flex" }}>
-      <SideBar></SideBar>
-      <div style={{ flex: 1, padding: "20px" }}>
-        <MetaData title={"Dashboard"} />
-        <h1>Statistics Dashboard</h1>
-
-        {loading ? (
-          <p>Loading charts...</p>
-        ) : (
-          <div>
-            <h2>Confirmed Weddings Per Month</h2>
+    <SideBar />
+    <div style={{ flex: 1, padding: "20px" }}>
+      <MetaData title={"Dashboard"} />
+      <h1>Statistics Dashboard</h1>
+  
+      {loading ? (
+        <p>Loading charts...</p>
+      ) : (
+        <div>
+          <h5>Confirmed Weddings Per Month</h5>
+          <div style={{ maxWidth: '600px', margin: '0 auto' }}>
             <Bar data={generateChartData("Weddings", weddingData, "rgba(75, 192, 192, 0.6)")} options={options} />
-
-            <h2>Confirmed Baptisms Per Month</h2>
-            <Bar data={generateChartData("Baptisms", baptismData, "rgba(153, 102, 255, 0.6)")} options={options}/>
-
-            <h2>Confirmed Funerals Per Month</h2>
-            <Bar data={generateChartData("Funerals", funeralData, "rgba(255, 99, 132, 0.6)")} options={options}/>
           </div>
-        )}
-      </div>
+  
+          <h5>Confirmed Baptisms Per Month</h5>
+          <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <Bar data={generateChartData("Baptisms", baptismData, "rgba(153, 102, 255, 0.6)")} options={options} />
+          </div>
+  
+          <h5>Confirmed Funerals Per Month</h5>
+          <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <Bar data={generateChartData("Funerals", funeralData, "rgba(255, 99, 132, 0.6)")} options={options} />
+          </div>
+        </div>
+      )}
     </div>
+  </div>
+  
   );
 };
 

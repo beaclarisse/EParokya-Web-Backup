@@ -142,6 +142,7 @@ const Calendars = () => {
       Wedding: `getWeddingById/${id}`,
       Baptism: `getBaptism/${id}`,
       Funeral: `getFuneral/${id}`,
+      Custom: `getCustomEventById/${id}`, 
     };
 
     try {
