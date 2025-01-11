@@ -7,7 +7,7 @@ const {
 const router = express.Router();
 const { isAuthenticatedUser, authorizeAdmin } = require('../middleware/auth');
 
-router.get('/getAllCustomEvents', isAuthenticatedUser, getAllCustomEvents);
+router.get('/getAllCustomEvents', getAllCustomEvents);
 router.post('/addEvent', isAuthenticatedUser, addCustomEvent);
 
 router.get('/getCustomeventById/:customEventId', isAuthenticatedUser, getCustomEventById);

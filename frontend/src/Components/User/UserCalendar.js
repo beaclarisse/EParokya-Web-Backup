@@ -13,15 +13,14 @@ const UserCalendar = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const config = { withCredentials: true };
 
   const fetchAllEvents = useCallback(async () => {
     try {
       const [weddingEvents, baptismEvents, funeralEvents, customEvents] = await Promise.all([
-        axios.get(`${process.env.REACT_APP_API}/api/v1/confirmedWedding`, config),
-        axios.get(`${process.env.REACT_APP_API}/api/v1/confirmedBaptism`, config),
-        axios.get(`${process.env.REACT_APP_API}/api/v1/confirmed`, config),
-        axios.get(`${process.env.REACT_APP_API}/api/v1/getAllCustomEvents`, config),
+        axios.get(`${process.env.REACT_APP_API}/api/v1/confirmedWedding`),
+        axios.get(`${process.env.REACT_APP_API}/api/v1/confirmedBaptism`),
+        axios.get(`${process.env.REACT_APP_API}/api/v1/confirmed`),
+        axios.get(`${process.env.REACT_APP_API}/api/v1/getAllCustomEvents`),
       ]);
 
       const formattedEvents = [
@@ -64,7 +63,7 @@ const UserCalendar = () => {
       console.error('Error fetching events:', error);
       setErrorMessage('Failed to load events. Please try again.');
     }
-  }, [config]);
+  }, []);
 
   useEffect(() => {
     fetchAllEvents();
