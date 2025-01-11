@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaHome, FaCalendarAlt, FaPray, FaBook, FaCog, FaRegFileAlt } from 'react-icons/fa';
+import { FaHome, FaCalendarAlt, FaPray, FaBook, FaCog, FaRegFileAlt, FaWpforms } from 'react-icons/fa';
 
 const GuestSideBar = () => {
   const [user, setUser] = useState({
@@ -63,6 +63,7 @@ const GuestSideBar = () => {
           >
             <FaHome style={styles.icon} /> Home
           </Link>
+
         </li>
         <li style={styles.menuItem}>
           <Link
@@ -75,6 +76,7 @@ const GuestSideBar = () => {
             <FaCalendarAlt style={styles.icon} /> Events
           </Link>
         </li>
+
         <li style={styles.menuItem}>
           <Link
             to="/sermons"
@@ -84,8 +86,9 @@ const GuestSideBar = () => {
             }}
           >
             <FaBook style={styles.icon} /> Sermon
-          </Link>
+          </Link> 
         </li>
+
         <li style={styles.menuItem}>
           <Link
             to="/prayers"
@@ -97,6 +100,7 @@ const GuestSideBar = () => {
             <FaPray style={styles.icon} /> Prayers
           </Link>
         </li>
+
         <li style={styles.menuItem}>
           <Link
             to="/user/calendar"
@@ -108,6 +112,19 @@ const GuestSideBar = () => {
             <FaCalendarAlt style={styles.icon} /> Calendar
           </Link>
         </li>
+
+        <li style={styles.menuItem}>
+          <Link
+            to="/user/forms"
+            style={{
+              ...styles.link,
+              ...(location.pathname === "/user/forms" ? styles.activeLink : {}),
+            }}
+          >
+            <FaWpforms style={styles.icon} /> Forms
+          </Link>
+        </li>
+
         <li style={styles.menuItem}>
           <Link
             to="/resources"

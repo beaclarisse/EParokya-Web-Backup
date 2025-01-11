@@ -2,13 +2,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Nav from "react-bootstrap/Nav";
-import Dropdown from "react-bootstrap/Dropdown"; 
+import Dropdown from "react-bootstrap/Dropdown";
 
 const SideBar = () => {
   return (
     <Card className="sidebar-card" style={styles.sidebarCard}>
       <Card.Body>
-        <Card.Title className="text-center" style={styles.title}>Admin Panel</Card.Title>
+        <Card.Title className="text-center" style={styles.title}>
+          Admin Panel
+        </Card.Title>
         <Nav className="flex-column">
           <Nav.Item>
             <Link to="/dashboard" className="sidebar-link" style={styles.sidebarLink}>
@@ -18,6 +20,31 @@ const SideBar = () => {
           <Nav.Item>
             <Link to="/admin/users" className="sidebar-link" style={styles.sidebarLink}>
               Users
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link to="/admin/ministryCategory/create" className="sidebar-link" style={styles.sidebarLink}>
+              Ministry Categories
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link to="/admin/calendar" className="sidebar-link" style={styles.sidebarLink}>
+              Member Directory
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link to="/admin/calendar" className="sidebar-link" style={styles.sidebarLink}>
+              Member History
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link to="/admin/calendar" className="sidebar-link" style={styles.sidebarLink}>
+              Feedback Form
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link to="/admin/calendar" className="sidebar-link" style={styles.sidebarLink}>
+              Prayer Wall
             </Link>
           </Nav.Item>
           <Nav.Item>
@@ -40,7 +67,67 @@ const SideBar = () => {
               Set Available Date
             </Link>
           </Nav.Item>
-          
+          <Nav.Item>
+            <Link to="/admin/adminDate" className="sidebar-link" style={styles.sidebarLink}>
+              Ministry Inventory
+            </Link>
+          </Nav.Item>
+
+          <Nav.Item>
+            <Dropdown>
+              <Dropdown.Toggle variant="link" className="sidebar-link" style={styles.sidebarLink}>
+                Announcements
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <Link to="/admin/weddingList" className="sidebar-link" style={styles.sidebarLink}>
+                    Create Announcement
+                  </Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/baptismList" className="sidebar-link" style={styles.sidebarLink}>
+                    Announcement List
+                  </Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/funeralList" className="sidebar-link" style={styles.sidebarLink}>
+                    Announcement Category
+                  </Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/funeralList" className="sidebar-link" style={styles.sidebarLink}>
+                    Live
+                  </Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/funeralList" className="sidebar-link" style={styles.sidebarLink}>
+                    Bible
+                  </Link>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Nav.Item>
+
+          <Nav.Item>
+            <Dropdown>
+              <Dropdown.Toggle variant="link" className="sidebar-link" style={styles.sidebarLink}>
+                Resource Page
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <Link to="/admin/weddingList" className="sidebar-link" style={styles.sidebarLink}>
+                    Create Resource
+                  </Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/weddingList" className="sidebar-link" style={styles.sidebarLink}>
+                    Resources List
+                  </Link>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Nav.Item>
+
           {/* Private Forms List */}
           <Nav.Item>
             <Dropdown>
@@ -66,6 +153,7 @@ const SideBar = () => {
               </Dropdown.Menu>
             </Dropdown>
           </Nav.Item>
+
           <Nav.Item>
             <Dropdown>
               <Dropdown.Toggle variant="link" className="sidebar-link" style={styles.sidebarLink}>
@@ -90,7 +178,6 @@ const SideBar = () => {
               </Dropdown.Menu>
             </Dropdown>
           </Nav.Item>
-          
         </Nav>
       </Card.Body>
     </Card>
@@ -99,17 +186,17 @@ const SideBar = () => {
 
 const styles = {
   sidebarCard: {
-    marginTop: "60px",
     width: "250px",
-    height: "100vh",
+    minHeight: "100%",
     backgroundColor: "#f8f9fa",
     border: "1px solid #ddd",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    marginBottom: "20px",
   },
   title: {
     fontWeight: "bold",
     marginBottom: "20px",
-    fontSize: "1.2rem"
+    fontSize: "1.2rem",
   },
   sidebarLink: {
     display: "block",
@@ -118,7 +205,7 @@ const styles = {
     textDecoration: "none",
     fontWeight: "500",
     transition: "background-color 0.3s ease",
-  }
+  },
 };
 
 export default SideBar;

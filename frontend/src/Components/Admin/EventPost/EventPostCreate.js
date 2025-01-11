@@ -115,12 +115,12 @@ const styles = {
         display: 'flex',
         minHeight: '100vh',
         backgroundColor: '#f0f2f5',
-        alignItems: 'flex-start', // This aligns items at the top
+        alignItems: 'flex-start', 
     },
     container: {
         flex: 1,
         maxWidth: '700px',
-        margin: '40px auto 0 auto', // Adjusts the top margin to bring it closer to the top
+        margin: '40px auto 0 auto', 
         padding: '30px',
         backgroundColor: '#fff',
         borderRadius: '8px',

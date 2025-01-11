@@ -1,5 +1,6 @@
 const cloudinary = require('cloudinary');
-const Event = require('../models/events');
+const announcement = require('../models/Announcement/announcement');
+const { Comment, Reply } = require('../models/Announcement/announcement');
 const multer = require('multer');
 const mongoose = require('mongoose');
 
@@ -237,5 +238,50 @@ exports.getEvents = async (req, res) => {
             message: 'Failed to retrieve events',
             error: error.message,
         });
+    }
+};
+
+exports.addCommentToEvent = async (req, res) => {
+    try {
+        const { eventId } = req.params;
+        const { userId, text } = req.body;
+
+        const event = await Event.findById(eventId);
+        if (!event) {
+            return res.status(404).json({ success: false, message: 'Event not found' });
+        }
+
+        const newComment = new Comment({ announcement: eventId, user: userId, text });
+        const savedComment = await newComment.save();
+
+        event.comments.push(savedComment._id);
+        event.commentsCount = event.comments.length;
+        await event.save();
+
+        res.status(201).json({ success: true, comment: savedComment });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to add comment', error: error.message });
+    }
+};
+
+exports.replyToComment = async (req, res) => {
+    try {
+        const { commentId } = req.params;
+        const { userId, text } = req.body;
+
+        const comment = await Comment.findById(commentId);
+        if (!comment) {
+            return res.status(404).json({ success: false, message: 'Comment not found' });
+        }
+
+        const newReply = new Reply({ user: userId, text });
+        const savedReply = await newReply.save();
+
+        comment.replies.push(savedReply._id);
+        await comment.save();
+
+        res.status(201).json({ success: true, reply: savedReply });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to reply to comment', error: error.message });
     }
 };

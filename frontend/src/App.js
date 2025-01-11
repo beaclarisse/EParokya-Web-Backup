@@ -44,6 +44,10 @@ import BaptismDetails from './Components/Admin/Baptism/BapstismDetails';
 import FuneralList from './Components/Admin/Funeral/FuneralList';
 import FuneralDetails from './Components/Admin/Funeral/FuneralDetails';
 
+//Admin
+
+import MinistryCategory from './Components/Admin/Ministries/CreateMinistryCategory';
+
 
 
 //Guest View
@@ -70,12 +74,14 @@ function App() {
 
         {/* calendar */}
         <Route path="/admin/calendar" element={<ProtectedRoute isAdmin={true}><Calendar /></ProtectedRoute>} />
+        {/* ministry */}
+        <Route path="/admin/ministryCategory/create" element={<ProtectedRoute isAdmin={true}><MinistryCategory /></ProtectedRoute>} />
 
         {/* Post */}
         <Route path="/admin/post/create" element={<ProtectedRoute isAdmin={true}><CreatePost /></ProtectedRoute>} />
         <Route path="/admin/postlist" element={<ProtectedRoute isAdmin={true}><PostLists /></ProtectedRoute>} />
         <Route path="/admin/post/:id" element={<ProtectedRoute isAdmin={true}><PostUpdate /></ProtectedRoute>} />
-     
+
         {/* Event Post */}
         <Route path="/admin/eventpost/create" element={<ProtectedRoute isAdmin={true}><EventPost /></ProtectedRoute>} />
         <Route path="/admin/eventpostlist" element={<ProtectedRoute isAdmin={true}><EventPostLists /></ProtectedRoute>} />
