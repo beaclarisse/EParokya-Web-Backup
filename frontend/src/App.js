@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Login } from './Components/User/Login'
 import Register from './Components/User/Register'
 import Profile from './Components/User/Profile';
+import UserCalendar from './Components/User/UserCalendar';
 
 import ProtectedRoute from './Components/Route/protectedRoute';
 
@@ -59,6 +60,7 @@ function App() {
         <Route path="/login" element={<Login />} exact="true" />
         <Route path="/register" element={<Register />} exact="true" />
         <Route path="/profile" element={<Profile />} exact="true" />
+        <Route path="/user/calendar" element={<UserCalendar />} exact="true" />
 
         {/* Admin 
         need mo itago yung dashboard from the user*/}
@@ -67,7 +69,7 @@ function App() {
         <Route path="/admin/user/:id" element={<ProtectedRoute isAdmin={true}><UpdateUser /></ProtectedRoute>} />
 
         {/* calendar */}
-        <Route path="/calendar" element={<ProtectedRoute isAdmin={true}><Calendar /></ProtectedRoute>} />
+        <Route path="/admin/calendar" element={<ProtectedRoute isAdmin={true}><Calendar /></ProtectedRoute>} />
 
         {/* Post */}
         <Route path="/admin/post/create" element={<ProtectedRoute isAdmin={true}><CreatePost /></ProtectedRoute>} />

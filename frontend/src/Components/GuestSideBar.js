@@ -99,10 +99,10 @@ const GuestSideBar = () => {
         </li>
         <li style={styles.menuItem}>
           <Link
-            to="/calendar"
+            to="/user/calendar"
             style={{
               ...styles.link,
-              ...(location.pathname === "/calendar" ? styles.activeLink : {}),
+              ...(location.pathname === "/user/calendar" ? styles.activeLink : {}),
             }}
           >
             <FaCalendarAlt style={styles.icon} /> Calendar
