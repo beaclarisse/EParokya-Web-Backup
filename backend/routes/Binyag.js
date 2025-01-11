@@ -7,7 +7,9 @@ router.get('/list', BaptismController.listBaptismForms);
 router.post('/create', isAuthenticatedUser, BaptismController.submitBaptismForm);
 router.get('/mySubmittedForms', isAuthenticatedUser, BaptismController.getMySubmittedForms);
 router.get('/confirmedBaptism', BaptismController.getConfirmedBaptisms);
-router.get('/stats/baptismsPerMonth', isAuthenticatedUser, BaptismController.getBaptismPerMonth);
+
+router.get('/stats/baptsimsPerMonth',  BaptismController.getBaptismPerMonth);
+router.get('/stats/baptismStatusCount', isAuthenticatedUser, BaptismController.getBaptismStatusCounts);
 
 router.post('/decline/:baptismId', BaptismController.declineBaptism);
 router.post('/:baptismId/admin/addComment', BaptismController.addBaptismComment);

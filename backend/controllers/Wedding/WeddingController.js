@@ -350,6 +350,8 @@ exports.getMySubmittedForms = async (req, res) => {
   }
 };
 
+
+//For Reports
 exports.getWeddingsPerMonth = async (req, res) => {
   const data = await Wedding.aggregate([
     {
@@ -366,6 +368,18 @@ exports.getWeddingsPerMonth = async (req, res) => {
   });
   res.json(result);
 };
+
+exports.getWeddingStatusCounts = async (req, res) => {
+  try {
+    const counts = await Wedding.aggregate([
+      { $group: { _id: "$weddingStatus", count: { $sum: 1 } } }
+    ]);
+    res.status(200).json(counts);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch wedding status counts", error });
+  }
+};
+
 
 
 

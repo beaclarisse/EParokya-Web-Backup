@@ -8,6 +8,7 @@ router.post('/create', funeralController.createFuneral);
 router.get('/confirmed', funeralController.getConfirmedFunerals);
 router.get('/mySubmittedForms', isAuthenticatedUser, funeralController.getMySubmittedForms);
 router.get('/stats/funeralsPerMonth', isAuthenticatedUser, funeralController.getFuneralsPerMonth);
+router.get('/stats/funeralStatusCount', isAuthenticatedUser, funeralController.getFuneralStatusCounts);
 
 
 router.post('/comment/:funeralId', funeralController.createComment);

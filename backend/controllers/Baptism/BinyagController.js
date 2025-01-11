@@ -236,6 +236,8 @@ exports.getMySubmittedForms = async (req, res) => {
   }
 };
 
+
+//Reports
 exports.getBaptismPerMonth = async (req, res) => {
   const data = await Baptism.aggregate([
     {
@@ -251,4 +253,15 @@ exports.getBaptismPerMonth = async (req, res) => {
     result[_id - 1] = count; 
   });
   res.json(result);
+};
+
+exports.getBaptismStatusCounts = async (req, res) => {
+  try {
+    const counts = await Baptism.aggregate([
+      { $group: { _id: "$binyagStatus", count: { $sum: 1 } } }
+    ]);
+    res.status(200).json(counts);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch baptism status counts", error });
+  }
 };

@@ -9,6 +9,11 @@ const SideBar = () => {
       <Card.Body>
         <Card.Title className="text-center" style={styles.title}>Admin Panel</Card.Title>
         <Nav className="flex-column">
+        <Nav.Item>
+            <Link to="/dashboard" className="sidebar-link" style={styles.sidebarLink}>
+              Dashboard
+            </Link>
+          </Nav.Item>
           <Nav.Item>
             <Link to="/admin/users" className="sidebar-link" style={styles.sidebarLink}>
               Users
