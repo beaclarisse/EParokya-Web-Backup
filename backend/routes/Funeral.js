@@ -15,7 +15,7 @@ router.post('/comment/:funeralId', funeralController.createComment);
 router.delete('/comment/:funeralId/:commentId', funeralController.deleteComment);
 router.put('/comment/:funeralId/:commentId', funeralController.updateComment);
 
-router.get('/getFuneral/:id', funeralController.getFuneralById);
+router.get('/getFuneral/:funeralId', funeralController.getFuneralById);
 router.put('/update/:id', funeralController.updateFuneral);
 router.delete('/delete/:id', funeralController.deleteFuneral);
 router.put('/confirm/:id', funeralController.confirmFuneral);

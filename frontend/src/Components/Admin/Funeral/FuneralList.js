@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../Layout/styles/style.css";
 import SideBar from "../SideBar";
+import { useNavigate } from "react-router-dom";
 
 const FuneralList = () => {
     const [funeralList, setFuneralList] = useState([]);
@@ -10,6 +11,7 @@ const FuneralList = () => {
     const [error, setError] = useState(null);
     const [activeFilter, setActiveFilter] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
+    const navigate = useNavigate();
 
     const fetchFunerals = async () => {
         setLoading(true);
@@ -36,9 +38,15 @@ const FuneralList = () => {
         }
     };
 
+    const handleCardClick = (funeralId) => {
+        navigate(`/admin/funeralDetails/${funeralId}`);
+    };
+
     const filterFunerals = (status) => {
         setActiveFilter(status);
-        const filtered = status === "All" ? funeralList : funeralList.filter((funeral) => funeral.funeralStatus === status);
+        const filtered = status === "All" 
+            ? funeralList 
+            : funeralList.filter((funeral) => funeral.funeralStatus === status);
         setFilteredFuneralList(filtered);
     };
 
@@ -54,7 +62,7 @@ const FuneralList = () => {
 
     useEffect(() => {
         fetchFunerals();
-    }, []);
+    }, []); // Dependency array is empty, you may want to trigger refetch on activeFilter or searchQuery change later
 
     return (
         <div style={{ display: "flex", height: "100vh" }}>
@@ -90,42 +98,23 @@ const FuneralList = () => {
                     <p className="empty-text">No funeral records available.</p>
                 ) : (
                     <div className="funeral-list">
-                        {filteredFuneralList.map((item, index) => (
+                        {filteredFuneralList.map((item) => (
                             <div
-                                key={item._id || index}
+                                key={item._id} // Use unique identifier instead of index
                                 className={`funeral-card ${item.funeralStatus?.toLowerCase() || ""}`}
+                                onClick={() => handleCardClick(item._id)} // Handle card click for detailed view
                             >
                                 <div className="status-badge">{item.funeralStatus || "Unknown"}</div>
-                                <h3 className="card-title">Record #{index + 1}</h3>
+                                <h3 className="card-title">Record #{filteredFuneralList.indexOf(item) + 1}</h3>
                                 <div className="card-details">
-                                    <p>
-                                        <strong>Name:</strong>{" "}
-                                        {`${item?.name?.firstName || ""} ${item?.name?.middleName || ""} ${item?.name?.lastName || ""} ${item?.name?.suffix || ""}`}
-                                    </p>
-                                    <p>
-                                        <strong>Gender:</strong> {item.gender || "N/A"}
-                                    </p>
-                                    <p>
-                                        <strong>Age:</strong> {item.age || "N/A"}
-                                    </p>
-                                    <p>
-                                        <strong>Funeral Date:</strong>{" "}
-                                        {item.funeralDate
-                                            ? new Date(item.funeralDate).toLocaleDateString()
-                                            : "N/A"}
-                                    </p>
-                                    <p>
-                                        <strong>Service Type:</strong> {item.serviceType || "N/A"}
-                                    </p>
-                                    <p>
-                                        <strong>Submitted By:</strong>
-                                    </p>
-                                    <p>
-                                        <strong>Name:</strong> {item.userId?.name || "Unknown"}
-                                    </p>
-                                    <p>
-                                        <strong>User ID:</strong> {item.userId?._id || "Unknown"}
-                                    </p>
+                                    <p><strong>Name:</strong> {`${item?.name?.firstName || ""} ${item?.name?.middleName || ""} ${item?.name?.lastName || ""} ${item?.name?.suffix || ""}`}</p>
+                                    <p><strong>Gender:</strong> {item.gender || "N/A"}</p>
+                                    <p><strong>Age:</strong> {item.age || "N/A"}</p>
+                                    <p><strong>Funeral Date:</strong> {item.funeralDate ? new Date(item.funeralDate).toLocaleDateString() : "N/A"}</p>
+                                    <p><strong>Service Type:</strong> {item.serviceType || "N/A"}</p>
+                                    <p><strong>Submitted By:</strong></p>
+                                    <p><strong>Name:</strong> {item.userId?.name || "Unknown"}</p>
+                                    <p><strong>User ID:</strong> {item.userId?._id || "Unknown"}</p>
                                 </div>
                             </div>
                         ))}

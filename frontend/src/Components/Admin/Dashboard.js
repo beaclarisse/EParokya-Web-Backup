@@ -18,6 +18,7 @@ import { Bar, Pie } from "react-chartjs-2";
 ChartJS.register(CategoryScale, LinearScale, BarElement, PieController, ArcElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
+  const [registeredUsersCount, setRegisteredUsersCount] = useState(0);
   const [weddingData, setWeddingData] = useState([]);
   const [baptismData, setBaptismData] = useState([]);
   const [funeralData, setFuneralData] = useState([]);
@@ -43,6 +44,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+
+        const usersCountRes = await axios.get(`${process.env.REACT_APP_API}/api/v1/stats/registeredUsersCount`, config);
+        setRegisteredUsersCount(usersCountRes.data.count);
+
         // Confirmed per month
         const weddingRes = await axios.get(`${process.env.REACT_APP_API}/api/v1/stats/weddingsPerMonth`, config);
         setWeddingData(weddingRes.data);
@@ -144,6 +149,12 @@ const Dashboard = () => {
           <p>Loading charts...</p>
         ) : (
           <div style={chartContainerStyle}>
+
+            <div style={chartCardStyle}>
+              <h5>Total Registered Users</h5>
+              <p style={{ fontSize: "24px", fontWeight: "bold" }}>{loading ? "Loading..." : registeredUsersCount}</p>
+            </div>
+
             {/* Bar */}
             <div style={chartCardStyle}>
               <h5>Confirmed Weddings Per Month</h5>

@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import SideBar from "../SideBar";
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root');
+
 
 const BaptismDetails = () => {
     const { baptismId } = useParams();
@@ -14,6 +18,13 @@ const BaptismDetails = () => {
     const [selectedComment, setSelectedComment] = useState("");
     const [additionalComment, setAdditionalComment] = useState("");
     const [comments, setComments] = useState([]);
+
+    const [zoom, setZoom] = useState(1);
+      const [offset, setOffset] = useState({ x: 0, y: 0 });
+      const [isDragging, setIsDragging] = useState(false);
+      const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+      const [isModalOpen, setIsModalOpen] = useState(false);
+      const [selectedImage, setSelectedImage] = useState("");
 
     const predefinedComments = [
         "Confirmed and on schedule",
@@ -40,6 +51,38 @@ const BaptismDetails = () => {
         };
         fetchBaptismDetails();
     }, [baptismId]);
+
+    const openModal = (image) => {
+        setSelectedImage(image);
+        setIsModalOpen(true);
+      };
+    
+      const closeModal = () => {
+        setSelectedImage("");
+        setIsModalOpen(false);
+      };
+    
+      if (loading) return <div>Loading...</div>;
+      if (error) return <div>Error: {error}</div>;
+    
+    
+      const handleMouseDown = (e) => {
+        e.preventDefault();
+        setIsDragging(true);
+        setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+      };
+    
+      const handleMouseMove = (e) => {
+        if (!isDragging) return;
+        setOffset({
+          x: e.clientX - dragStart.x,
+          y: e.clientY - dragStart.y,
+        });
+      };
+    
+      const handleMouseUp = () => {
+        setIsDragging(false);
+      };
 
     const handleSubmitComment = async (e) => {
         e.preventDefault();

@@ -367,6 +367,75 @@
   background-color: #154314;
 }
 
+/* funeral details */
+.funeral-details-page {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.funeral-details-content {
+  flex: 1;
+  padding: 20px;
+  margin-left: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.details p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.admin-comments-section, .admin-section {
+  margin-top: 20px;
+}
+
+.admin-comment {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-color: #fff;
+}
+
+textarea, input, select, button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.funeral-details-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px; 
+}
+
+.funeral-details-content {
+  flex: 1; 
+  padding: 20px;
+  background-color: #f9f9f9; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.details, .admin-comments-section, .admin-section {
+  margin-bottom: 20px; 
+}
+
+.admin-comments-section .admin-comment {
+  margin-bottom: 15px; 
+  padding: 10px;
+  border: 1px solid #ddd; 
+  border-radius: 5px; 
+  background-color: #fff; 
+}
+
+
 /* General Styles */
 body {
   margin: 0;

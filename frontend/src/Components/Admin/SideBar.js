@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Nav from "react-bootstrap/Nav";
+import Dropdown from "react-bootstrap/Dropdown"; 
 
 const SideBar = () => {
   return (
@@ -9,7 +10,7 @@ const SideBar = () => {
       <Card.Body>
         <Card.Title className="text-center" style={styles.title}>Admin Panel</Card.Title>
         <Nav className="flex-column">
-        <Nav.Item>
+          <Nav.Item>
             <Link to="/dashboard" className="sidebar-link" style={styles.sidebarLink}>
               Dashboard
             </Link>
@@ -39,21 +40,57 @@ const SideBar = () => {
               Set Available Date
             </Link>
           </Nav.Item>
+          
+          {/* Private Forms List */}
           <Nav.Item>
-            <Link to="/admin/weddingList" className="sidebar-link" style={styles.sidebarLink}>
-              Wedding List
-            </Link>
+            <Dropdown>
+              <Dropdown.Toggle variant="link" className="sidebar-link" style={styles.sidebarLink}>
+                Private Forms List
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <Link to="/admin/weddingList" className="sidebar-link" style={styles.sidebarLink}>
+                    Wedding List
+                  </Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/baptismList" className="sidebar-link" style={styles.sidebarLink}>
+                    Baptism List
+                  </Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/funeralList" className="sidebar-link" style={styles.sidebarLink}>
+                    Funeral List
+                  </Link>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </Nav.Item>
           <Nav.Item>
-            <Link to="/admin/baptismList" className="sidebar-link" style={styles.sidebarLink}>
-              Baptism List
-            </Link>
+            <Dropdown>
+              <Dropdown.Toggle variant="link" className="sidebar-link" style={styles.sidebarLink}>
+                Mass Forms List
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <Link to="/admin/weddingList" className="sidebar-link" style={styles.sidebarLink}>
+                    Mass Wedding List
+                  </Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/baptismList" className="sidebar-link" style={styles.sidebarLink}>
+                    Mass Baptism List
+                  </Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/funeralList" className="sidebar-link" style={styles.sidebarLink}>
+                    Mass Funeral List
+                  </Link>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </Nav.Item>
-          <Nav.Item>
-            <Link to="/admin/funeralList" className="sidebar-link" style={styles.sidebarLink}>
-              Funeral List
-            </Link>
-          </Nav.Item>
+          
         </Nav>
       </Card.Body>
     </Card>

@@ -93,7 +93,7 @@ exports.getFunerals = async (req, res) => {
 
 exports.getFuneralById = async (req, res) => {
     try {
-        const funeralId = req.params.id;
+        const funeralId = req.params.funeralId;
         const funeral = await Funeral.findById(funeralId).populate('userId', 'name email');
 
         if (!funeral) {

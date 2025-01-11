@@ -22,21 +22,16 @@ const Header = () => {
 
   return (
     <Container fluid style={styles.header}>
-      {/* Logo Section */}
       <Link to="/" style={styles.logo}>
         Eparokya
       </Link>
-
-      {/* Navigation Links */}
-      
-
       {/* User Navigation Section */}
       <Nav className="d-flex align-items-center">
         {user ? (
           <NavDropdown 
             title={<span style={styles.navDropdownTitle}>{user.name}</span>} 
             id="user-nav-dropdown" 
-            alignRight // Aligns the dropdown to the right
+            alignRight
             menuVariant="light"
           >
             <NavDropdown.Item as={Link} to="/profile" style={styles.dropdownItem}>
@@ -88,8 +83,8 @@ const styles = {
   navLinks: {
     display: 'flex',
     gap: '20px',
-    justifyContent: 'center', // Center navigation links
-    marginLeft: 'auto', // Push links to the center
+    justifyContent: 'center',
+    marginLeft: 'auto', 
   },
   navLink: {
     color: '#f0f8ff',

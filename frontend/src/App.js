@@ -39,7 +39,10 @@ import WeddingDetails from './Components/Admin/Wedding/WeddingDetails';
 
 import BaptismList from './Components/Admin/Baptism/BaptismList';
 import BaptismDetails from './Components/Admin/Baptism/BapstismDetails';
+
 import FuneralList from './Components/Admin/Funeral/FuneralList';
+import FuneralDetails from './Components/Admin/Funeral/FuneralDetails';
+
 
 
 //Guest View
@@ -85,6 +88,7 @@ function App() {
 
         <Route path="/admin/weddingDetails/:weddingId" element={<ProtectedRoute isAdmin={true}><WeddingDetails /></ProtectedRoute>} />
         <Route path="/admin/baptismDetails/:baptismId" element={<ProtectedRoute isAdmin={true}><BaptismDetails /></ProtectedRoute>} />
+        <Route path="/admin/funeralDetails/:funeralId" element={<ProtectedRoute isAdmin={true}><FuneralDetails /></ProtectedRoute>} />
 
 
         {/* Guest View */}
