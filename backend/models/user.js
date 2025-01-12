@@ -100,6 +100,11 @@ const userSchema = new mongoose.Schema({
             required: true 
         }
     },
+    ministryCategory: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ministryCategory',  
+        required: false,  
+    },
     email: {
         type: String,
         required: [true, 'Please provide your email address'],

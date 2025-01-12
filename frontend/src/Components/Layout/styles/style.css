@@ -580,4 +580,115 @@ ul li p {
 }
 
 
+/* //profile */
+/* General Layout */
+.profile-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1588px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
 
+/* Left Side */
+.profile-left {
+  flex: 1;
+  text-align: center;
+  margin-right: 120px;
+  margin-top: 150px; 
+  height: 90vh;
+}
+
+.profile-title {
+  font-size: 32px; /* Larger title */
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.profile-avatar img {
+  width: 195px; 
+  height: 210px;
+  border-radius: 50%;
+  border: 5px solid #28a745;
+  margin-bottom: 20px;
+}
+
+.profile-joined {
+  font-size: 25px; 
+  text-align: center;
+  margin-top: 15px;
+  color: #6c757d;
+}
+
+.profile-joined strong {
+  font-weight: bold;
+  color: #000;
+}
+
+.profile-joined span {
+  display: block;
+  color: gray;
+  font-size: 18px; 
+}
+
+/* Buttons Section */
+.profile-buttons {
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: center; 
+  gap: 20px; 
+  margin-top: 25px; 
+}
+
+.btn-profile {
+  padding: 15px 30px; 
+  font-size: 15px;
+  color: #fff;
+  background-color: #154314; 
+  border: none;
+  border-radius: 40px; 
+  text-decoration: none;
+  text-align: center;
+  height: 6vh;
+  width: 210px; 
+}
+
+.btn-profile:hover {
+  background-color: #196619; 
+}
+
+.btn-profile:nth-child(5) {
+  width: 100%; 
+  text-align: center;
+}
+
+/* Right Side */
+.profile-right {
+  flex: 2;
+  background-color: #c7ddb5;
+  padding: 30px; 
+  border-radius: 15px;
+  height: 50vh;
+  margin-top: 150px;
+}
+
+.profile-greeting {
+  color: #154314;
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 40px;
+  font-family: 'Canva Sans', sans-serif;
+}
+
+.profile-details p {
+  font-size: 20px; /* Increased font size for readability */
+  margin-bottom: 15px; /* More spacing between details */
+}
+
+.profile-details p strong {
+  margin-right: 10px;
+  font-weight: bold;
+}

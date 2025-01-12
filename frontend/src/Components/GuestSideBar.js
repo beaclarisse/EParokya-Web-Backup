@@ -160,10 +160,12 @@ const styles = {
     backgroundColor: '#d6e7c6',
     padding: '20px',
     width: '220px',
+    minHeight: '100vh',
     height: '100vh',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    overflowY: 'auto',
   },
   profileContainer: {
     display: 'flex',
