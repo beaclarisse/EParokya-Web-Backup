@@ -1,5 +1,14 @@
 const Funeral = require('../../models/Funeral');
 const mongoose = require('mongoose');
+const cloudinary = require('cloudinary').v2;
+
+
+// const validatePlacingOfPall = (placingOfPall) => {
+//     if (placingOfPall && placingOfPall.by === "Family Member" && (!placingOfPall.familyMembers || placingOfPall.familyMembers.length === 0)) {
+//         return { valid: false, message: "Family members must be provided if placingOfPall is done by Family Member." };
+//     }
+//     return { valid: true };
+// };
 
 
 const validatePlacingOfPall = (placingOfPall) => {
@@ -9,66 +18,78 @@ const validatePlacingOfPall = (placingOfPall) => {
     return { valid: true };
 };
 
-
 exports.createFuneral = async (req, res) => {
     try {
         const {
             name,
-            gender,
+            dateOfDeath,
+            personStatus,
             age,
-            numberOfSons,
-            sons,
-            numberOfDaughters,
-            daughters,
             contactPerson,
+            relationship,
             phone,
-            address,  
+            address: addressString,
+            priestVisit,
+            reasonOfDeath,
             funeralDate,
-            time,
+            funeraltime,
+            placeOfDeath,
             serviceType,
-            entranceSong,
-            placingOfPall,
+            placingOfPall: placingOfPallString,
+            funeralMassDate,
+            funeralMasstime,
+            funeralMass,
             funeralStatus,
             userId,
         } = req.body;
 
-        if (new Date(funeralDate) < new Date()) {
-            return res.status(400).json({ message: "Funeral date cannot be in the past." });
-        }
+        const address = typeof addressString === 'string' ? JSON.parse(addressString) : addressString;
+        const placingOfPall = typeof placingOfPallString === 'string' ? JSON.parse(placingOfPallString) : placingOfPallString;
 
         const placingValidation = validatePlacingOfPall(placingOfPall);
         if (!placingValidation.valid) {
             return res.status(400).json({ message: placingValidation.message });
         }
+        const uploadToCloudinary = async (file, folder) => {
+            if (!file) throw new Error('File is required for upload.');
+            const result = await cloudinary.uploader.upload(file.path, { folder });
+            return { public_id: result.public_id, url: result.secure_url };
+          };
+
+        let deathCertificate;
+        try {
+            if (req.files && req.files.deathCertificate) {
+                deathCertificate = await uploadToCloudinary(req.files.deathCertificate[0], 'eparokya/funeral/docs');
+            } else {
+                throw new Error('Death Certificate is required.');
+            }
+        } catch (error) {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+        if (new Date(funeralDate) < new Date()) {
+            return res.status(400).json({ message: "Funeral date cannot be in the past." });
+        }
 
         const newFuneral = new Funeral({
-            name: {
-                firstName: name.firstName,
-                middleName: name.middleName,
-                lastName: name.lastName,
-                suffix: name.suffix,
-            },
-            gender,
+            name,
+            dateOfDeath,
+            personStatus,
             age,
-            numberOfSons,
-            sons,
-            numberOfDaughters,
-            daughters,
             contactPerson,
+            relationship,
             phone,
-            address: {
-                state: address.state,
-                zip: address.zip,
-                country: address.country,
-            },
+            address,
+            priestVisit,
+            reasonOfDeath,
             funeralDate,
-            time,
+            funeraltime,
+            placeOfDeath,
             serviceType,
-            entranceSong,
-            placingOfPall: {
-                by: placingOfPall.by,
-                familyMembers: placingOfPall.by === 'Family Member' ? placingOfPall.familyMembers : [],
-            },
+            placingOfPall,
+            funeralMassDate,
+            funeralMasstime,
+            funeralMass,
+            deathCertificate,
             funeralStatus,
             userId,
         });
@@ -80,6 +101,8 @@ exports.createFuneral = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
 
 exports.getFunerals = async (req, res) => {
     try {
@@ -119,10 +142,6 @@ exports.updateFuneral = async (req, res) => {
         const placingValidation = validatePlacingOfPall(updates.placingOfPall);
         if (!placingValidation.valid) {
             return res.status(400).json({ message: placingValidation.message });
-        }
-
-        if (updates.adminRescheduled) {
-            updates.adminRescheduled = { date: new Date() };  
         }
 
         const updatedFuneral = await Funeral.findByIdAndUpdate(funeralId, updates, { new: true });

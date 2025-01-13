@@ -4,8 +4,8 @@ import { FaHome, FaCalendarAlt, FaPray, FaBook, FaCog, FaRegFileAlt, FaWpforms }
 
 const GuestSideBar = () => {
   const [user, setUser] = useState({
-    name: "Guest",
-    avatar: "default-profile-icon.png", 
+    name: 'Guest',
+    avatar: 'default-profile-icon.png',
   });
 
   const location = useLocation();
@@ -18,27 +18,19 @@ const GuestSideBar = () => {
         });
         if (response.ok) {
           const data = await response.json();
-          console.log('Fetched data:', data); 
           const userData = data.user;
           setUser({
-            name: userData.name || "Guest",
-            avatar: userData.avatar.url || "default-profile-icon.png",
+            name: userData.name || 'Guest',
+            avatar: userData.avatar.url || 'default-profile-icon.png',
           });
-        } else {
-          console.error("Failed to fetch user data, status:", response.status);
         }
       } catch (error) {
-        console.error("Failed to fetch user data:", error);
+        console.error('Failed to fetch user data:', error);
       }
     };
-  
+
     fetchUserData();
   }, []);
-  
-  useEffect(() => {
-    console.log('Updated user state:', user);
-  }, [user]);
-  
 
   return (
     <div style={styles.sidebarContainer}>
@@ -51,33 +43,34 @@ const GuestSideBar = () => {
         <h2 style={styles.welcomeText}>Hello {user.name}!</h2>
       </div>
 
-{/* menu */}
+      {/* Menu */}
       <ul style={styles.menuList}>
         <li style={styles.menuItem}>
           <Link
             to="/"
             style={{
               ...styles.link,
-              ...(location.pathname === "/" ? styles.activeLink : {}),
+              ...(location.pathname === '/' ? styles.activeLink : {}),
             }}
           >
             <FaHome style={styles.icon} /> Home
           </Link>
-
         </li>
+
+
         <li style={styles.menuItem}>
           <Link
             to="/events"
             style={{
               ...styles.link,
-              ...(location.pathname === "/events" ? styles.activeLink : {}),
+              ...(location.pathname === '/events' ? styles.activeLink : {}),
             }}
           >
             <FaCalendarAlt style={styles.icon} /> Events
           </Link>
         </li>
 
-        <li style={styles.menuItem}>
+        {/* <li style={styles.menuItem}>
           <Link
             to="/sermons"
             style={{
@@ -87,7 +80,7 @@ const GuestSideBar = () => {
           >
             <FaBook style={styles.icon} /> Sermon
           </Link> 
-        </li>
+        </li> */}
 
         <li style={styles.menuItem}>
           <Link
@@ -100,6 +93,7 @@ const GuestSideBar = () => {
             <FaPray style={styles.icon} /> Prayers
           </Link>
         </li>
+
 
         <li style={styles.menuItem}>
           <Link
@@ -115,17 +109,18 @@ const GuestSideBar = () => {
 
         <li style={styles.menuItem}>
           <Link
-            to="/user/baptismForm"
+            to="/user/NavigationForms"
             style={{
               ...styles.link,
-              ...(location.pathname === "/user/baptismForm" ? styles.activeLink : {}),
+              ...(location.pathname === "/user/NavigationForms" ? styles.activeLink : {}),
             }}
           >
             <FaWpforms style={styles.icon} /> Forms
           </Link>
         </li>
 
-        <li style={styles.menuItem}>
+
+        {/* <li style={styles.menuItem}>
           <Link
             to="/resources"
             style={{
@@ -133,9 +128,10 @@ const GuestSideBar = () => {
               ...(location.pathname === "/resources" ? styles.activeLink : {}),
             }}
           >
-            <FaRegFileAlt style={styles.icon} /> Resource Page
+            <FaRegFileAlt style={styles.icon} /> Resources
           </Link>
-        </li>
+        </li> */}
+       
       </ul>
 
       <ul style={styles.settingsList}>
@@ -144,7 +140,7 @@ const GuestSideBar = () => {
             to="/settings"
             style={{
               ...styles.link,
-              ...(location.pathname === "/settings" ? styles.activeLink : {}),
+              ...(location.pathname === '/settings' ? styles.activeLink : {}),
             }}
           >
             <FaCog style={styles.icon} /> Settings
@@ -158,14 +154,15 @@ const GuestSideBar = () => {
 const styles = {
   sidebarContainer: {
     backgroundColor: '#d6e7c6',
-    padding: '20px',
     width: '220px',
-    minHeight: '100vh',
-    height: '100vh',
+    height: '100vh', // Full viewport height
+    position: 'sticky', // Ensures the sidebar sticks while scrolling
+    top: '0', // Anchors the sidebar at the top
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    overflowY: 'auto',
+    padding: '20px',
+    boxSizing: 'border-box',
   },
   profileContainer: {
     display: 'flex',

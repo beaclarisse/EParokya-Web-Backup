@@ -17,8 +17,6 @@ router.post(
   isAuthenticatedUser, BaptismController.submitBaptismForm
 );
 
-  
-
 
 router.get('/mySubmittedForms', isAuthenticatedUser, BaptismController.getMySubmittedForms);
 router.get('/confirmedBaptism', BaptismController.getConfirmedBaptisms);

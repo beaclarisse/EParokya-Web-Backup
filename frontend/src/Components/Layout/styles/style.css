@@ -518,6 +518,35 @@ input, select, textarea {
   line-height: 1.6;
 }
 
+/* Funeral Form */
+
+.funeral-form-container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.guest-sidebar {
+  width: 25%;
+  margin-right: 20px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-content {
+  flex: 1;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+
+
 /* Form Styles */
 form {
   margin: 20px 0;

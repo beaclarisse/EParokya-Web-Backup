@@ -11,8 +11,10 @@ import { Login } from './Components/User/Login'
 import Register from './Components/User/Register'
 import Profile from './Components/User/Profile';
 import UserCalendar from './Components/User/UserCalendar';
+import NavigationForms from './Components/User/NavigationForms';
 
 import BaptismForm from './Components/User/Forms/PrivateForms/Baptism/BaptismForm';
+import FuneralForm from './Components/User/Forms/PrivateForms/Funeral/FuneralForm';
 
 
 import ProtectedRoute from './Components/Route/protectedRoute';
@@ -68,8 +70,10 @@ function App() {
         <Route path="/register" element={<Register />} exact="true" />
         <Route path="/profile" element={<Profile />} exact="true" />
         <Route path="/user/calendar" element={<UserCalendar />} exact="true" />
+        <Route path="/user/NavigationForms" element={<NavigationForms />} exact="true" />
 
         <Route path="/user/baptismForm" element={<BaptismForm />} exact="true" />
+        <Route path="/user/funeralForm" element={<FuneralForm />} exact="true" />
 
 
         {/* Admin 
