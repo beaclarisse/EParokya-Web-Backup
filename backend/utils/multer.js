@@ -1,15 +1,60 @@
+// const multer = require("multer");
+// const path = require("path");
+
+// module.exports = multer({
+//     limits: { fieldSize: 50 * 1024 * 1024 },
+//     storage: multer.diskStorage({}),
+//     fileFilter: (req, file, cb) => {
+//         let ext = path.extname(file.originalname).toLowerCase();
+//         if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png") {
+//             cb(new Error("Unsupported file type!"), false);
+//             return;
+//         }
+//         cb(null, true);
+//     },
+// });
+
+//updated:
+// const multer = require("multer");
+// const path = require("path");
+
+// module.exports = multer({
+//     limits: { fieldSize: 50 * 1024 * 1024 }, 
+    
+//     storage: multer.diskStorage({}),
+//     fileFilter: (req, file, cb) => {
+//         const ext = path.extname(file.originalname).toLowerCase();
+//         if (![".jpg", ".jpeg", ".png", ".pdf", ".mp4", ".mov"].includes(ext)) {
+//             cb(new Error("Unsupported file type!"), false);
+//             return;
+//         }
+//         cb(null, true);
+//     },
+// });
+
+
 const multer = require("multer");
 const path = require("path");
+const os = require("os");
 
 module.exports = multer({
-    limits: { fieldSize: 50 * 1024 * 1024 },
-    storage: multer.diskStorage({}),
+    limits: { fieldSize: 50 * 1024 * 1024 }, 
+    storage: multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, os.tmpdir()); // Use system's temp directory
+        },
+        filename: (req, file, cb) => {
+            cb(null, Date.now() + '-' + file.originalname); // Unique filename
+        },
+    }),
     fileFilter: (req, file, cb) => {
-        let ext = path.extname(file.originalname).toLowerCase();
-        if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png") {
+        const ext = path.extname(file.originalname).toLowerCase();
+        if (![".jpg", ".jpeg", ".png", ".pdf", ".mp4", ".mov"].includes(ext)) {
             cb(new Error("Unsupported file type!"), false);
-            return;
+        } else {
+            cb(null, true);
         }
-        cb(null, true);
     },
 });
+
+

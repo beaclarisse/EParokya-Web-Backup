@@ -12,6 +12,9 @@ import Register from './Components/User/Register'
 import Profile from './Components/User/Profile';
 import UserCalendar from './Components/User/UserCalendar';
 
+import BaptismForm from './Components/User/Forms/PrivateForms/Baptism/BaptismForm';
+
+
 import ProtectedRoute from './Components/Route/protectedRoute';
 
 //Dashboard
@@ -65,6 +68,9 @@ function App() {
         <Route path="/register" element={<Register />} exact="true" />
         <Route path="/profile" element={<Profile />} exact="true" />
         <Route path="/user/calendar" element={<UserCalendar />} exact="true" />
+
+        <Route path="/user/baptismForm" element={<BaptismForm />} exact="true" />
+
 
         {/* Admin 
         need mo itago yung dashboard from the user*/}

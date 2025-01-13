@@ -671,7 +671,7 @@ ul li p {
   background-color: #c7ddb5;
   padding: 30px; 
   border-radius: 15px;
-  height: 50vh;
+  height: 55vh;
   margin-top: 150px;
 }
 
@@ -684,8 +684,8 @@ ul li p {
 }
 
 .profile-details p {
-  font-size: 20px; /* Increased font size for readability */
-  margin-bottom: 15px; /* More spacing between details */
+  font-size: 20px; 
+  margin-bottom: 15px; 
 }
 
 .profile-details p strong {

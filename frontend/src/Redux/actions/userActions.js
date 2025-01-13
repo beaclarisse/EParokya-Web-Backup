@@ -76,7 +76,13 @@ export const login = (email, password) => async (dispatch) => {
         }
 
         const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/login`, { email, password }, config)
-       console.log(data.user)
+        console.log('Login response:', data); 
+        console.log('Login response:', data); 
+        console.log('User:', data.user);
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
         dispatch({
             type: LOGIN_SUCCESS,
             payload: data.user

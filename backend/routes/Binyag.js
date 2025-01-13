@@ -2,13 +2,28 @@ const express = require('express');
 const router = express.Router();
 const BaptismController = require('../controllers/Baptism/BinyagController');
 const { isAuthenticatedUser, authorizeAdmin } = require('../middleware/auth');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
-router.get('/list', BaptismController.listBaptismForms);
-router.post('/create', isAuthenticatedUser, BaptismController.submitBaptismForm);
+router.get('/baptismList', BaptismController.listBaptismForms);
+
+router.post(
+  '/baptismCreate',
+  upload.fields([
+    { name: 'birthCertificate', maxCount: 1 },
+    { name: 'marriageCertificate', maxCount: 1 },
+    { name: 'baptismPermit', maxCount: 1 },
+  ]),
+  isAuthenticatedUser, BaptismController.submitBaptismForm
+);
+
+  
+
+
 router.get('/mySubmittedForms', isAuthenticatedUser, BaptismController.getMySubmittedForms);
 router.get('/confirmedBaptism', BaptismController.getConfirmedBaptisms);
 
-router.get('/stats/baptsimsPerMonth',  BaptismController.getBaptismPerMonth);
+router.get('/stats/baptsimsPerMonth', BaptismController.getBaptismPerMonth);
 router.get('/stats/baptismStatusCount', isAuthenticatedUser, BaptismController.getBaptismStatusCounts);
 
 router.post('/decline/:baptismId', BaptismController.declineBaptism);

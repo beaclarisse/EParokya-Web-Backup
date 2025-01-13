@@ -1,18 +1,31 @@
 const User = require('../models/user')
 const jwt = require("jsonwebtoken")
 
+// exports.isAuthenticatedUser = (req, res, next) => {
+//     const token = req.headers.authorization && req.headers.authorization.split(' ')[1]; 
+
+//     if (!token) {
+//         return res.status(401).json({ message: 'No token, authorization denied' });
+//     }
+
+//     try {
+//         const decoded = jwt.verify(token, process.env.JWT_SECRET); 
+//         req.user = decoded; 
+//         next();
+//     } catch (error) {
+//         res.status(401).json({ message: 'Invalid or expired token' });
+//     }
+// };
+
 exports.isAuthenticatedUser = async (req, res, next) => {
-
     let token = ''
-
     if (req.cookies) {
         token = req.cookies.token
     }
-
     if (req.headers.authorization) {
-        token = req.headers.authorization.split('')[1];
+        token = req.headers.authorization.split(' ')[1];
     }
-    console.log(token)
+    console.log('Extracted token:', token);
 
     // const jwtString = token.split(' ')[1]
     //  console.log("token", jwtString)
@@ -21,10 +34,18 @@ exports.isAuthenticatedUser = async (req, res, next) => {
         return res.status(401).json({ message: 'Login first to access this resource' })
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    req.user = await User.findById(decoded.id);
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify token
+        req.user = await User.findById(decoded.id); // Find user by ID from token
+        next();
+    } catch (error) {
+        console.error('JWT verification error:', error);
+        return res.status(401).json({ message: 'Invalid or expired token' });
+    }
 
-    next()
+    // const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    // req.user = await User.findById(decoded.id);
+    // next()
 
 };
 

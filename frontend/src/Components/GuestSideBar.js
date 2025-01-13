@@ -115,10 +115,10 @@ const GuestSideBar = () => {
 
         <li style={styles.menuItem}>
           <Link
-            to="/user/forms"
+            to="/user/baptismForm"
             style={{
               ...styles.link,
-              ...(location.pathname === "/user/forms" ? styles.activeLink : {}),
+              ...(location.pathname === "/user/baptismForm" ? styles.activeLink : {}),
             }}
           >
             <FaWpforms style={styles.icon} /> Forms
