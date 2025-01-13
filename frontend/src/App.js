@@ -78,7 +78,7 @@ function App() {
 
         {/* Admin 
         need mo itago yung dashboard from the user*/}
-        <Route path="/dashboard" element={<ProtectedRoute isAdmin={true}> <Dashboard /></ProtectedRoute>} />
+        <Route path="/admin/dashboard" element={<ProtectedRoute isAdmin={true}> <Dashboard /></ProtectedRoute>} />
         <Route path="/admin/users" element={<ProtectedRoute isAdmin={true}><UsersList /></ProtectedRoute>} />
         <Route path="/admin/user/:id" element={<ProtectedRoute isAdmin={true}><UpdateUser /></ProtectedRoute>} />
 

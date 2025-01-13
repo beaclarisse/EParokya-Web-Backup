@@ -212,34 +212,34 @@ exports.getSingleEventPost = async (req, res) => {
 };
 
 // Get paginated events
-exports.getEvents = async (req, res) => {
-    try {
-        const resPerPage = 4;
-        const page = Number(req.query.page) || 1;
-        const eventsCount = await Event.countDocuments();
+// exports.getEvents = async (req, res) => {
+//     try {
+//         const resPerPage = 4;
+//         const page = Number(req.query.page) || 1;
+//         const eventsCount = await Event.countDocuments();
 
-        const events = await Event.find()
-            .skip(resPerPage * (page - 1))
-            .limit(resPerPage);
+//         const events = await Event.find()
+//             .skip(resPerPage * (page - 1))
+//             .limit(resPerPage);
 
-        res.status(200).json({
-            success: true,
-            count: events.length,
-            eventsCount,
-            events,
-            resPerPage,
-            currentPage: page,
-            totalPages: Math.ceil(eventsCount / resPerPage)
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to retrieve events',
-            error: error.message,
-        });
-    }
-};
+//         res.status(200).json({
+//             success: true,
+//             count: events.length,
+//             eventsCount,
+//             events,
+//             resPerPage,
+//             currentPage: page,
+//             totalPages: Math.ceil(eventsCount / resPerPage)
+//         });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({
+//             success: false,
+//             message: 'Failed to retrieve events',
+//             error: error.message,
+//         });
+//     }
+// };
 
 exports.addCommentToEvent = async (req, res) => {
     try {

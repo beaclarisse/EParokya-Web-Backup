@@ -12,5 +12,5 @@ router.delete('/admin/eventpost/:id', isAuthenticatedUser,authorizeAdmin("admin"
 router.put('/admin/eventpost/:id', isAuthenticatedUser,authorizeAdmin("admin"), upload.array('images'), Event.updateEventPost)
 
 //guest
-router.get('/eventpost', Event.getEvents);
+// router.get('/eventpost', Event.getEvents);
 module.exports = router;
