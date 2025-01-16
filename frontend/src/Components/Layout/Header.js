@@ -38,7 +38,7 @@ const Header = () => {
               Profile
             </NavDropdown.Item>
             {user?.isAdmin && (
-              <NavDropdown.Item as={Link} to="/dashboard" style={styles.dropdownItem}>
+              <NavDropdown.Item as={Link} to="/admin/dashboard" style={styles.dropdownItem}>
                 Dashboard
               </NavDropdown.Item>
             )}

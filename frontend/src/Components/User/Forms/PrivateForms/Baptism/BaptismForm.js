@@ -125,10 +125,10 @@ const BaptismForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
             const formDataObj = new FormData();
-
+    
             if (formData.Docs.birthCertificate[0]) {
                 formDataObj.append('birthCertificate', formData.Docs.birthCertificate[0]);
             }
@@ -138,36 +138,34 @@ const BaptismForm = () => {
             if (formData.Docs.baptismPermit[0]) {
                 formDataObj.append('baptismPermit', formData.Docs.baptismPermit[0]);
             }
-
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
+    
+            for (let key in formData) {
+                if (formData.hasOwnProperty(key)) {
+                    const value = formData[key];
+                    if (typeof value === 'object' && !Array.isArray(value)) {
+                        formDataObj.append(key, JSON.stringify(value));
+                    } else {
+                        formDataObj.append(key, value);
+                    }
+                }
             }
-
-            formDataObj.append('baptismDate', formData.baptismDate);
-            formDataObj.append('baptismTime', formData.baptismTime);
-            formDataObj.append('child', JSON.stringify(formData.child));
-            formDataObj.append('parents', JSON.stringify(formData.parents));
-            formDataObj.append('ninong', JSON.stringify(formData.ninong));
-            formDataObj.append('ninang', JSON.stringify(formData.ninang));
-            formDataObj.append('NinongGodparents', JSON.stringify(NinongGodparents));
-            formDataObj.append('NinangGodparents', JSON.stringify(NinangGodparents));
-
+    
             const config = {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
             };
-
+    
             const response = await axios.post(
                 `${process.env.REACT_APP_API}/api/v1/baptismCreate`,
                 formDataObj,
                 config
             );
-
+    
             toast.success('Form submitted successfully!');
             console.log('Response:', response.data);
-
+    
             setFormData({
                 baptismDate: '',
                 baptismTime: '',
@@ -183,12 +181,13 @@ const BaptismForm = () => {
                     baptismPermit: [],
                 },
             });
-
+    
         } catch (error) {
             console.error('Error submitting form:', error.response ? error.response.data : error.message);
             toast.error('Failed to submit form. Please try again.');
         }
     };
+    
 
 
 
@@ -522,6 +521,7 @@ const BaptismForm = () => {
                         <Button type="submit" className="mt-4">
                             Submit
                         </Button>
+                       
                     </Form>
 
                     {/* Preview Modal */}

@@ -62,7 +62,7 @@ const FuneralList = () => {
 
     useEffect(() => {
         fetchFunerals();
-    }, []); // Dependency array is empty, you may want to trigger refetch on activeFilter or searchQuery change later
+    }, []);
 
     return (
         <div style={{ display: "flex", height: "100vh" }}>
@@ -100,16 +100,22 @@ const FuneralList = () => {
                     <div className="funeral-list">
                         {filteredFuneralList.map((item) => (
                             <div
-                                key={item._id} // Use unique identifier instead of index
+                                key={item._id}
                                 className={`funeral-card ${item.funeralStatus?.toLowerCase() || ""}`}
-                                onClick={() => handleCardClick(item._id)} // Handle card click for detailed view
+                                onClick={() => handleCardClick(item._id)}
                             >
                                 <div className="status-badge">{item.funeralStatus || "Unknown"}</div>
                                 <h3 className="card-title">Record #{filteredFuneralList.indexOf(item) + 1}</h3>
                                 <div className="card-details">
-                                    <p><strong>Name:</strong> {`${item?.name?.firstName || ""} ${item?.name?.middleName || ""} ${item?.name?.lastName || ""} ${item?.name?.suffix || ""}`}</p>
-                                    <p><strong>Gender:</strong> {item.gender || "N/A"}</p>
+                                    <p><strong>Name:</strong> {item?.name || "N/A"}</p>
                                     <p><strong>Age:</strong> {item.age || "N/A"}</p>
+                                    <p><strong>Date of Death:</strong> {item.dateOfDeath ? new Date(item.dateOfDeath).toLocaleDateString() : "N/A"}</p>
+                                    <p><strong>Person Status:</strong> {item.personStatus || "N/A"}</p>
+                                    <p><strong>Contact Person:</strong> {item.contactPerson || "N/A"}</p>
+                                    <p><strong>Relationship:</strong> {item.relationship || "N/A"}</p>
+                                    <p><strong>Phone:</strong> {item.phone || "N/A"}</p>
+                                    <p><strong>Address:</strong> {item.address ? `${item.address.state}, ${item.address.zip}, ${item.address.country}` : "N/A"}</p>
+                                    <p><strong>Reason of Death:</strong> {item.reasonOfDeath || "N/A"}</p>
                                     <p><strong>Funeral Date:</strong> {item.funeralDate ? new Date(item.funeralDate).toLocaleDateString() : "N/A"}</p>
                                     <p><strong>Service Type:</strong> {item.serviceType || "N/A"}</p>
                                     <p><strong>Submitted By:</strong></p>

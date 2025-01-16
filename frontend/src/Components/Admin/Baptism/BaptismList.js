@@ -16,7 +16,7 @@ const BaptismList = () => {
   const fetchBaptismForms = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/list`);
+      const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/baptismList`);
       const forms = response.data.baptismForms || [];
       setBaptismForms(forms);
       setFilteredForms(forms);

@@ -721,3 +721,24 @@ ul li p {
   margin-right: 10px;
   font-weight: bold;
 }
+
+/* funeral modal */
+.death-certificate-thumbnail {
+  width: 100px;
+  height: auto;
+  cursor: pointer;
+}
+
+.modal-content {
+  text-align: center;
+}
+
+.close-modal-button {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+

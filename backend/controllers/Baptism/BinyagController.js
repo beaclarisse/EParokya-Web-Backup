@@ -46,16 +46,20 @@ exports.submitBaptismForm = async (req, res) => {
       return res.status(400).json({ success: false, message: error.message });
     }
 
+    // Extract userId from req (assumes authentication middleware adds user info to req)
+    const userId = req.user._id;
+
     const baptism = new Baptism({
       baptismDate,
       baptismTime,
-      child: JSON.parse(child),
-      parents: JSON.parse(parents),
-      ninong: JSON.parse(ninong),
-      ninang: JSON.parse(ninang),
-      NinongGodparents: JSON.parse(NinongGodparents),
-      NinangGodparents: JSON.parse(NinangGodparents),
+      child: child ? JSON.parse(child) : null,
+      parents: parents ? JSON.parse(parents) : null,
+      ninong: ninong ? JSON.parse(ninong) : [],
+      ninang: ninang ? JSON.parse(ninang) : [],
+      NinongGodparents: NinongGodparents ? JSON.parse(NinongGodparents) : [],
+      NinangGodparents: NinangGodparents ? JSON.parse(NinangGodparents) : [],
       Docs,
+      userId, // Associate the baptism record with the user
     });
 
     const savedBaptism = await baptism.save();
@@ -68,12 +72,11 @@ exports.submitBaptismForm = async (req, res) => {
 };
 
 
-
-
-
 exports.listBaptismForms = async (req, res) => {
   try {
-    const baptismForms = await Baptism.find().sort({ createdAt: -1 }); // Sorting by newest first
+    const baptismForms = await Baptism.find()
+      .sort({ createdAt: -1 })
+      .populate('userId', 'id name'); 
 
     if (baptismForms.length === 0) {
       return res.status(404).json({ message: "No baptism forms found." });

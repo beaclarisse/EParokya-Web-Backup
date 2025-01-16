@@ -51,7 +51,7 @@ const Calendars = () => {
         })),
         ...funeralEvents.data.map((event) => ({
           id: `funeral-${event._id}`,
-          title: `Funeral for ${event.name.firstName || ""} ${event.name.lastName || ""}`,
+          title: `Funeral for ${event.name || ""} `,
           start: new Date(event.funeralDate),
           end: new Date(event.funeralDate),
           type: 'Funeral',

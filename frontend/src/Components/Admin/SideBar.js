@@ -13,7 +13,7 @@ const SideBar = () => {
         </Card.Title>
         <Nav className="flex-column">
           <Nav.Item>
-            <Link to="/dashboard" className="sidebar-link" style={styles.sidebarLink}>
+            <Link to="/admin/dashboard" className="sidebar-link" style={styles.sidebarLink}>
               Dashboard
             </Link>
           </Nav.Item>
