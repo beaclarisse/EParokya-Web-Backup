@@ -94,40 +94,76 @@ const jwt = require("jsonwebtoken")
 
 //try
 
+// exports.isAuthenticatedUser = async (req, res, next) => {
+//     try {
+//         let token = '';
+
+//         // Extract token from cookies
+//         if (req.cookies && req.cookies.token) {
+//             token = req.cookies.token;
+//         }
+
+//         // Extract token from Authorization header
+//         if (req.headers.authorization) {
+//             const authHeader = req.headers.authorization;
+//             if (authHeader.startsWith("Bearer ")) {
+//                 token = authHeader.split(' ')[1]; 
+//             }
+//         }
+
+//         console.log('Extracted Token:', token); 
+
+//         if (!token) {
+//             return res.status(401).json({ message: 'Login first to access this resource' });
+//         }
+
+//         const decoded = jwt.verify(token, process.env.JWT_SECRET); // This will throw an error if the token is malformed
+//         req.user = await User.findById(decoded.id); // Get user from DB
+
+//         console.log('Authenticated User:', req.user); // Log the authenticated user
+
+//         next(); // Proceed to next middleware
+//     } catch (error) {
+//         console.error("JWT Verification Error:", error); // Log any errors
+//         res.status(401).json({ message: 'Token is invalid or expired' });
+//     }
+// };
+
+//for guestSidebar tetsing
+
 exports.isAuthenticatedUser = async (req, res, next) => {
     try {
         let token = '';
 
-        // Extract token from cookies
         if (req.cookies && req.cookies.token) {
             token = req.cookies.token;
         }
 
-        // Extract token from Authorization header
         if (req.headers.authorization) {
             const authHeader = req.headers.authorization;
             if (authHeader.startsWith("Bearer ")) {
-                token = authHeader.split(' ')[1]; // Extract token after "Bearer"
+                token = authHeader.split(' ')[1];
             }
         }
 
-        console.log('Extracted Token:', token); // Log the extracted token for debugging
+        console.log('Extracted Token:', token);
 
         if (!token) {
             return res.status(401).json({ message: 'Login first to access this resource' });
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); // This will throw an error if the token is malformed
-        req.user = await User.findById(decoded.id); // Get user from DB
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); 
+        req.user = await User.findById(decoded.id); 
 
-        console.log('Authenticated User:', req.user); // Log the authenticated user
+        console.log('Authenticated User:', req.user); 
 
         next(); // Proceed to next middleware
     } catch (error) {
-        console.error("JWT Verification Error:", error); // Log any errors
+        console.error("JWT Verification Error:", error);
         res.status(401).json({ message: 'Token is invalid or expired' });
     }
 };
+
 
 
 exports.authorizeAdmin = () => {

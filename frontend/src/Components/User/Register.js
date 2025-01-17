@@ -30,7 +30,7 @@ const Register = () => {
             navigate('/');
         }
         if (error) {
-            console.log(error);
+            alert(error);
             dispatch(clearErrors());
         }
     }, [error, isAuthenticated, navigate, dispatch]);
@@ -54,21 +54,40 @@ const Register = () => {
         dispatch(register(formData));
     };
 
-    const onChange = e => {
+    // const onChange = e => {
+    //     if (e.target.name === 'avatar') {
+    //         const reader = new FileReader();
+    //         reader.onload = () => {
+    //             if (reader.readyState === 2) {
+    //                 setAvatarPreview(reader.result);
+    //                 setAvatar(reader.result);
+    //             }
+    //         };
+    //         reader.readAsDataURL(e.target.files[0]);
+    //     } else {
+    //         setUser({ ...user, [e.target.name]: e.target.value });
+    //     }
+    // };
+
+
+    const onChange = (e) => {
         if (e.target.name === 'avatar') {
+            const file = e.target.files[0];
+            setAvatar(file);
+    
             const reader = new FileReader();
             reader.onload = () => {
                 if (reader.readyState === 2) {
                     setAvatarPreview(reader.result);
-                    setAvatar(reader.result);
                 }
             };
-            reader.readAsDataURL(e.target.files[0]);
+            reader.readAsDataURL(file);
         } else {
             setUser({ ...user, [e.target.name]: e.target.value });
         }
     };
 
+    
     return (
         <Fragment>
             <Metadata title={'Register User'} />
@@ -88,6 +107,7 @@ const Register = () => {
                                 value={name}
                                 onChange={onChange}
                                 required
+                                aria-label="Pangalan"
                             />
                         </div>
 
@@ -102,6 +122,7 @@ const Register = () => {
                                 value={email}
                                 onChange={onChange}
                                 required
+                                aria-label="Email"
                             />
                         </div>
 
@@ -116,6 +137,7 @@ const Register = () => {
                                 value={password}
                                 onChange={onChange}
                                 required
+                                aria-label="Password"
                             />
                         </div>
 
@@ -129,6 +151,7 @@ const Register = () => {
                                 name='age'
                                 value={age}
                                 onChange={onChange}
+                                aria-label="Edad"
                             />
                         </div>
 
@@ -141,6 +164,7 @@ const Register = () => {
                                 name='preference'
                                 value={preference}
                                 onChange={onChange}
+                                aria-label="Preference"
                             >
                                 <option value="">Select Preference</option>
                                 <option value="He">He</option>
@@ -151,7 +175,7 @@ const Register = () => {
 
                         {/* Phone */}
                         <div className="form-group mb-3">
-                            <label htmlFor="phone_field">Phone</label>
+                            <label htmlFor="phone_field">Phone Number</label>
                             <input
                                 type="text"
                                 id="phone_field"
@@ -159,12 +183,13 @@ const Register = () => {
                                 name='phone'
                                 value={phone}
                                 onChange={onChange}
+                                aria-label="Phone Number"
                             />
                         </div>
 
                         {/* Barangay */}
                         <div className="form-group mb-3">
-                            <label htmlFor="barangay_field">Barangay</label>
+                            <label htmlFor="barangay_field">Baranggay</label>
                             <input
                                 type="text"
                                 id="barangay_field"
@@ -172,6 +197,7 @@ const Register = () => {
                                 name='barangay'
                                 value={barangay}
                                 onChange={onChange}
+                                aria-label="Baranggay"
                             />
                         </div>
 
@@ -185,6 +211,7 @@ const Register = () => {
                                 name='zip'
                                 value={zip}
                                 onChange={onChange}
+                                aria-label="Zip"
                             />
                         </div>
 
@@ -198,6 +225,7 @@ const Register = () => {
                                 name='city'
                                 value={city}
                                 onChange={onChange}
+                                aria-label="City"
                             />
                         </div>
 
@@ -211,6 +239,7 @@ const Register = () => {
                                 name='country'
                                 value={country}
                                 onChange={onChange}
+                                aria-label="Country"
                             />
                         </div>
 
@@ -223,8 +252,12 @@ const Register = () => {
                                         src={avatarPreview}
                                         className='rounded-circle'
                                         alt='Avatar Preview'
-                                        width="80"
-                                        height="80"
+                                        style={{
+                                            objectFit: 'cover',
+                                            width: '80px',
+                                            height: '80px',
+                                            borderRadius: '50%',
+                                        }}
                                     />
                                 </figure>
                                 <div className='custom-file'>
@@ -242,6 +275,7 @@ const Register = () => {
                                 </div>
                             </div>
                         </div>
+
 
                         <button
                             id="register_button"

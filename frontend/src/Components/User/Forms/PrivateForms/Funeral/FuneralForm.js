@@ -33,10 +33,32 @@ const FuneralForm = () => {
         deathCertificate: [],
     });
 
+    // useEffect(() => {
+    //     const fetchUser = async () => {
+    //         try {
+    //             const token = localStorage.getItem('token');
+    //             if (!token) {
+    //                 console.error('No token found. User is not authenticated.');
+    //                 return;
+    //             }
+    //             const config = {
+    //                 headers: { Authorization: `Bearer ${token}` },
+    //                 withCredentials: true,
+    //             };
+    //             const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/profile`, config);
+    //             setUserId(response.data.user._id);
+    //         } catch (error) {
+    //             console.error('Error fetching user:', error.response ? error.response.data : error.message);
+    //         }
+    //     };
+    //     fetchUser();
+    // }, []);
+
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = sessionStorage.getItem('token');  
                 if (!token) {
                     console.error('No token found. User is not authenticated.');
                     return;
@@ -53,7 +75,7 @@ const FuneralForm = () => {
         };
         fetchUser();
     }, []);
-
+    
     const handleChange = (e, fieldPath) => {
         const keys = fieldPath.split('.');
         setFormData((prev) => {
@@ -115,8 +137,9 @@ const FuneralForm = () => {
             const config = {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: `Bearer ${sessionStorage.getItem('token')}`,  
                 },
+                
             };
 
             const response = await axios.post(

@@ -44,18 +44,14 @@ const BaptismForm = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const token = localStorage.getItem('token'); // Access token from localStorage
-                console.log('Fetched token:', token);
-
+                const token = sessionStorage.getItem('token');  
                 if (!token) {
                     console.error('No token found. User is not authenticated.');
                     return;
                 }
 
                 const config = {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true,
                 };
 
@@ -153,7 +149,7 @@ const BaptismForm = () => {
             const config = {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: `Bearer ${sessionStorage.getItem('token')}`,
                 },
             };
     

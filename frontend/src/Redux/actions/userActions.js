@@ -43,6 +43,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getToken, } from '../../Utils/helpers'
 import { authenticate } from '../../Utils/helpers'
 import {  useNavigate, } from 'react-router-dom'
+
 export const register = (userData) => async (dispatch) => {
     try {
         dispatch({ type: REGISTER_USER_REQUEST })
@@ -82,6 +83,10 @@ export const login = (email, password) => async (dispatch) => {
 
         // localStorage.setItem('token', data.token);
         // localStorage.setItem('user', JSON.stringify(data.user));
+
+        sessionStorage.setItem('token', data.token);
+        sessionStorage.setItem('user', JSON.stringify(data.user));
+
         
         dispatch({
             type: LOGIN_SUCCESS,

@@ -10,28 +10,71 @@ const GuestSideBar = () => {
 
   const location = useLocation();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch(`${process.env.REACT_APP_API}/api/v1/profile`, {
-          credentials: 'include',
-        });
-        if (response.ok) {
-          const data = await response.json();
-          const userData = data.user;
-          setUser({
-            name: userData.name || 'Guest',
-            avatar: userData.avatar.url || 'default-profile-icon.png',
-          });
+  // useEffect(() => {
+  //   const fetchUserData = async (token) => {
+  //     try {
+  //       const response = await fetch(`${process.env.REACT_APP_API}/api/v1/profile`, {
+  //         method: 'GET',
+  //         headers: {
+  //           'Authorization': `Bearer ${token}`
+  //         },
+  //         credentials: 'include', // Include cookies if necessary
+  //       });
+    
+  //       if (!response.ok) {
+  //         throw new Error('Failed to fetch user data');
+  //       }
+    
+  //       const data = await response.json();
+  //       const userData = data.user;
+  //       setUser({
+  //         name: userData.name || 'Guest',
+  //         avatar: userData.avatar.url || 'default-profile-icon.png',
+  //       });
+  //     } catch (error) {
+  //       console.log("Token in localStorage:", localStorage.getItem('token'));
+  //       console.error('Failed to fetch user data:', error.message);
+  //     }
+  //   };
+  //       fetchUserData();
+  // }, []);
+
+  const fetchUserData = async () => {
+    try {
+        const token = sessionStorage.getItem('token'); // Fetch the token from sessionStorage
+        if (!token) {
+            console.error('Token not found');
+            return;
         }
-      } catch (error) {
+
+        const response = await fetch(`${process.env.REACT_APP_API}/api/v1/profile`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            credentials: 'include',
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const userData = data.user;
+            setUser({
+                name: userData.name || 'Guest',
+                avatar: userData.avatar.url || 'default-profile-icon.png',
+            });
+        } else {
+            console.error("Failed to fetch user data:", response.status);
+        }
+    } catch (error) {
         console.error('Failed to fetch user data:', error);
-      }
-    };
+    }
+};
 
+
+  useEffect(() => {
     fetchUserData();
-  }, []);
-
+  }, []);  
+  
   return (
     <div style={styles.sidebarContainer}>
       <div style={styles.profileContainer}>
