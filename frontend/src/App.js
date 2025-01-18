@@ -40,6 +40,9 @@ import EventPost from './Components/Admin/EventPost/EventPostCreate';
 import EventPostLists from './Components/Admin/EventPost/EventPostList';
 import EventPostUpdate from './Components/Admin/EventPost/UpdateEventPost';
 
+import AnnouncementCategory from './Components/Admin/Announcement/CreateAnnouncementCategory';
+
+
 import WeddingList from './Components/Admin/Wedding/WeddingList';
 import WeddingDetails from './Components/Admin/Wedding/WeddingDetails';
 
@@ -86,6 +89,10 @@ function App() {
         <Route path="/admin/calendar" element={<ProtectedRoute isAdmin={true}><Calendar /></ProtectedRoute>} />
         {/* ministry */}
         <Route path="/admin/ministryCategory/create" element={<ProtectedRoute isAdmin={true}><MinistryCategory /></ProtectedRoute>} />
+
+
+        {/* announcement - update */}
+        <Route path="/admin/announcementCategory/create" element={<ProtectedRoute isAdmin={true}><AnnouncementCategory /></ProtectedRoute>} />
 
         {/* Post */}
         <Route path="/admin/post/create" element={<ProtectedRoute isAdmin={true}><CreatePost /></ProtectedRoute>} />

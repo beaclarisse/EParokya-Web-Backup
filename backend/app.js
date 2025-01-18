@@ -12,6 +12,7 @@ const adminDate = require('./routes/adminDate')
 const customEvent = require('./routes/customEvent')
 
 const ministryCategory = require('./routes/ministryCategory')
+const announcementCategory = require('./routes/Announcement/announcementCategory')
 
 const post = require('./routes/post')
 const evenpost = require('./routes/EventPost')
@@ -35,6 +36,7 @@ app.use('/api/v1', funeral);
 app.use('/api/v1', adminDate);
 app.use('/api/v1', customEvent);
 app.use('/api/v1', ministryCategory);
+app.use('/api/v1', announcementCategory);
 
 
 module.exports = app

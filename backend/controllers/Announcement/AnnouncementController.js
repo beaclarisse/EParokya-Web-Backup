@@ -1,6 +1,6 @@
 const cloudinary = require('cloudinary');
-const announcement = require('../models/Announcement/announcement');
-const { Comment, Reply } = require('../models/Announcement/announcement');
+const announcement = require('../../models/Announcement/announcement');
+const { Comment, Reply } = require('../../models/Announcement/announcement');
 const multer = require('multer');
 const mongoose = require('mongoose');
 

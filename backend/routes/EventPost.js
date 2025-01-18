@@ -1,5 +1,5 @@
 const express = require('express');
-const Event = require('../controllers/EventPostController');
+const Event = require('../controllers/Announcement/AnnouncementController');
 const upload = require('../utils/multer')
 
 const router = express.Router();

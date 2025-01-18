@@ -101,22 +101,22 @@ const BaptismList = () => {
                 <h3 className="card-title">Record #{index + 1}</h3>
                 <div className="card-details">
                   <p>
-                    <strong>Child Name:</strong> {item.child?.fullName || "N/A"}
+                    <strong>Bibinyagan:</strong> {item.child?.fullName || "N/A"}
                   </p>
                   <p>
-                    <strong>Father's Name:</strong> {item.parents?.fatherFullName || "N/A"}
+                    <strong>Pangalan ng Ama:</strong> {item.parents?.fatherFullName || "N/A"}
                   </p>
                   <p>
-                    <strong>Mother's Name:</strong> {item.parents?.motherFullName || "N/A"}
+                    <strong>Panagalan ng Ina:</strong> {item.parents?.motherFullName || "N/A"}
                   </p>
                   <p>
-                    <strong>Address:</strong> {item.parents?.address || "N/A"}
+                    <strong>Tirahan:</strong> {item.parents?.address || "N/A"}
                   </p>
                   <p>
                     <strong>Contact Info:</strong> {item.parents?.contactInfo || "N/A"}
                   </p>
                   <p>
-                    <strong>Baptism Date:</strong>{" "}
+                    <strong>Araw ng Binyag:</strong>{" "}
                     {item.baptismDate
                       ? new Date(item.baptismDate).toLocaleDateString()
                       : "N/A"}

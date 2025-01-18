@@ -90,7 +90,7 @@ const SideBar = () => {
                   </Link>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <Link to="/admin/funeralList" className="sidebar-link" style={styles.sidebarLink}>
+                  <Link to="/admin/announcementCategory/create" className="sidebar-link" style={styles.sidebarLink}>
                     Announcement Category
                   </Link>
                 </Dropdown.Item>
