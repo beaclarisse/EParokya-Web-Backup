@@ -1,37 +1,19 @@
-const cloudinary = require('cloudinary');
-const announcement = require('../../models/Announcement/announcement');
-const { Comment, Reply } = require('../../models/Announcement/announcement');
 const multer = require('multer');
 const mongoose = require('mongoose');
+const cloudinary = require('cloudinary').v2;  
+const { Announcement, Comment, Reply } = require('../../models/Announcement/announcement');
 
 // Create a new event post
-exports.createEventPost = async (req, res) => {
+exports.createAnnouncement = async (req, res) => {
     try {
-        let images = [];
-
-        if (req.files) {
-            req.files.forEach(file => {
-                images.push(file.path);
-            });
-        }
-
-        if (req.file) {
-            images.push(req.file.path);
-        }
-
-        if (req.body.images) {
-            if (typeof req.body.images === 'string') {
-                images.push(req.body.images);
-            } else {
-                images = images.concat(req.body.images);
-            }
-        }
-
         let imagesLinks = [];
-        for (let imagePath of images) {
-            try {
-                const result = await cloudinary.uploader.upload(imagePath, {
-                    folder: 'eparokya/event',
+        let videoLink = '';
+
+        // Handle image upload (multiple images or single image)
+        if (req.files && req.files.images) {
+            for (let file of req.files.images) {
+                const result = await cloudinary.uploader.upload(file.path, {
+                    folder: "eparokya/announcement",
                     width: 150,
                     crop: "scale",
                 });
@@ -39,119 +21,132 @@ exports.createEventPost = async (req, res) => {
                     public_id: result.public_id,
                     url: result.secure_url,
                 });
-            } catch (error) {
-                console.error("Cloudinary upload error:", error);
             }
         }
 
-        const { name, description, categories } = req.body;
-        const event = new Event({
+        // Handle video upload (if any)
+        if (req.files && req.files.video) {
+            if (Array.isArray(req.files.video) && req.files.video.length > 0) {
+                const result = await cloudinary.uploader.upload(req.files.video[0].path, {
+                    folder: "eparokya/announcement",
+                    resource_type: "video", // Video upload
+                });
+                videoLink = result.secure_url;
+            } else if (req.files.video) {
+                const result = await cloudinary.uploader.upload(req.files.video.path, {
+                    folder: "eparokya/announcement",
+                    resource_type: "video",
+                });
+                videoLink = result.secure_url;
+            }
+        }
+
+        // Prepare the announcement object
+        const { name, description, richDescription, tags, announcementCategory } = req.body;
+        
+        const newAnnouncement = new Announcement({
             name,
             description,
-            images: imagesLinks,
+            richDescription,
+            tags,
+            announcementCategory,
+            images: imagesLinks, // Store array of images
+            videos: videoLink ? [videoLink] : [], // Store video if present
+            image: imagesLinks.length > 0 ? imagesLinks[0].url : "", // Default to the first image if available
         });
 
-        const savedEvent = await event.save();
-        res.status(201).json({ success: true, event: savedEvent });
+        const savedAnnouncement = await newAnnouncement.save();
+        res.status(201).json({ success: true, announcement: savedAnnouncement });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Error creating event post', error: error.message });
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Error creating announcement', error: error.message });
     }
 };
 
-exports.getAllEventPosts = async (req, res) => {
+
+
+// Get all announcements
+exports.getAllAnnouncements = async (req, res) => {
     try {
-        const events = await Event.find();
+        const announcements = await Announcement.find();
         res.status(200).json({
             success: true,
-            count: events.length,
-            events,
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Failed to retrieve Event posts',
-            error: error.message,
-        });
-    }
-};
-
-exports.deleteEventPost = async (req, res) => {
-    try {
-        const events = await Event.findById(req.params.id);
-        if (!events) {
-            return res.status(404).json({
-                success: false,
-                message: 'Event Post not found'
-            });
-        }
-
-        if (events.images && events.images.length > 0) {
-            for (const image of events.images) {
-                await cloudinary.uploader.destroy(image.public_id);
-            }
-        }
-
-        await Event.findByIdAndDelete(req.params.id);
-
-        res.status(200).json({
-            success: true,
-            message: 'Event Post and images deleted successfully'
+            count: announcements.length,
+            announcements,
         });
     } catch (error) {
         console.error(error);
         res.status(500).json({
             success: false,
-            message: 'Server Error'
+            message: 'Failed to retrieve announcements',
+            error: error.message,
         });
     }
 };
 
-exports.updateEventPost = async (req, res) => {
+// Delete announcement
+exports.deleteAnnouncement = async (req, res) => {
     try {
-        const eventId = req.params.id;
-
-        const event = await Event.findById(eventId);
-        if (!event) {
+        const announcement = await Announcement.findById(req.params.id);
+        if (!announcement) {
             return res.status(404).json({
                 success: false,
-                message: 'Event Post not found'
+                message: 'Announcement not found',
+            });
+        }
+
+        // Delete images from Cloudinary
+        if (announcement.images && announcement.images.length > 0) {
+            for (const image of announcement.images) {
+                await cloudinary.uploader.destroy(image.public_id);
+            }
+        }
+
+        await Announcement.findByIdAndDelete(req.params.id);
+
+        res.status(200).json({
+            success: true,
+            message: 'Announcement and images deleted successfully',
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'Server Error',
+        });
+    }
+};
+
+// Update announcement
+exports.updateAnnouncement = async (req, res) => {
+    try {
+        const announcementId = req.params.id;
+
+        const announcement = await Announcement.findById(announcementId);
+        if (!announcement) {
+            return res.status(404).json({
+                success: false,
+                message: 'Announcement not found',
             });
         }
 
         let imagesLinks = [];
 
+        // Handling image update
         if (req.files || req.file || req.body.images) {
 
-            if (event.images && event.images.length > 0) {
-                for (const image of event.images) {
+            // Delete existing images from Cloudinary
+            if (announcement.images && announcement.images.length > 0) {
+                for (const image of announcement.images) {
                     await cloudinary.uploader.destroy(image.public_id);
                 }
             }
 
-            let newImages = [];
-
+            // Process new images
             if (req.files) {
-                req.files.forEach(file => {
-                    newImages.push(file.path);
-                });
-            }
-
-            if (req.file) {
-                newImages.push(req.file.path);
-            }
-
-            if (req.body.images) {
-                if (typeof req.body.images === 'string') {
-                    newImages.push(req.body.images);
-                } else {
-                    newImages = newImages.concat(req.body.images);
-                }
-            }
-
-            for (let imagePath of newImages) {
-                try {
-                    const result = await cloudinary.uploader.upload(imagePath, {
-                        folder: 'eparokya/event',
+                for (let file of req.files) {
+                    const result = await cloudinary.uploader.upload(file.path, {
+                        folder: 'eparokya/announcement',
                         width: 150,
                         crop: "scale",
                     });
@@ -159,54 +154,87 @@ exports.updateEventPost = async (req, res) => {
                         public_id: result.public_id,
                         url: result.secure_url,
                     });
-                } catch (error) {
-                    console.error("Cloudinary upload error:", error);
+                }
+            }
+
+            // Single image upload (if any)
+            if (req.file) {
+                const result = await cloudinary.uploader.upload(req.file.path, {
+                    folder: 'eparokya/announcement',
+                    width: 150,
+                    crop: "scale",
+                });
+                imagesLinks.push({
+                    public_id: result.public_id,
+                    url: result.secure_url,
+                });
+            }
+
+            // Process images from the body (if any)
+            if (req.body.images) {
+                if (typeof req.body.images === 'string') {
+                    imagesLinks.push({
+                        public_id: req.body.images,
+                        url: req.body.images,
+                    });
+                } else {
+                    req.body.images.forEach(image => {
+                        imagesLinks.push({
+                            public_id: image.public_id,
+                            url: image.url,
+                        });
+                    });
                 }
             }
         } else {
-            imagesLinks = event.images;
+            imagesLinks = announcement.images;
         }
 
-        event.name = req.body.name || event.name;
-        event.description = req.body.description || event.description;
-        event.images = imagesLinks;
+        announcement.name = req.body.name || announcement.name;
+        announcement.description = req.body.description || announcement.description;
+        announcement.richDescription = req.body.richDescription || announcement.richDescription;
+        announcement.tags = req.body.tags || announcement.tags;
+        announcement.announcementCategory = req.body.announcementCategory || announcement.announcementCategory;
+        announcement.images = imagesLinks;
+        announcement.image = imagesLinks.length > 0 ? imagesLinks[0].url : announcement.image; // Updating single image URL
 
-        const updatedEvent = await event.save();
+        const updatedAnnouncement = await announcement.save();
 
         res.status(200).json({
             success: true,
-            message: 'Event Post updated successfully',
-            event: updatedEvent
+            message: 'Announcement updated successfully',
+            announcement: updatedAnnouncement,
         });
     } catch (error) {
         console.error(error);
         res.status(500).json({
             success: false,
-            message: 'Server Error'
+            message: 'Server Error',
         });
     }
 };
 
-exports.getSingleEventPost = async (req, res) => {
+// Get announcement by ID
+exports.getAnnouncementById = async (req, res) => {
     try {
-        const eventId = req.params.id;
-        const event = await Event.findById(eventId);
-        if (!event) {
+        const announcementId = req.params.id;
+        const announcement = await Announcement.findById(announcementId);
+        if (!announcement) {
             return res.status(404).json({
                 success: false,
-                message: 'Event Post not found'
+                message: 'Announcement not found',
             });
         }
 
         res.status(200).json({
             success: true,
-            event
+            announcement,
         });
     } catch (error) {
         console.error(error);
         res.status(500).json({
             success: false,
-            message: 'Server Error'
+            message: 'Server Error',
         });
     }
 };

@@ -41,6 +41,8 @@ import EventPostLists from './Components/Admin/EventPost/EventPostList';
 import EventPostUpdate from './Components/Admin/EventPost/UpdateEventPost';
 
 import AnnouncementCategory from './Components/Admin/Announcement/CreateAnnouncementCategory';
+import Announcement from './Components/Admin/Announcement/CreateAnnouncement';
+import AnnouncementList from './Components/Admin/Announcement/AnnouncementList';
 
 
 import WeddingList from './Components/Admin/Wedding/WeddingList';
@@ -93,6 +95,8 @@ function App() {
 
         {/* announcement - update */}
         <Route path="/admin/announcementCategory/create" element={<ProtectedRoute isAdmin={true}><AnnouncementCategory /></ProtectedRoute>} />
+        <Route path="/admin/create/announcement" element={<ProtectedRoute isAdmin={true}><Announcement /></ProtectedRoute>} />
+        <Route path="/admin/announcementList" element={<ProtectedRoute isAdmin={true}><AnnouncementList /></ProtectedRoute>} />
 
         {/* Post */}
         <Route path="/admin/post/create" element={<ProtectedRoute isAdmin={true}><CreatePost /></ProtectedRoute>} />

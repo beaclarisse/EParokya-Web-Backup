@@ -7,7 +7,7 @@ const upload = multer({ dest: 'uploads/' });
 
 router.post('/create/announcementCategory', isAuthenticatedUser, authorizeAdmin('admin'), upload.single('images'), announcementCategoryController.createAnnouncementCategory);
 router.get('/getAllannouncementCategory', announcementCategoryController.getAnnouncementCategories);
-router.put('/updateAnnouncementCategory/:announcementCatgeoryId', announcementCategoryController.updateAnnouncementCategory);
-router.delete('/deleteAnnouncementCategory/:announcementCatgeoryId', announcementCategoryController.deleteAnnouncementCategory);
+router.put('/updateAnnouncementCategory/:announcementCategoryId', announcementCategoryController.updateAnnouncementCategory);
+router.delete('/deleteAnnouncementCategory/:announcementCategoryId', announcementCategoryController.deleteAnnouncementCategory);
 
 module.exports = router;

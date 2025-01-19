@@ -8,18 +8,18 @@ const NavigationForm = () => {
         {
             title: 'Private Forms',
             forms: [
-                { name: 'Wedding', path: '/user/weddingForm' },
-                { name: 'Baptism', path: '/user/baptismForm' },
-                { name: 'Funeral', path: '/user/funeralForm' },
+                { name: 'Priavate Wedding', path: '/user/weddingForm' },
+                { name: 'Private Baptism', path: '/user/baptismForm' },
+                { name: 'Private Funeral', path: '/user/funeralForm' },
                 { name: 'Counseling', path: '/user/counselingForm' },
             ],
         },
         {
             title: 'Mass Forms',
             forms: [
-                { name: 'Mass Wedding', path: '/forms/mass/mass-wedding' },
-                { name: 'Mass Baptism', path: '/forms/mass/mass-baptism' },
-                { name: 'Mass Funeral', path: '/forms/mass/mass-funeral' },
+                { name: 'Kasalang Bayan', path: '/forms/mass/mass-wedding' },
+                { name: 'Binyagang Bayan', path: '/forms/mass/mass-baptism' },
+                { name: 'Kumpil', path: '/forms/mass/mass-funeral' },
             ],
         },
     ];

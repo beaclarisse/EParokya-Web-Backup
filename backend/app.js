@@ -12,10 +12,12 @@ const adminDate = require('./routes/adminDate')
 const customEvent = require('./routes/customEvent')
 
 const ministryCategory = require('./routes/ministryCategory')
+const announcement = require('./routes/Announcement/announcement')
 const announcementCategory = require('./routes/Announcement/announcementCategory')
 
+
 const post = require('./routes/post')
-const evenpost = require('./routes/EventPost')
+// const evenpost = require('./routes/EventPost')
 
 app.use(cors({
     origin: "http://localhost:3000",
@@ -30,13 +32,15 @@ app.use(cookieParser());
 app.use('/api/v1', user);
 app.use('/api/v1', wedding);
 app.use('/api/v1', post);
-app.use('/api/v1', evenpost);
+// app.use('/api/v1', evenpost);
 app.use('/api/v1', baptism);
 app.use('/api/v1', funeral);
 app.use('/api/v1', adminDate);
 app.use('/api/v1', customEvent);
 app.use('/api/v1', ministryCategory);
 app.use('/api/v1', announcementCategory);
+app.use('/api/v1', announcement);
+
 
 
 module.exports = app

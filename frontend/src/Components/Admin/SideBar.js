@@ -80,7 +80,7 @@ const SideBar = () => {
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item>
-                  <Link to="/admin/weddingList" className="sidebar-link" style={styles.sidebarLink}>
+                  <Link to="/admin/create/announcement" className="sidebar-link" style={styles.sidebarLink}>
                     Create Announcement
                   </Link>
                 </Dropdown.Item>
