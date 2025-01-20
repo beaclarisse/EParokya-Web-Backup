@@ -742,3 +742,227 @@ ul li p {
   cursor: pointer;
 }
 
+
+/* announcementList */
+/* Main Container Layout */
+.admin-announcement-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two cards per row */
+  gap: 20px;
+}
+
+/* Sidebar (Left Side) */
+.sidebar {
+  width: 20%; /* Fixed width for the sidebar */
+  background-color: #f8f9fa;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Enable scrolling for overflow content */
+  box-sizing: border-box; /* Proper sizing with padding */
+}
+
+/* Categories Section (Right Side) */
+.categories {
+  width: 20%;
+  background-color: #f8f9fa;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.categories h3 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #343a40;
+  text-align: center;
+}
+
+.categories ul {
+  list-style: none;
+  padding: 0;
+}
+
+.categories ul li {
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #495057;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.categories ul li:hover,
+.categories ul li.active {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Main Content (Middle Section) */
+.main-content {
+  flex: 1; /* Take up the remaining space between sidebar and categories */
+  padding: 20px;
+  background-color: #f1f3f5;
+  overflow-y: auto; /* Enable scrolling for overflow content */
+  box-sizing: border-box;
+}
+
+/* Search Bar */
+.search-bar {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+}
+
+/* Announcement List */
+.announcement-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid layout */
+  gap: 20px;
+}
+
+.announcement-box {
+  background-color: white;
+  min-height: 450px; /* Consistent height */
+  max-height: 450px; /* Enforce uniform height */
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+/* Announcement Header */
+.announcement-header {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+  border: 2px solid #007bff;
+}
+
+.announcement-header h3 {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  color: #343a40;
+}
+
+.announcement-header p {
+  margin: 0;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+
+.actions svg {
+  cursor: pointer;
+  color: #6c757d;
+  transition: color 0.2s ease;
+}
+
+.actions svg:hover {
+  color: #dc3545;
+}
+
+/* Announcement Body */
+.announcement-body {
+  padding: 15px;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.announcement-body p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.4;
+}
+
+.announcement-body p.rich-description {
+  color: #343a40;
+}
+
+.image-slider {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  overflow-x: auto; /* Enable horizontal scrolling for multiple images */
+  padding-bottom: 5px;
+}
+
+.image-slider img {
+  height: 100px; /* Adjust image height */
+  width: 100px;
+  border-radius: 5px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.image-slider img:hover {
+  transform: scale(1.1);
+}
+
+.image-slider img:hover, .single-image:hover {
+  transform: scale(1.05); /* Slight zoom on hover */
+}
+
+/* Announcement Footer */
+.announcement-footer {
+  padding: 15px;
+  border-top: 1px solid #dee2e6;
+  background-color: #f8f9fa; /* Light background for footer */
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.announcement-footer label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.announcement-footer p {
+  margin: 0;
+  font-size: 12px;
+  color: #495057;
+}
+
+
+/* Prevent Sections from Overlapping or Pushing */
+.admin-announcement-list > * {
+  box-sizing: border-box;
+}
+
+.admin-announcement-list {
+  display: flex;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #f1f3f5;
+  overflow-y: auto;
+}

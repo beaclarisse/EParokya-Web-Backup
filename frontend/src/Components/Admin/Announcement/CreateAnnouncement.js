@@ -1,279 +1,187 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
-import Loader from '../../Layout/Loader';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { FaEdit, FaTrash, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import SideBar from '../SideBar';
 
-export const CreateAnnouncement = () => { 
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [richDescription, setRichDescription] = useState('');
-    const [tags, setTags] = useState('');
-    const [announcementCategory, setAnnouncementCategory] = useState('');
-    const [categories, setCategories] = useState([]); // For holding fetched categories
-    const [images, setImages] = useState([]);
-    const [videos, setVideos] = useState([]);
-    const [isFeatured, setIsFeatured] = useState(false);
-    const [loading, setLoading] = useState(false);
+const AdminAnnouncementList = () => {
+    const [announcements, setAnnouncements] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [previewImage, setPreviewImage] = useState(null);
+    const [currentSlide, setCurrentSlide] = useState(0);
     const navigate = useNavigate();
 
-    // Fetch categories when the component mounts
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchAnnouncements = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllannouncementCategory`);
-                setCategories(response.data); 
+                const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllAnnouncements`);
+                setAnnouncements(response.data.announcements || []);
             } catch (error) {
-                console.error('Error fetching categories:', error);
-                toast.error('Error fetching categories.', {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                });
+                console.error('Error fetching announcements:', error);
+                setAnnouncements([]);
             }
         };
 
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllannouncementCategory`);
+                setCategories(response.data.categories || []);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                setCategories([]);
+            }
+        };
+
+        fetchAnnouncements();
         fetchCategories();
     }, []);
 
-    const handleImageChange = (e) => {
-        setImages([...e.target.files]);
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value.toLowerCase());
     };
 
-    const handleVideoChange = (e) => {
-        setVideos([...e.target.files]);
-    };
-
-    const config = {
-        withCredentials: true,
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('description', description);
-        formData.append('richDescription', richDescription);
-        formData.append('tags', tags); 
-        formData.append('announcementCategory', announcementCategory); 
-        formData.append('isFeatured', isFeatured); 
-    
-        // Handle image upload (single or multiple)
-        if (images.length > 0) {
-            images.forEach(image => {
-                formData.append('images', image); // Add 'images' for multiple images
-            });
+    const handleDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this announcement?')) {
+            try {
+                await axios.delete(`${process.env.REACT_APP_API}/api/v1/delete/announcement/${id}`);
+                setAnnouncements(announcements.filter((a) => a._id !== id));
+            } catch (error) {
+                console.error('Error deleting announcement:', error);
+            }
         }
-    
-        // Handle video upload (if any)
-        if (videos.length > 0) {
-            formData.append('video', videos[0]); // Add 'video' for a single video
-        }
-    
+    };
+
+    const toggleFeatured = async (id, isFeatured) => {
         try {
-            setLoading(true);
-            const response = await axios.post(`${process.env.REACT_APP_API}/api/v1/create/announcement`, formData, config, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            setLoading(false);
-            console.log('Announcement Post created:', response.data);
-            navigate('/admin/announcementList');
-            toast.success('Announcement Successfully Created.', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-            });
+            await axios.put(`${process.env.REACT_APP_API}/api/v1/update/announcement/${id}`, { isFeatured: !isFeatured });
+            setAnnouncements(
+                announcements.map((a) =>
+                    a._id === id ? { ...a, isFeatured: !isFeatured } : a
+                )
+            );
         } catch (error) {
-            setLoading(false);
-            console.error('Error creating Announcement:', error);
-            toast.error('Error creating Announcement.', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-            });
+            console.error('Error updating announcement feature status:', error);
         }
     };
-    
-    
+
+    const nextSlide = (images) => {
+        setCurrentSlide((prev) => (prev + 1) % images.length);
+    };
+
+    const prevSlide = (images) => {
+        setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
+    };
+
+    const filteredAnnouncements = announcements
+        .filter((a) =>
+            selectedCategory ? a.announcementCategory?._id === selectedCategory : true
+        )
+        .filter(
+            (a) =>
+                a.name.toLowerCase().includes(searchQuery) ||
+                a.tags.some((tag) => tag.toLowerCase().includes(searchQuery))
+        );
 
     return (
-        <div style={styles.wrapper}>
+        <div className="admin-announcement-list">
             <SideBar />
-            <div style={styles.container}>
-                <h2 style={styles.title}>Create a New Announcement</h2>
-                <form onSubmit={handleSubmit} style={styles.form}>
-                    <div style={styles.formGroup}>
-                        <label style={styles.label}>Name:</label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                            style={styles.input}
-                        />
-                    </div>
-                    <div style={styles.formGroup}>
-                        <label style={styles.label}>Description:</label>
-                        <textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            required
-                            style={styles.textarea}
-                        />
-                    </div>
-                    <div style={styles.formGroup}>
-                        <label style={styles.label}>Rich Description:</label>
-                        <textarea
-                            value={richDescription}
-                            onChange={(e) => setRichDescription(e.target.value)}
-                            style={styles.textarea}
-                        />
-                    </div>
-                    <div style={styles.formGroup}>
-                        <label style={styles.label}>Tags:</label>
-                        <input
-                            type="text"
-                            value={tags}
-                            onChange={(e) => setTags(e.target.value)}
-                            style={styles.input}
-                        />
-                    </div>
-                    <div style={styles.formGroup}>
-                        <label style={styles.label}>Announcement Category:</label>
-                        <select
-                            value={announcementCategory}
-                            onChange={(e) => setAnnouncementCategory(e.target.value)}
-                            style={styles.input}
-                            required
-                        >
-                            <option value="">Select Category</option>
+            <div className="container">
+                <input
+                    type="text"
+                    placeholder="Search by name or tags..."
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    className="search-bar"
+                />
+                <div className="announcement-list">
+                    <aside className="sidebar">
+                        <h3>Categories</h3>
+                        <ul>
+                            <li
+                                className={!selectedCategory ? 'active' : ''}
+                                onClick={() => setSelectedCategory('')}
+                            >
+                                All
+                            </li>
                             {categories.map((category) => (
-                                <option key={category._id} value={category._id}>
+                                <li
+                                    key={category._id}
+                                    className={selectedCategory === category._id ? 'active' : ''}
+                                    onClick={() => setSelectedCategory(category._id)}
+                                >
                                     {category.name}
-                                </option>
+                                </li>
                             ))}
-                        </select>
+                        </ul>
+                    </aside>
+                    <div className="posts">
+                        {filteredAnnouncements.map((announcement) => (
+                            <div className="announcement-box" key={announcement._id}>
+                                <div className="announcement-header">
+                                    <img
+                                        src="/path/to/profile-image.jpg"
+                                        alt="Saint Joseph Parish"
+                                        className="profile-pic"
+                                    />
+                                    <div>
+                                        <h3>{announcement.name}</h3>
+                                        <p>Created on: {new Date(announcement.dateCreated).toLocaleDateString()}</p>
+                                    </div>
+                                    <div className="actions">
+                                        <FaEdit
+                                            onClick={() =>
+                                                navigate(`/admin/updateAnnouncementPage/${announcement._id}`)
+                                            }
+                                        />
+                                        <FaTrash onClick={() => handleDelete(announcement._id)} />
+                                    </div>
+                                </div>
+                                <div className="announcement-body">
+                                    <p>{announcement.description}</p>
+                                    <p>{announcement.richDescription}</p>
+                                    {announcement.images.length > 0 ? (
+                                        <div className="image-slider">
+                                            <img
+                                                src={announcement.images[currentSlide]?.url}
+                                                alt="Slide"
+                                                onClick={() => setPreviewImage(announcement.images[currentSlide]?.url)}
+                                            />
+                                            <FaArrowLeft onClick={() => prevSlide(announcement.images)} />
+                                            <FaArrowRight onClick={() => nextSlide(announcement.images)} />
+                                        </div>
+                                    ) : announcement.videos.length > 0 ? (
+                                        <video controls>
+                                            <source src={announcement.videos[0]} type="video/mp4" />
+                                        </video>
+                                    ) : null}
+                                </div>
+                                <div className="announcement-footer">
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            checked={announcement.isFeatured}
+                                            onChange={() => toggleFeatured(announcement._id, announcement.isFeatured)}
+                                        />
+                                        Featured
+                                    </label>
+                                    <p>Tags: {announcement.tags.join(', ')}</p>
+                                    <p>Category: {announcement.announcementCategory?.name || 'N/A'}</p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                    <div style={styles.formGroup}>
-                        <label style={styles.label}>Images:</label>
-                        <input
-                            type="file"
-                            multiple
-                            onChange={handleImageChange}
-                            required
-                            style={styles.fileInput}
-                        />
-                    </div>
-                    <div style={styles.formGroup}>
-                        <label style={styles.label}>Videos:</label>
-                        <input
-                            type="file"
-                            multiple
-                            accept="video/*"
-                            onChange={handleVideoChange}
-                            style={styles.fileInput}
-                        />
-                    </div>
-                    <div style={styles.formGroup}>
-                        <label style={styles.label}>Is Featured:</label>
-                        <input
-                            type="checkbox"
-                            checked={isFeatured}
-                            onChange={(e) => setIsFeatured(e.target.checked)}
-                        />
-                    </div>
-                    <button type="submit" style={styles.submitButton} disabled={loading}>
-                        {loading ? 'Creating...' : 'Create Announcement'}
-                    </button>
-                </form>
+                </div>
             </div>
+            {previewImage && (
+                <div className="image-modal">
+                    <img src={previewImage} alt="Preview" />
+                    <button onClick={() => setPreviewImage(null)}>Close</button>
+                </div>
+            )}
         </div>
     );
 };
 
-const styles = {
-    wrapper: {
-        display: 'flex',
-        minHeight: '100vh',
-        backgroundColor: '#f0f2f5',
-        alignItems: 'flex-start', 
-    },
-    container: {
-        flex: 1,
-        maxWidth: '700px',
-        margin: '40px auto 0 auto', 
-        padding: '30px',
-        backgroundColor: '#fff',
-        borderRadius: '8px',
-        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-    },
-    title: {
-        textAlign: 'center',
-        color: '#333',
-        fontSize: '26px',
-        fontWeight: 'bold',
-        marginBottom: '25px',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px',
-    },
-    formGroup: {
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    label: {
-        fontSize: '16px',
-        color: '#555',
-        marginBottom: '5px',
-        fontWeight: '500',
-    },
-    input: {
-        padding: '12px',
-        borderRadius: '6px',
-        border: '1px solid #ccc',
-        fontSize: '16px',
-    },
-    textarea: {
-        padding: '12px',
-        borderRadius: '6px',
-        border: '1px solid #ccc',
-        fontSize: '16px',
-        minHeight: '120px',
-        resize: 'vertical',
-    },
-    fileInput: {
-        fontSize: '16px',
-        padding: '10px 0',
-    },
-    submitButton: {
-        padding: '12px',
-        borderRadius: '6px',
-        backgroundColor: '#007bff',
-        color: '#fff',
-        fontSize: '16px',
-        fontWeight: 'bold',
-        border: 'none',
-        cursor: 'pointer',
-        transition: 'background-color 0.3s',
-    },
-    submitButtonHover: {
-        backgroundColor: '#0056b3',
-    }
-};
-
-export default CreateAnnouncement;
+export default AdminAnnouncementList;

@@ -1,4 +1,6 @@
 const {announcementCategory} = require('../../models/Announcement/announcementCategory'); 
+const {Announcement} = require('../../models/Announcement/announcement'); 
+
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;  
 
@@ -43,12 +45,12 @@ exports.createAnnouncementCategory = async (req, res) => {
 
 
 
-exports.getAnnouncementCategories = async (req, res) => {
+exports.getAnnouncementCategory = async (req, res) => {
     try {
         const categories = await announcementCategory.find();
-        res.status(200).json(categories);
+        res.status(200).json({ categories });
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching announcement categories', details: error.message });
+        res.status(500).json({ error: 'Error fetching categories', details: error.message });
     }
 };
 

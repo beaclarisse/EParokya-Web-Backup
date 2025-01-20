@@ -68,7 +68,10 @@ exports.createAnnouncement = async (req, res) => {
 // Get all announcements
 exports.getAllAnnouncements = async (req, res) => {
     try {
-        const announcements = await Announcement.find();
+        const announcements = await Announcement.find()
+            .populate('announcementCategory', 'name description') // Populate with category data
+            .exec();
+
         res.status(200).json({
             success: true,
             count: announcements.length,
@@ -83,6 +86,8 @@ exports.getAllAnnouncements = async (req, res) => {
         });
     }
 };
+
+
 
 // Delete announcement
 exports.deleteAnnouncement = async (req, res) => {
