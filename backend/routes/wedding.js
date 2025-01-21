@@ -2,9 +2,36 @@ const express = require('express');
 const router = express.Router();
 const WeddingFormController = require('../controllers/Wedding/WeddingController');
 const { isAuthenticatedUser, authorizeAdmin } = require('../middleware/auth');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
+router.post(
+  '/submitWeddingForm',
+  upload.fields([
+    { name: 'GroomNewBaptismalCertificate', maxCount: 1 },
+    { name: 'GroomNewConfirmationCertificate', maxCount: 1 },
+    { name: 'GroomMarriageLicense', maxCount: 1 },
+    { name: 'GroomMarriageBans', maxCount: 1 },
+    { name: 'GroomOrigCeNoMar', maxCount: 1 },
+    { name: 'GroomOrigPSA', maxCount: 1 },
+    { name: 'BrideNewBaptismalCertificate', maxCount: 1 },
+    { name: 'BrideNewConfirmationCertificate', maxCount: 1 },
+    { name: 'BrideMarriageLicense', maxCount: 1 },
+    { name: 'BrideMarriageBans', maxCount: 1 },
+    { name: 'BrideOrigCeNoMar', maxCount: 1 },
+    { name: 'BrideOrigPSA', maxCount: 1 },
+    { name: 'PermitFromtheParishOftheBride', maxCount: 1 },
+    { name: 'ChildBirthCertificate', maxCount: 1 } 
+  ]),
+  WeddingFormController.submitWeddingForm
+);
+
 
 //FormSubmission
-router.post('/submit',  WeddingFormController.submitWeddingForm);
+// router.post(
+//     '/submitWeddingForm', upload.single('image'),  WeddingFormController.submitWeddingForm
+//   );
+
 router.get('/getAllWeddings', isAuthenticatedUser, authorizeAdmin("admin"), WeddingFormController.getAllWeddings);
 router.get('/confirmedWedding',  WeddingFormController.getConfirmedWeddings);
 router.get('/stats/weddingsPerMonth', isAuthenticatedUser, WeddingFormController.getWeddingsPerMonth);

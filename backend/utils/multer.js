@@ -60,12 +60,9 @@
 const multer = require("multer");
 const path = require("path");
 const os = require("os");
-
-// Multer storage configuration for cloudinary
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
 
-// Cloudinary storage config
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
@@ -88,8 +85,8 @@ const upload = multer({
 });
 
 const uploadAnnouncement = upload.fields([
-    { name: 'images', maxCount: 5 },  // Allow up to 5 images
-    { name: 'video', maxCount: 1 },   // Allow a single video
+    { name: 'images', maxCount: 5 },  
+    { name: 'video', maxCount: 1 },   
 ]);
 
 module.exports = uploadAnnouncement;

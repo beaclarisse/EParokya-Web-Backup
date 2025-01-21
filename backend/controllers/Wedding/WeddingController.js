@@ -1,31 +1,131 @@
 const { Wedding } = require('../../models/weddings');
 const mongoose = require('mongoose');
-const { User } = require('../../models/user');
+const cloudinary = require('cloudinary').v2;
+
+const uploadToCloudinary = async (file, folder) => {
+  if (!file) throw new Error("File is required for upload.");
+  const result = await cloudinary.uploader.upload(file.path, { folder });
+  return { public_id: result.public_id, url: result.secure_url };
+};
+
+exports.submitWeddingForm = async (req, res) => {
+  try {
+    const {
+      dateOfApplication,
+      weddingDate,
+      weddingTime,
+      groomName,
+      groomAddress,
+      brideName,
+      brideAddress,
+      Ninong,
+      Ninang,
+      brideReligion,
+      brideOccupation,
+      brideBirthDate,
+      bridePhone,
+      groomReligion,
+      groomOccupation,
+      groomBirthDate,
+      groomPhone,
+    } = req.body;
+    const images = {};
+    const requiredImageFields = [
+      "GroomNewBaptismalCertificate",
+      "GroomNewConfirmationCertificate",
+      "BrideNewBaptismalCertificate",
+      "GroomMarriageLicense",
+      "GroomMarriageBans",
+      "GroomOrigCeNoMar",
+      "GroomOrigPSA",
+      "BrideNewBaptismalCertificate",
+      "BrideNewConfirmationCertificate",
+      "BrideMarriageLicense",
+      "BrideMarriageBans",
+      "BrideOrigCeNoMar",
+      "BrideOrigPSA",
+      "PermitFromtheParishOftheBride",
+    ];
+    console.log('Received files:', req.files);
+    for (const field of requiredImageFields) {
+      if (req.files[field]) {
+        const uploadedImage = await uploadToCloudinary(req.files[field][0], "wedding/docs");
+        images[field] = {
+          public_id: uploadedImage.public_id, // Save public_id
+          url: uploadedImage.url, // Save URL
+        };
+      } else {
+        return res.status(400).json({ message: `Missing required image: ${field}` });
+      }
+    }
+    const groomAddressObject = groomAddress ? JSON.parse(groomAddress) : {};
+    const brideAddressObject = brideAddress ? JSON.parse(brideAddress) : {};
+    const ninongArray = Ninong ? JSON.parse(Ninong) : [];
+    const ninangArray = Ninang ? JSON.parse(Ninang) : [];
+
+    const newWeddingForm = new Wedding({
+      dateOfApplication,
+      weddingDate,
+      weddingTime,
+      groomName,
+      groomAddress: groomAddressObject,
+      brideName,
+      brideAddress: brideAddressObject,
+      Ninong: ninongArray,
+      Ninang: ninangArray,
+      brideReligion,
+      brideOccupation,
+      brideBirthDate,
+      bridePhone,
+      groomReligion,
+      groomOccupation,
+      groomBirthDate,
+      groomPhone,
+      ...images,
+    });
+
+    await newWeddingForm.save();
+
+    res.status(201).json({
+      message: "Wedding form submitted successfully!",
+      weddingForm: newWeddingForm,
+    });
+  } catch (error) {
+    console.error("Error submitting wedding form:", error);
+    res.status(500).json({ message: "An error occurred during submission.", error: error.message });
+  }
+};
+
+
 
 exports.getAllWeddings = async (req, res) => {
   try {
-    const weddingList = await Wedding.find({}, 'bride groom weddingDate weddingStatus attendees flowerGirl ringBearer userId')
-    .populate('userId', 'name');
+    const weddingList = await Wedding.find({}, 'brideName groomName weddingDate weddingStatus')
+      .populate('userId', 'name');
 
-    console.log("Fetched Weddings:", weddingList);
     if (!weddingList) {
-      return res.status(500).json({ success: false });
+      return res.status(404).json({ success: false, message: "No weddings found." });
     }
-    res.status(200).send(weddingList);
+
+    res.status(200).json(weddingList);
   } catch (error) {
     console.error("Error fetching weddings:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
 
-
 exports.getWeddingById = async (req, res) => {
-  console.log("Request ID:", req.params.weddingId);
   try {
-    const wedding = await Wedding.findById(req.params.weddingId).populate('userId');
+    const { weddingId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(weddingId)) {
+      return res.status(400).json({ message: "Invalid wedding ID format." });
+    }
+
+    const wedding = await Wedding.findById(weddingId).populate('userId');
 
     if (!wedding) {
-      return res.status(404).json({ message: 'The wedding with the given ID was not found.' });
+      return res.status(404).json({ message: "Wedding not found." });
     }
 
     res.status(200).json(wedding);
@@ -35,208 +135,54 @@ exports.getWeddingById = async (req, res) => {
   }
 };
 
-exports.submitWeddingForm = async (req, res) => {
-  const { userId, weddingData } = req.body;
-
-  console.log("Received userId:", userId);
-  console.log("Received weddingData:", weddingData);
-
-  if (!userId || !weddingData) {
-    return res.status(400).json({ message: "User ID and wedding data are required." });
-  }
-
-  try {
-    const validUserId = mongoose.Types.ObjectId(userId);
-    const brideCertificate = req.files['brideBirthCertificate']?.[0]?.path || "";
-    const groomCertificate = req.files['groomBirthCertificate']?.[0]?.path || "";
-    const brideBaptismalCertificate = req.files['brideBaptismalCertificate']?.[0]?.path || "";
-    const groomBaptismalCertificate = req.files['groomBaptismalCertificate']?.[0]?.path || "";
-
-    const newWeddingData = {
-      userId: validUserId,
-      weddingStatus: "Pending",  
-      ...JSON.parse(weddingData),
-      brideBirthCertificate: brideCertificate,
-      groomBirthCertificate: groomCertificate,
-      brideBaptismalCertificate,
-      groomBaptismalCertificate,
-    };
-
-    if (req.files?.brideBirthCertificate?.[0]) {
-      newWeddingData.brideBirthCertificateUrl = req.files.brideBirthCertificate[0].path;
-    }
-
-    if (req.files?.groomBirthCertificate?.[0]) {
-      newWeddingData.groomBirthCertificateUrl = req.files.groomBirthCertificate[0].path;
-    }
-
-    if (req.files?.brideBaptismalCertificate?.[0]) {
-      newWeddingData.brideBaptismalCertificate = req.files.brideBaptismalCertificate[0].path;
-    }
-
-    if (req.files?.groomBaptismalCertificate?.[0]) {
-      newWeddingData.groomBaptismalCertificate = req.files.groomBaptismalCertificate[0].path;
-    }
-
-    console.log("Final wedding object to be saved:", newWeddingData);
-
-    const newWedding = new Wedding(newWeddingData);
-    await newWedding.save();
-
-    return res.status(201).json({
-      message: "Wedding form submitted successfully!",
-      wedding: newWedding,
-    });
-  } catch (error) {
-    console.error("Error saving wedding form:", error);
-    return res.status(500).json({
-      message: "There was an error saving the wedding form.",
-      error: error.message,
-    });
-  }
-};
-
-
-//with image:
-// exports.submitWeddingForm = async (req, res) => {
-//   const { userId, weddingData } = req.body;
-
-//   console.log("Received userId:", userId);
-//   console.log("Received weddingData:", weddingData);
-
-//   if (!userId || !weddingData) {
-//     return res.status(400).json({ message: "User ID and wedding data are required." });
-//   }
-
-//   try {
-//     const validUserId = mongoose.Types.ObjectId(userId);
-//     const brideCertificate = req.files['brideBirthCertificate']?.[0]?.path || "";
-//     const groomCertificate = req.files['groomBirthCertificate']?.[0]?.path || "";
-//     const brideBaptismalCertificate = req.files['brideBaptismalCertificate']?.[0]?.path || "";
-//     const groomBaptismalCertificate = req.files['groomBaptismalCertificate']?.[0]?.path || "";
-
-//     const newWeddingData = {
-//       userId: validUserId,
-//       ...JSON.parse(weddingData),
-//       brideBirthCertificate: brideCertificate,
-//       groomBirthCertificate: groomCertificate,
-//       brideBaptismalCertificate,
-//       groomBaptismalCertificate,
-//     };
-
-//     if (req.files?.brideBirthCertificate?.[0]) {
-//       newWeddingData.brideBirthCertificateUrl = req.files.brideBirthCertificate[0].path;
-//     }
-
-//     if (req.files?.groomBirthCertificate?.[0]) {
-//       newWeddingData.groomBirthCertificateUrl = req.files.groomBirthCertificate[0].path;
-//     }
-
-//     if (req.files?.brideBaptismalCertificate?.[0]) {
-//       newWeddingData.brideBaptismalCertificate = req.files.brideBaptismalCertificate[0].path;
-//     }
-
-//     if (req.files?.groomBaptismalCertificate?.[0]) {
-//       newWeddingData.groomBaptismalCertificate = req.files.groomBaptismalCertificate[0].path;
-//     }
-
-//     console.log("Final wedding object to be saved:", newWeddingData);
-
-//     const newWedding = new Wedding(newWeddingData);
-//     await newWedding.save();
-
-//     return res.status(201).json({
-//       message: "Wedding form submitted successfully!",
-//       wedding: newWedding,
-//     });
-//   } catch (error) {
-//     console.error("Error saving wedding form:", error);
-//     return res.status(500).json({
-//       message: "There was an error saving the wedding form.",
-//       error: error.message,
-//     });
-//   }
-// };
-
-//First Working Wedding Controller
-// exports.submitWeddingForm = async (req, res) => {
-//   const { userId, weddingData } = req.body;
-
-//   console.log("Received userId:", userId);
-//   console.log("Received weddingData:", weddingData);
-
-//   if (!userId || !weddingData) {
-//       return res.status(400).json({ message: "User ID and wedding data are required." });
-//   }
-
-//   try {
-//       const validUserId = mongoose.Types.ObjectId(userId); 
-
-//       const newWedding = new Wedding({
-//           userId: validUserId, 
-//           ...weddingData, 
-//       });
-
-//       console.log("New wedding object to be saved:", newWedding);
-
-//       await newWedding.save(); 
-
-//       return res.status(201).json({ message: "Wedding form submitted successfully!", wedding: newWedding });
-//   } catch (error) {
-//       console.error("Error saving wedding form:", error);
-//       return res.status(500).json({ message: "There was an error saving the wedding form.", error: error.message });
-//   }
-// };
-
-//curent
-// exports.confirmWedding = async (req, res) => {
-//   try {
-//     const wedding = await Wedding.findById(req.params.id);
-//     if (!wedding) {
-//       return res.status(404).json({ message: 'Wedding not found' });
-//     }
-
-//     wedding.weddingStatus = "Confirmed";
-//     wedding.confirmedAt = new Date();
-//     await wedding.save();
-
-//     res.status(200).json({ message: 'Wedding confirmed', wedding });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// };
-
 exports.confirmWedding = async (req, res) => {
-  const { weddingId } = req.params;  
-  
-  if (!mongoose.Types.ObjectId.isValid(weddingId)) {
-    return res.status(400).json({ message: "Invalid wedding ID format" });
+  try {
+    const { weddingId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(weddingId)) {
+      return res.status(400).json({ message: "Invalid wedding ID format." });
+    }
+
+    const wedding = await Wedding.findById(weddingId);
+
+    if (!wedding) {
+      return res.status(404).json({ message: "Wedding not found." });
+    }
+
+    wedding.weddingStatus = "Confirmed";
+    wedding.confirmedAt = new Date();
+
+    await wedding.save();
+
+    res.status(200).json({ message: "Wedding confirmed.", wedding });
+  } catch (error) {
+    console.error("Error confirming wedding:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
-
-  const wedding = await Wedding.findById(weddingId);
-
-  if (!wedding) {
-    return res.status(404).json({ message: "Wedding not found" });
-  }
-
-  wedding.weddingStatus = "Confirmed";
-  wedding.confirmedAt = new Date();  
-
-  await wedding.save();
-
-  res.status(200).json({ message: "Wedding confirmed" });
 };
-
 
 exports.declineWedding = async (req, res) => {
-  const weddingId = req.params.weddingId;
-  const wedding = await Wedding.findById(weddingId);
-  if (!wedding) {
-    return res.status(404).json({ message: "Wedding not found" });
+  try {
+    const { weddingId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(weddingId)) {
+      return res.status(400).json({ message: "Invalid wedding ID format." });
+    }
+
+    const wedding = await Wedding.findById(weddingId);
+
+    if (!wedding) {
+      return res.status(404).json({ message: "Wedding not found." });
+    }
+
+    wedding.weddingStatus = "Declined";
+    await wedding.save();
+
+    res.status(200).json({ message: "Wedding declined." });
+  } catch (error) {
+    console.error("Error declining wedding:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
-  wedding.status = "declined";
-  await wedding.save();
-  res.status(200).json({ message: "Wedding declined" });
 };
 
 exports.getConfirmedWeddings = async (req, res) => {
@@ -244,46 +190,36 @@ exports.getConfirmedWeddings = async (req, res) => {
     const confirmedWeddings = await Wedding.find({ weddingStatus: 'Confirmed' });
     res.status(200).json(confirmedWeddings);
   } catch (error) {
+    console.error("Error fetching confirmed weddings:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
 
-exports.declineWedding = async (req, res) => {
-  const weddingId = req.params.weddingId;
-  const wedding = await Wedding.findById(weddingId);
-  if (!wedding) {
-    return res.status(404).json({ message: "Wedding not found" });
-  }
-  wedding.status = "declined";
-  await wedding.save();
-  res.status(200).json({ message: "Wedding declined" });
-};
-
 exports.addComment = async (req, res) => {
   try {
-    const wedding = await Wedding.findById(req.params.weddingId);
-    if (!wedding) return res.status(404).send('Wedding not found.');
+    const { weddingId } = req.params;
+    const { comment } = req.body;
 
-    const newComment = {
-      priest: req.body.priest,
-      scheduledDate: req.body.scheduledDate,
-      selectedComment: req.body.selectedComment,
-      additionalComment: req.body.additionalComment,
-      adminRescheduled: {
-        date: req.body.adminRescheduledDate,
-        reason: req.body.adminRescheduledReason,
-      },
-      createdAt: new Date(),
-    };
+    if (!mongoose.Types.ObjectId.isValid(weddingId)) {
+      return res.status(400).json({ message: "Invalid wedding ID format." });
+    }
 
-    wedding.comments.push(newComment);
+    const wedding = await Wedding.findById(weddingId);
+
+    if (!wedding) {
+      return res.status(404).json({ message: "Wedding not found." });
+    }
+
+    wedding.comments.push({ text: comment, date: new Date() });
     await wedding.save();
 
-    res.status(201).json(wedding.comments);
+    res.status(200).json({ message: "Comment added.", wedding });
   } catch (error) {
-    res.status(500).send('Server error');
+    console.error("Error adding comment:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
 };
+
 
 //Dates
 
@@ -334,7 +270,7 @@ exports.removeAvailableDate = async (req, res) => {
 
 exports.getMySubmittedForms = async (req, res) => {
   try {
-    const userId = req.user.id;  
+    const userId = req.user.id;
     console.log("Authenticated User ID:", userId);
 
     const forms = await Wedding.find({ userId: userId });
@@ -364,7 +300,7 @@ exports.getWeddingsPerMonth = async (req, res) => {
   ]);
   const result = Array(12).fill(0);
   data.forEach(({ _id, count }) => {
-    result[_id - 1] = count; 
+    result[_id - 1] = count;
   });
   res.json(result);
 };
