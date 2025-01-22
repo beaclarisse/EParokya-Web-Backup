@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const announcementCategoryController = require('../../controllers/Announcement/AnnouncementCategoryController');
 const { isAuthenticatedUser, authorizeAdmin } = require('../../middleware/auth');
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+// const multer = require('multer');
+// const upload = multer({ dest: 'uploads/' });
+const upload = require('../../utils/multer'); 
+
 
 router.post('/create/announcementCategory', isAuthenticatedUser, authorizeAdmin('admin'), upload.single('images'), announcementCategoryController.createAnnouncementCategory);
 router.get('/getAllannouncementCategory', announcementCategoryController.getAnnouncementCategory);

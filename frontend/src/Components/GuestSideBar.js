@@ -130,7 +130,7 @@ const GuestSideBar = () => {
             to="/prayers"
             style={{
               ...styles.link,
-              ...(location.pathname === "/prayers" ? styles.activeLink : {}),
+              ...(location.pathname === "/user/prayerWall" ? styles.activeLink : {}),
             }}
           >
             <FaPray style={styles.icon} /> Prayers

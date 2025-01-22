@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const BaptismController = require('../controllers/Baptism/BinyagController');
 const { isAuthenticatedUser, authorizeAdmin } = require('../middleware/auth');
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+// const multer = require('multer');
+// const upload = multer({ dest: 'uploads/' });
+const upload = require('../utils/multer'); 
 
 router.get('/baptismList', BaptismController.listBaptismForms);
 

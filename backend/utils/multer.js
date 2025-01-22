@@ -57,41 +57,70 @@
 //     },
 // });
 
-const multer = require("multer");
-const path = require("path");
-const os = require("os");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("cloudinary").v2;
+// const multer = require("multer");
+// const path = require("path");
+// const os = require("os");
+// const { CloudinaryStorage } = require("multer-storage-cloudinary");
+// const cloudinary = require("cloudinary").v2;
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: "eparokya/announcement",
-        allowed_formats: ["jpg", "jpeg", "png", "mp4", "mov"],
-    },
-});
+// const storage = new CloudinaryStorage({
+//     cloudinary: cloudinary,
+//     params: {
+//         folder: "eparokya/announcement",
+//         allowed_formats: ["jpg", "jpeg", "png", "mp4", "mov"],
+//     },
+// });
 
-const upload = multer({
-    limits: { fieldSize: 50 * 1024 * 1024 },
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase();
-        if (![".jpg", ".jpeg", ".png", ".mp4", ".mov"].includes(ext)) {
-            cb(new Error("Unsupported file type!"), false);
-        } else {
-            cb(null, true);
-        }
-    },
-});
+// const upload = multer({
+//     limits: { fieldSize: 50 * 1024 * 1024 },
+//     storage: storage,
+//     fileFilter: (req, file, cb) => {
+//         const ext = path.extname(file.originalname).toLowerCase();
+//         if (![".jpg", ".jpeg", ".png", ".mp4", ".mov"].includes(ext)) {
+//             cb(new Error("Unsupported file type!"), false);
+//         } else {
+//             cb(null, true);
+//         }
+//     },
+// });
 
-const uploadAnnouncement = upload.fields([
-    { name: 'images', maxCount: 5 },  
-    { name: 'video', maxCount: 1 },   
-]);
+// const uploadAnnouncement = upload.fields([
+//     { name: 'images', maxCount: 5 },  
+//     { name: 'video', maxCount: 1 },   
+// ]);
 
-module.exports = uploadAnnouncement;
+// module.exports = uploadAnnouncement;
 
 
-module.exports = upload;
+// module.exports = upload;
+
+    const multer = require("multer");
+    const path = require("path");
+    const { CloudinaryStorage } = require("multer-storage-cloudinary");
+    const cloudinary = require("cloudinary").v2;
+
+    const cloudinaryStorage = new CloudinaryStorage({
+        cloudinary: cloudinary,
+        params: {
+            folder: "eparokya/uploads",
+            allowed_formats: ["jpg", "jpeg", "png", "mp4", "mov"],
+        },
+    });
+
+    const upload = multer({
+        storage: cloudinaryStorage,
+        limits: { fileSize: 50 * 1024 * 1024 },
+        fileFilter: (req, file, cb) => {
+            const ext = path.extname(file.originalname).toLowerCase();
+            if (![".jpg", ".jpeg", ".png", ".mp4", ".mov"].includes(ext)) {
+                cb(new Error("Unsupported file type!"), false);
+            } else {
+                cb(null, true);
+            }
+        },
+    });
+
+    module.exports = upload;
+
 
 

@@ -8,6 +8,8 @@ const wedding = require('./routes/wedding')
 const baptism = require('./routes/Binyag')
 const funeral = require('./routes/Funeral')
 
+const prayerWall = require('./routes/PrayerWall/prayerWall')
+
 const adminDate = require('./routes/adminDate')
 const customEvent = require('./routes/customEvent')
 
@@ -35,6 +37,8 @@ app.use('/api/v1', post);
 // app.use('/api/v1', evenpost);
 app.use('/api/v1', baptism);
 app.use('/api/v1', funeral);
+app.use('/api/v1', prayerWall);
+
 app.use('/api/v1', adminDate);
 app.use('/api/v1', customEvent);
 app.use('/api/v1', ministryCategory);

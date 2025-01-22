@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const funeralController = require('../controllers/Funeral/FuneralController');
 const { isAuthenticatedUser, authorizeAdmin } = require('../middleware/auth');
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+// const multer = require('multer');
+// const upload = multer({ dest: 'uploads/' });
+const upload = require('../utils/multer'); 
 router.get('/getAllFunerals', funeralController.getFunerals);
 
 router.post(
