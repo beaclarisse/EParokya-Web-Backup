@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaHome, FaCalendarAlt, FaPray, FaBook, FaCog, FaRegFileAlt, FaWpforms } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
 
 const GuestSideBar = () => {
-  const [user, setUser] = useState({
-    name: 'Guest',
-    avatar: 'default-profile-icon.png',
-  });
-
+  // const [users, setUser] = useState({
+  //   name: 'Guest',
+  //   avatar: 'default-profile-icon.png',
+  // });
+  const { user } = useSelector(state => state.auth);
   const location = useLocation();
 
   // useEffect(() => {
@@ -20,11 +21,11 @@ const GuestSideBar = () => {
   //         },
   //         credentials: 'include', // Include cookies if necessary
   //       });
-    
+
   //       if (!response.ok) {
   //         throw new Error('Failed to fetch user data');
   //       }
-    
+
   //       const data = await response.json();
   //       const userData = data.user;
   //       setUser({
@@ -38,43 +39,47 @@ const GuestSideBar = () => {
   //   };
   //       fetchUserData();
   // }, []);
+  const config = {
 
-  const fetchUserData = async () => {
-    try {
-        const token = sessionStorage.getItem('token'); // Fetch the token from sessionStorage
-        if (!token) {
-            console.error('Token not found');
-            return;
-        }
+    withCredentials: true,
+  };
 
-        const response = await fetch(`${process.env.REACT_APP_API}/api/v1/profile`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-            credentials: 'include',
-        });
+  // const fetchUserData = async () => {
+  //   try {
+  //     // const token = sessionStorage.getItem('token'); // Fetch the token from sessionStorage
+  //     // if (!token) {
+  //     //   console.error('Token not found');
+  //     //   return;
+  //     // }
 
-        if (response.ok) {
-            const data = await response.json();
-            const userData = data.user;
-            setUser({
-                name: userData.name || 'Guest',
-                avatar: userData.avatar.url || 'default-profile-icon.png',
-            });
-        } else {
-            console.error("Failed to fetch user data:", response.status);
-        }
-    } catch (error) {
-        console.error('Failed to fetch user data:', error);
-    }
-};
+  //     const response = await fetch(`${process.env.REACT_APP_API}/api/v1/profile`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Authorization': `Bearer ${token}`,
+  //       },
+  //       credentials: 'include',
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       const userData = data.user;
+  //       setUser({
+  //         name: userData.name || 'Guest',
+  //         avatar: userData.avatar.url || 'default-profile-icon.png',
+  //       });
+  //     } else {
+  //       console.error("Failed to fetch user data:", response.status);
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to fetch user data:', error);
+  //   }
+  // };
 
 
-  useEffect(() => {
-    fetchUserData();
-  }, []);  
-  
+  // useEffect(() => {
+  //   fetchUserData();
+  // }, []);
+
   return (
     <div style={styles.sidebarContainer}>
       <div style={styles.profileContainer}>
@@ -174,7 +179,7 @@ const GuestSideBar = () => {
             <FaRegFileAlt style={styles.icon} /> Resources
           </Link>
         </li> */}
-       
+
       </ul>
 
       <ul style={styles.settingsList}>

@@ -40,20 +40,23 @@ const BaptismForm = () => {
             baptismPermit: [],
         },
     });
+    const config = {
+        withCredentials: true,
+    };
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const token = sessionStorage.getItem('token');  
-                if (!token) {
-                    console.error('No token found. User is not authenticated.');
-                    return;
-                }
+                // const token = sessionStorage.getItem('token');  
+                // if (!token) {
+                //     console.error('No token found. User is not authenticated.');
+                //     return;
+                // }
 
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` },
-                    withCredentials: true,
-                };
+                // const config = {
+                //     headers: { Authorization: `Bearer ${token}` },
+                //     withCredentials: true,
+                // };
 
                 const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/profile`, config);
                 setUser(response.data.user);
@@ -146,12 +149,7 @@ const BaptismForm = () => {
                 }
             }
     
-            const config = {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-                },
-            };
+            
     
             const response = await axios.post(
                 `${process.env.REACT_APP_API}/api/v1/baptismCreate`,
