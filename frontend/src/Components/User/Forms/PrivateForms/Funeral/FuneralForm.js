@@ -53,20 +53,23 @@ const FuneralForm = () => {
     //     };
     //     fetchUser();
     // }, []);
-
+    const config = {
+        
+        withCredentials: true,
+    };
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const token = sessionStorage.getItem('token');  
-                if (!token) {
-                    console.error('No token found. User is not authenticated.');
-                    return;
-                }
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` },
-                    withCredentials: true,
-                };
+                // const token = sessionStorage.getItem('token');  
+                // if (!token) {
+                //     console.error('No token found. User is not authenticated.');
+                //     return;
+                // }
+                // const config = {
+                //     headers: { Authorization: `Bearer ${token}` },
+                //     withCredentials: true,
+                // };
                 const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/profile`, config);
                 setUserId(response.data.user._id);
             } catch (error) {
@@ -134,13 +137,13 @@ const FuneralForm = () => {
                 console.log(pair[0] + ': ' + pair[1]);
             }
 
-            const config = {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${sessionStorage.getItem('token')}`,  
-                },
+            // const config = {
+            //     headers: {
+            //         'Content-Type': 'multipart/form-data',
+            //         Authorization: `Bearer ${sessionStorage.getItem('token')}`,  
+            //     },
                 
-            };
+            // };
 
             const response = await axios.post(
                 `${process.env.REACT_APP_API}/api/v1/funeralCreate`,
@@ -180,9 +183,9 @@ const FuneralForm = () => {
 
     return (
         <div className="funeral-form-container">
-            <div className="guest-sidebar">
+            {/* <div className="guest-sidebar">
                 <GuestSidebar />
-            </div>
+            </div> */}
             <div className="form-content">
                 <h2>Funeral Request Form</h2>
                 <Form onSubmit={handleSubmit}>

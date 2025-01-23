@@ -6,7 +6,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import MetaData from '../../Layout/MetaData';
 import SideBar from '../SideBar';
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import '../../Layout/styles/style.css'
 const localizer = momentLocalizer(moment);
 
 const Calendars = () => {

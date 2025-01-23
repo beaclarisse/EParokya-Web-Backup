@@ -742,6 +742,54 @@ ul li p {
   cursor: pointer;
 }
 
+/* CAALENDAR */
+.rbc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rbc-toolbar-label {
+  
+  text-align: center; /* Center the month name */
+  /* font-weight: 3px; */
+  width: 10px;
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden; /* Hide overflow */
+}
+
+.rbc-btn-group {
+  display: flex;
+  gap: 5px;
+}
+
+
+
+
+/* CAALENDAR */
+.rbc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rbc-toolbar-label {
+  
+  text-align: center; /* Center the month name */
+  /* font-weight: 3px; */
+  width: 10px;
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden; /* Hide overflow */
+}
+
+.rbc-btn-group {
+  display: flex;
+  gap: 5px;
+}
+
+
+
+
 
 /* announcementList */
 /* Main Container Layout */
