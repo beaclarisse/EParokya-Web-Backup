@@ -127,7 +127,7 @@ const GuestSideBar = () => {
 
         <li style={styles.menuItem}>
           <Link
-            to="/prayers"
+            to="/user/prayerWall"
             style={{
               ...styles.link,
               ...(location.pathname === "/user/prayerWall" ? styles.activeLink : {}),

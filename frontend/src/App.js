@@ -17,6 +17,9 @@ import BaptismForm from './Components/User/Forms/PrivateForms/Baptism/BaptismFor
 import FuneralForm from './Components/User/Forms/PrivateForms/Funeral/FuneralForm';
 import WeddingForm from './Components/User/Forms/PrivateForms/Wedding/WeddingForm';
 
+
+import PrayerWall from './Components/User/PrayerWall/PrayerWall';
+
 import ProtectedRoute from './Components/Route/protectedRoute';
 
 //Dashboard
@@ -80,6 +83,8 @@ function App() {
         <Route path="/user/baptismForm" element={<BaptismForm />} exact="true" />
         <Route path="/user/funeralForm" element={<FuneralForm />} exact="true" />
         <Route path="/user/weddingForm" element={<WeddingForm />} exact="true" />
+
+        <Route path="/user/prayerWall" element={<PrayerWall />} exact="true" />
 
 
         {/* Admin 

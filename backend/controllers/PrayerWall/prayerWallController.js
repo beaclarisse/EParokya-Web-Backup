@@ -109,3 +109,29 @@ exports.toggleLike = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+exports.getAllPrayers = async (req, res) => {
+  try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
+
+      const prayers = await PrayerWallModel.find()
+          .skip(skip)
+          .limit(limit)
+          .sort({ createdAt: -1 });
+
+      const total = await PrayerWallModel.countDocuments();
+
+      res.status(200).json({
+          success: true,
+          prayers,
+          total,
+          currentPage: page,
+      });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Error fetching prayers" });
+  }
+};
+
