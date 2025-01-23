@@ -10,79 +10,61 @@ const PrayerWall = () => {
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [prayersPerPage] = useState(10);
+    const [totalPrayers, setTotalPrayers] = useState(0);
     const [newPrayer, setNewPrayer] = useState({
         title: "",
         prayerRequest: "",
         prayerWallSharing: "anonymous",
         contact: "",
     });
-    const userId = "mockUserId"; // Replace with actual user ID from authentication
+    const [user, setUser] = useState(null);
 
+    const config = {
+        withCredentials: true,
+    };
+
+    // Fetch prayers
     useEffect(() => {
         const fetchPrayers = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.REACT_APP_API}/api/prayer-wall?page=${currentPage}`
+                    `${process.env.REACT_APP_API}/api/v1/prayer-wall?status=Confirmed&page=${currentPage}`
                 );
-                setPrayers(response.data.prayers);
+                setPrayers(response.data.prayers || []);
+                setTotalPrayers(response.data.total || 0);
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching prayers:", error);
+                setLoading(false);
             }
         };
 
         fetchPrayers();
     }, [currentPage]);
 
-    const handleLike = async (prayerId) => {
-        try {
-            await axios.put(`${process.env.REACT_APP_API}/api/prayer-wall/toggle-like/${prayerId}`);
-            setPrayers((prev) =>
-                prev.map((prayer) =>
-                    prayer._id === prayerId
-                        ? {
-                              ...prayer,
-                              likes: prayer.likes + 1,
-                              likedByUser: true,
-                          }
-                        : prayer
-                )
-            );
-        } catch (error) {
-            console.error("Error liking prayer:", error);
-        }
-    };
+    // Fetch user details
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/profile`, config);
+                setUser(response.data.user);
+            } catch (error) {
+                console.error("Error fetching user:", error);
+            }
+        };
 
-    const handleIncludeInPrayer = async (prayerId) => {
-        try {
-            await axios.post(`${process.env.REACT_APP_API}/api/prayer-wall/${prayerId}/include`);
-            setPrayers((prev) =>
-                prev.map((prayer) =>
-                    prayer._id === prayerId
-                        ? {
-                              ...prayer,
-                              includes: prayer.includes + 1,
-                              includedByUser: true,
-                          }
-                        : prayer
-                )
-            );
-        } catch (error) {
-            console.error("Error including prayer:", error);
-        }
-    };
+        fetchUser();
+    }, []);
 
-    const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
-    };
-
+    // Handle prayer submission
     const handleNewPrayerSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API}/api/prayer-wall`, {
-                ...newPrayer,
-                userId,
-            });
+            const response = await axios.post(
+                `${process.env.REACT_APP_API}/api/v1/submitPrayer`,
+                newPrayer,
+                config
+            );
             setPrayers([response.data.prayer, ...prayers]);
             setNewPrayer({
                 title: "",
@@ -95,99 +77,113 @@ const PrayerWall = () => {
         }
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    // Handle like functionality
+    const handleLike = async (prayerId) => {
+        try {
+            await axios.put(`${process.env.REACT_APP_API}/api/v1/toggle-like/${prayerId}`);
+            setPrayers((prev) =>
+                prev.map((prayer) =>
+                    prayer._id === prayerId
+                        ? {
+                            ...prayer,
+                            likes: prayer.likedByUser ? prayer.likes - 1 : prayer.likes + 1,
+                            likedByUser: !prayer.likedByUser,
+                        }
+                        : prayer
+                )
+            );
+        } catch (error) {
+            console.error("Error liking prayer:", error);
+        }
+    };
+
+    // Handle include in prayer
+    const handleIncludeInPrayer = async (prayerId) => {
+        try {
+            await axios.post(`${process.env.REACT_APP_API}/api/v1/${prayerId}/include`);
+            setPrayers((prev) =>
+                prev.map((prayer) =>
+                    prayer._id === prayerId
+                        ? {
+                            ...prayer,
+                            includes: prayer.includedByUser ? prayer.includes - 1 : prayer.includes + 1,
+                            includedByUser: !prayer.includedByUser,
+                        }
+                        : prayer
+                )
+            );
+        } catch (error) {
+            console.error("Error including prayer:", error);
+        }
+    };
+
+    // Handle pagination
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
 
     return (
         <div className="prayer-wall-container">
-            <GuestSideBar />
-            <div className="prayer-wall">
-                <form className="prayer-form" onSubmit={handleNewPrayerSubmit}>
-                    <h3>Post a Prayer</h3>
-                    <input
-                        type="text"
-                        placeholder="Title (Optional)"
-                        value={newPrayer.title}
-                        onChange={(e) => setNewPrayer({ ...newPrayer, title: e.target.value })}
-                    />
-                    <textarea
-                        placeholder="Your prayer request"
-                        value={newPrayer.prayerRequest}
-                        onChange={(e) => setNewPrayer({ ...newPrayer, prayerRequest: e.target.value })}
-                        required
-                    />
-                    <select
-                        value={newPrayer.prayerWallSharing}
-                        onChange={(e) => setNewPrayer({ ...newPrayer, prayerWallSharing: e.target.value })}
-                    >
-                        <option value="anonymous">Post as Anonymous</option>
-                        <option value="myName">Post with My Name</option>
-                    </select>
-                    <input
-                        type="text"
-                        placeholder="Contact (Optional)"
-                        value={newPrayer.contact}
-                        onChange={(e) => setNewPrayer({ ...newPrayer, contact: e.target.value })}
-                    />
-                    <button type="submit">Post Prayer</button>
-                </form>
+            {/* Guest Sidebar */}
+            <div className="guest-sidebar">
+                <GuestSideBar />
+            </div>
 
-                {prayers.length === 0 ? (
-                    <div className="no-prayers">
-                        <h2>No prayers yet.</h2>
-                        <p>Be the first to post a prayer!</p>
-                    </div>
+            {/* Main Prayer Wall */}
+            <div className="prayer-wall">
+                {/* Prayer Form */}
+                <div className="prayer-post-container">
+                    <form className="prayer-form" onSubmit={handleNewPrayerSubmit}>
+                        <input
+                            type="text"
+                            placeholder="Title (Optional)"
+                            value={newPrayer.title}
+                            onChange={(e) => setNewPrayer({ ...newPrayer, title: e.target.value })}
+                        />
+                        <textarea
+                            placeholder="Your prayer request"
+                            value={newPrayer.prayerRequest}
+                            onChange={(e) => setNewPrayer({ ...newPrayer, prayerRequest: e.target.value })}
+                            required
+                        />
+                        <select
+                            value={newPrayer.prayerWallSharing}
+                            onChange={(e) => setNewPrayer({ ...newPrayer, prayerWallSharing: e.target.value })}
+                        >
+                            <option value="anonymous">Post as Anonymous</option>
+                            <option value="myName">Post with My Name</option>
+                        </select>
+                        <input
+                            type="text"
+                            placeholder="Contact (Optional)"
+                            value={newPrayer.contact}
+                            onChange={(e) => setNewPrayer({ ...newPrayer, contact: e.target.value })}
+                        />
+                        <button type="submit">Post Prayer</button>
+                    </form>
+                </div>
+
+                {/* Prayer List */}
+                {loading ? (
+                    <p>Loading prayers...</p>
                 ) : (
                     prayers.map((prayer) => (
                         <div className="prayer-box" key={prayer._id}>
-                            <div className="prayer-header">
-                                <img
-                                    src={
-                                        prayer.prayerWallSharing === "anonymous"
-                                            ? ParishionerImage
-                                            : prayer.user.profilePicture
-                                    }
-                                    alt="Profile"
-                                    className="profile-picture"
-                                />
-                                <h3>
-                                    {prayer.prayerWallSharing === "anonymous"
-                                        ? "Parishioner"
-                                        : prayer.user.name}
-                                </h3>
-                            </div>
-                            <div className="prayer-content">
-                                <h4>{prayer.title}</h4>
-                                <p>{prayer.prayerRequest}</p>
-                            </div>
-                            <div className="prayer-actions">
-                                <button
-                                    className="like-button"
-                                    onClick={() => handleLike(prayer._id)}
-                                    disabled={prayer.likedByUser}
-                                >
-                                    <FaHeart className={prayer.likedByUser ? "liked" : ""} />
-                                    {prayer.likes}
-                                </button>
-                                <button
-                                    className="include-button"
-                                    onClick={() => handleIncludeInPrayer(prayer._id)}
-                                    disabled={prayer.includedByUser}
-                                >
-                                    I will include this in my prayer
-                                </button>
-                                <span className="include-count">
-                                    Users who included this in their prayer:{" "}
-                                    <span style={{ color: "#154314" }}>{prayer.includes}</span>
-                                </span>
-                            </div>
+                            <h4>{prayer.title}</h4>
+                            <p>{prayer.prayerRequest}</p>
+                            <button onClick={() => handleLike(prayer._id)}>
+                                {prayer.likedByUser ? "Unlike" : "Like"} ({prayer.likes})
+                            </button>
+                            <button onClick={() => handleIncludeInPrayer(prayer._id)}>
+                                {prayer.includedByUser ? "Uninclude" : "Include"} ({prayer.includes})
+                            </button>
                         </div>
                     ))
                 )}
 
+                {/* Pagination */}
                 <div className="pagination">
-                    {Array.from({ length: Math.ceil(prayers.total / prayersPerPage) }, (_, i) => (
+                    {Array.from({ length: Math.ceil(totalPrayers / prayersPerPage) }, (_, i) => (
                         <button
                             key={i}
                             className={currentPage === i + 1 ? "active" : ""}
@@ -201,5 +197,6 @@ const PrayerWall = () => {
         </div>
     );
 };
+
 
 export default PrayerWall;

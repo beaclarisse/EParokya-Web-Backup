@@ -17,6 +17,9 @@ import BaptismForm from './Components/User/Forms/PrivateForms/Baptism/BaptismFor
 import FuneralForm from './Components/User/Forms/PrivateForms/Funeral/FuneralForm';
 import WeddingForm from './Components/User/Forms/PrivateForms/Wedding/WeddingForm';
 
+import CounselingForm from './Components/User/Forms/PrivateForms/Counseling/CounselingForm';
+import PrayerRequestForm from './Components/User/Forms/PrivateForms/Prayer/PrayerRequestForm';
+
 
 import PrayerWall from './Components/User/PrayerWall/PrayerWall';
 
@@ -46,6 +49,8 @@ import EventPostUpdate from './Components/Admin/EventPost/UpdateEventPost';
 import AnnouncementCategory from './Components/Admin/Announcement/CreateAnnouncementCategory';
 import Announcement from './Components/Admin/Announcement/CreateAnnouncement';
 import AnnouncementList from './Components/Admin/Announcement/AnnouncementList';
+
+import AdminPrayerReview from './Components/Admin/Prayers/AdminPrayerReview';
 
 
 import WeddingList from './Components/Admin/Wedding/WeddingList';
@@ -83,6 +88,9 @@ function App() {
         <Route path="/user/baptismForm" element={<BaptismForm />} exact="true" />
         <Route path="/user/funeralForm" element={<FuneralForm />} exact="true" />
         <Route path="/user/weddingForm" element={<WeddingForm />} exact="true" />
+        <Route path="/user/counselingForm" element={<CounselingForm />} exact="true" />
+        <Route path="/user/prayerRequest" element={<PrayerRequestForm />} exact="true" />
+
 
         <Route path="/user/prayerWall" element={<PrayerWall />} exact="true" />
 
@@ -97,6 +105,7 @@ function App() {
         <Route path="/admin/calendar" element={<ProtectedRoute isAdmin={true}><Calendar /></ProtectedRoute>} />
         {/* ministry */}
         <Route path="/admin/ministryCategory/create" element={<ProtectedRoute isAdmin={true}><MinistryCategory /></ProtectedRoute>} />
+        <Route path="/admin/prayerReview" element={<ProtectedRoute isAdmin={true}><AdminPrayerReview /></ProtectedRoute>} />
 
 
         {/* announcement - update */}

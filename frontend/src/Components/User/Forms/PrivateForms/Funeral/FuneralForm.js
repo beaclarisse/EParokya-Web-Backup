@@ -192,7 +192,7 @@ const FuneralForm = () => {
                     <Row>
                         <Col md={6}>
                             <Form.Group controlId="name">
-                                <Form.Label>Full Name</Form.Label>
+                                <Form.Label>Pangalan ng Patay</Form.Label>
                                 <Form.Control
                                     type="text"
                                     value={formData.name}
@@ -206,7 +206,7 @@ const FuneralForm = () => {
                     <Row>
                         <Col md={6}>
                             <Form.Group controlId="dateOfDeath">
-                                <Form.Label>Date of Death</Form.Label>
+                                <Form.Label>Araw ng Kamatayan</Form.Label>
                                 <Form.Control
                                     type="date"
                                     value={formData.dateOfDeath}
@@ -217,7 +217,7 @@ const FuneralForm = () => {
                         </Col>
                         <Col md={6}>
                             <Form.Group controlId="personStatus">
-                                <Form.Label>Person Status</Form.Label>
+                                <Form.Label>Kalagayan sa Buhay</Form.Label>
                                 <Form.Control
                                     as="select"
                                     value={formData.personStatus}
@@ -236,7 +236,7 @@ const FuneralForm = () => {
                     <Row>
                         <Col md={4}>
                             <Form.Group controlId="age">
-                                <Form.Label>Age</Form.Label>
+                                <Form.Label>Edad</Form.Label>
                                 <Form.Control
                                     type="number"
                                     value={formData.age}
@@ -247,7 +247,7 @@ const FuneralForm = () => {
                         </Col>
                         <Col md={4}>
                             <Form.Group controlId="contactPerson">
-                                <Form.Label>Contact Person</Form.Label>
+                                <Form.Label>Panagalan ng Magulang, Asawa o Anak</Form.Label>
                                 <Form.Control
                                     type="text"
                                     value={formData.contactPerson}
@@ -258,7 +258,7 @@ const FuneralForm = () => {
                         </Col>
                         <Col md={4}>
                             <Form.Group controlId="relationship">
-                                <Form.Label>Relationship</Form.Label>
+                                <Form.Label>Relasyon sa Namatay</Form.Label>
                                 <Form.Control
                                     type="text"
                                     value={formData.relationship}
@@ -272,7 +272,7 @@ const FuneralForm = () => {
                     <Row>
                         <Col md={6}>
                             <Form.Group controlId="phone">
-                                <Form.Label>Phone</Form.Label>
+                                <Form.Label>Contact Number</Form.Label>
                                 <Form.Control
                                     type="text"
                                     value={formData.phone}
@@ -285,7 +285,7 @@ const FuneralForm = () => {
 
                         <Col md={6}>
                             <Form.Group controlId="priestVisit">
-                                <Form.Label>Priest Visit</Form.Label>
+                                <Form.Label>Napuntahan ba ng Pari bago namatay?</Form.Label>
                                 <Form.Control
                                     as="select"
                                     value={formData.priestVisit}
@@ -314,7 +314,7 @@ const FuneralForm = () => {
 
                         <Col md={4}>
                             <Form.Group controlId="zip">
-                                <Form.Label>zip</Form.Label>
+                                <Form.Label>Zip</Form.Label>
                                 <Form.Control
                                     type="text"
                                     value={formData.address.zip}
@@ -326,7 +326,7 @@ const FuneralForm = () => {
 
                         <Col md={4}>
                             <Form.Group controlId="country">
-                                <Form.Label>country</Form.Label>
+                                <Form.Label>Baranggay</Form.Label>
                                 <Form.Control
                                     type="text"
                                     value={formData.address.country}
@@ -341,7 +341,7 @@ const FuneralForm = () => {
                     <Row>
                         <Col md={6}>
                             <Form.Group controlId="reasonOfDeath">
-                                <Form.Label>Reason of Death</Form.Label>
+                                <Form.Label>Dahilan ng Pagkamatay</Form.Label>
                                 <Form.Control
                                     type="text"
                                     value={formData.reasonOfDeath}
@@ -352,7 +352,7 @@ const FuneralForm = () => {
                         </Col>
                         <Col md={4}>
                             <Form.Group controlId="funeralDate">
-                                <Form.Label>Funeral Date</Form.Label>
+                                <Form.Label>Araw ng Libing</Form.Label>
                                 <Form.Control
                                     type="date"
                                     value={formData.funeralDate}
@@ -363,7 +363,7 @@ const FuneralForm = () => {
                         </Col>
                         <Col md={4}>
                             <Form.Group>
-                                <Form.Label>Funeral Time</Form.Label>
+                                <Form.Label>Oras ng Libing</Form.Label>
                                 <Form.Control
                                     type="time"
                                     value={formData.funeraltime}
@@ -390,7 +390,7 @@ const FuneralForm = () => {
 
                         <Col md={4}>
                             <Form.Group controlId="placeOfDeath">
-                                <Form.Label>Place of Death</Form.Label>
+                                <Form.Label>Saan ililibing</Form.Label>
                                 <Form.Control
                                     type="text"
                                     value={formData.placeOfDeath}
@@ -401,7 +401,7 @@ const FuneralForm = () => {
                         </Col>
                         <Col md={4}>
                             <Form.Group controlId="serviceType">
-                                <Form.Label>Service Type</Form.Label>
+                                <Form.Label>Rito na igagawad sa namatay</Form.Label>
                                 <Form.Control
                                     as="select"
                                     value={formData.serviceType}
@@ -426,7 +426,7 @@ const FuneralForm = () => {
                                     required
                                 >
                                     <option value="">Select</option>
-                                    <option value="Priest">Priest</option>
+                                    <option value="Priest">Pari</option>
                                     <option value="Family Member">Family Member</option>
                                 </Form.Control>
                             </Form.Group>
@@ -452,7 +452,7 @@ const FuneralForm = () => {
 
                         <Col md={4}>
                             <Form.Group controlId="funeralMassDate">
-                                <Form.Label>Funeral Mass Date</Form.Label>
+                                <Form.Label>Araw ng Paggawad</Form.Label>
                                 <Form.Control
                                     type="date"
                                     value={formData.funeralMassDate}
@@ -465,7 +465,7 @@ const FuneralForm = () => {
                     <Row>
                         <Col md={4}>
                             <Form.Group>
-                                <Form.Label>Funeral Mass Time</Form.Label>
+                                <Form.Label>Oras ng Paggawad</Form.Label>
                                 <Form.Control
                                     type="time"
                                     value={formData.funeralMasstime}
@@ -492,7 +492,7 @@ const FuneralForm = () => {
 
                         <Col md={5}>
                             <Form.Group controlId="funeralMass">
-                                <Form.Label>Funeral Mass</Form.Label>
+                                <Form.Label>Saan gaganapin</Form.Label>
                                 <Form.Control
                                     type="text"
                                     value={formData.funeralMass}

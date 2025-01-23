@@ -5,7 +5,7 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import GuestSidebar from '../../../../GuestSideBar';
 import { getToken } from '../../../../../Utils/helpers';
 
-const BaptismForm = () => {
+const MassBaptismForm = () => {
     const [filePreview, setFilePreview] = useState(null);
     const [filePreviewType, setFilePreviewType] = useState(null);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -193,40 +193,7 @@ const BaptismForm = () => {
                         {/* Baptism Date and Time */}
                         <Row>
                             <Col>
-                                <Form.Group>
-                                    <Form.Label>Araw ng Binyag</Form.Label>
-                                    <Form.Control
-                                        type="date"
-                                        value={formData.baptismDate}
-                                        onChange={e => handleChange(e, 'baptismDate')}
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col>
-                                <Form.Group>
-                                    <Form.Label>Oras ng Binyag</Form.Label>
-                                    <Form.Control
-                                        type="time"
-                                        value={formData.baptismTime}
-                                        onChange={(e) => {
-                                            const ampmTime = e.target.value;
-
-                                            // am/pm 00:00 
-                                            const [time, modifier] = ampmTime.split(' ');
-                                            let [hours, minutes] = time.split(':');
-                                            hours = parseInt(hours, 10);
-
-                                            if (modifier === 'AM' && hours === 12) {
-                                                hours = 0; //12 am to 00:00
-                                            } else if (modifier === 'PM' && hours !== 12) {
-                                                hours += 12; // Convert PM to 24hr fmat
-                                            }
-                                            // Format
-                                            const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes}`;
-                                            handleChange({ target: { value: formattedTime } }, 'baptismTime');
-                                        }}
-                                    />
-                                </Form.Group>
+                               
 
 
                             </Col>
@@ -235,7 +202,7 @@ const BaptismForm = () => {
                         {/* Child Information */}
                         <h4 className="mt-4">Child Information</h4>
                         <Form.Group>
-                            <Form.Label>Buong Pangalan ng Bibinyagan</Form.Label>
+                            <Form.Label>Pangalan ng Bibinyagan</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={formData.child.fullName}
@@ -277,7 +244,7 @@ const BaptismForm = () => {
                         {/* Parents Information */}
                         <h4 className="mt-4">Magulang ng Bibinyagan</h4>
                         <Form.Group>
-                            <Form.Label>Buong Pangalan ng Ama</Form.Label>
+                            <Form.Label>Pangalan ng Ama</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={formData.parents.fatherFullName}
@@ -295,7 +262,7 @@ const BaptismForm = () => {
                         </Form.Group>
 
                         <Form.Group>
-                            <Form.Label>Buong Pangalan ng Ina</Form.Label>
+                            <Form.Label>Panagalan ng Ina</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={formData.parents.motherFullName}
@@ -535,4 +502,4 @@ const BaptismForm = () => {
      );
 };
 
-export default BaptismForm;
+export default MassBaptismForm;

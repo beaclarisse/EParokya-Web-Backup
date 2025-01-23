@@ -9,6 +9,12 @@ const baptism = require('./routes/Binyag')
 const funeral = require('./routes/Funeral')
 
 const prayerWall = require('./routes/PrayerWall/prayerWall')
+const counseling = require('./routes/counseling')
+const prayerRequest = require('./routes/PrayerWall/prayerRequest')
+
+const houseBlessing = require('./routes/PrayerWall/prayerRequest')
+// const memberBatchYear = require('./routes/Members/memberBatchYear')
+
 
 const adminDate = require('./routes/adminDate')
 const customEvent = require('./routes/customEvent')
@@ -44,6 +50,10 @@ app.use('/api/v1', customEvent);
 app.use('/api/v1', ministryCategory);
 app.use('/api/v1', announcementCategory);
 app.use('/api/v1', announcement);
+app.use('/api/v1', counseling);
+app.use('/api/v1', prayerRequest);
+app.use('/api/v1', houseBlessing);
+
 
 
 

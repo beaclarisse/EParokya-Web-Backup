@@ -11,7 +11,12 @@ const NavigationForm = () => {
                 { name: 'Priavate Wedding', path: '/user/weddingForm' },
                 { name: 'Private Baptism', path: '/user/baptismForm' },
                 { name: 'Private Funeral', path: '/user/funeralForm' },
+                { name: 'Mass Intentions', path: '/user/prayerRequest' },
                 { name: 'Counseling', path: '/user/counselingForm' },
+                { name: 'Street Mass', path: '/user/counselingForm' },
+                { name: 'House Blessing', path: '/user/counselingForm' },
+
+
             ],
         },
         {
@@ -19,7 +24,6 @@ const NavigationForm = () => {
             forms: [
                 { name: 'Kasalang Bayan', path: '/forms/mass/mass-wedding' },
                 { name: 'Binyagang Bayan', path: '/forms/mass/mass-baptism' },
-                { name: 'Kumpil', path: '/forms/mass/mass-funeral' },
             ],
         },
     ];

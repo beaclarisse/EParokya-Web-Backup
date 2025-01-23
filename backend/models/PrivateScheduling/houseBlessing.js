@@ -1,36 +1,25 @@
 const mongoose = require('mongoose');
 
-const counselingSchema = new mongoose.Schema({
-    person: {
-        fullName: { type: String, required: true },
-        dateOfBirth: { type: Date, required: true },
-    },
-
-    purpose: { type: String, required: true },
-    contactPerson: {
-        fullName: { type: String, required: false },
-        contactNumber: { type: String, required: false },
-        relationship: { type: String, required: false },
-    },
-
+const houseBlessingSchema = new mongoose.Schema({
+    fullName: { type: String, required: true },
     contactNumber: { type: String, required: true },
     address: {
+        houseDetails: { type: Date, required: true },
         block: { type: String, required: false },
         lot: { type: String, required: false },
-        street: { type: String, required: false },
-        phase: { type: String, required: false },
-        baranggay: { type: String, required: false },
+        phase: { type: Date, required: true },
+        baranggay: { type: Date, required: true },
+        district: { type: Date, required: true },
+        city: { type: Date, required: true },
     },
-
-    counselingDate: { type: Date, required: false },
-    counselingTime: { type: String, required: false, },
-
+    blesssingDate: { type: Date, required: true },
+    blessingTime: { type: String, required: true, },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     confirmedAt: {
         type: Date,
     },
 
-    counselingStatus: {
+    blessingStatus: {
         type: String,
         required: false,
         default: 'Pending',
@@ -58,4 +47,4 @@ const counselingSchema = new mongoose.Schema({
     priest: { type: String, required: false },
 });
 
-module.exports = mongoose.model('counseling', counselingSchema);
+module.exports = mongoose.model('houseBlessing', houseBlessingSchema);

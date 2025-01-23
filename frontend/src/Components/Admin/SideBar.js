@@ -64,12 +64,12 @@ const SideBar = () => {
           </Nav.Item>
           <Nav.Item>
             <Link to="/admin/adminDate" className="sidebar-link" style={styles.sidebarLink}>
-              Set Available Date
+              Ministry Inventory
             </Link>
           </Nav.Item>
           <Nav.Item>
             <Link to="/admin/adminDate" className="sidebar-link" style={styles.sidebarLink}>
-              Ministry Inventory
+              Set Available Date
             </Link>
           </Nav.Item>
 
@@ -150,6 +150,26 @@ const SideBar = () => {
                     Funeral List
                   </Link>
                 </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/prayerRequest" className="sidebar-link" style={styles.sidebarLink}>
+                    Mass Intentions
+                  </Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/counseling" className="sidebar-link" style={styles.sidebarLink}>
+                    Counseling
+                  </Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/houseBlessing" className="sidebar-link" style={styles.sidebarLink}>
+                    House Blessings
+                  </Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin/streetMass" className="sidebar-link" style={styles.sidebarLink}>
+                   Street Mass
+                  </Link>
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Nav.Item>
@@ -168,11 +188,6 @@ const SideBar = () => {
                 <Dropdown.Item>
                   <Link to="/admin/baptismList" className="sidebar-link" style={styles.sidebarLink}>
                     Mass Baptism List
-                  </Link>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <Link to="/admin/funeralList" className="sidebar-link" style={styles.sidebarLink}>
-                    Mass Funeral List
                   </Link>
                 </Dropdown.Item>
               </Dropdown.Menu>

@@ -116,12 +116,18 @@ exports.getAllPrayers = async (req, res) => {
       const limit = parseInt(req.query.limit) || 10;
       const skip = (page - 1) * limit;
 
-      const prayers = await PrayerWallModel.find()
+      // Fetch all prayers, optionally filter by status if provided
+      const query = {};
+      if (req.query.status) {
+          query.prayerWallStatus = req.query.status; // Add filter only if status is present
+      }
+
+      const prayers = await PrayerWall.find(query)
           .skip(skip)
           .limit(limit)
           .sort({ createdAt: -1 });
 
-      const total = await PrayerWallModel.countDocuments();
+      const total = await PrayerWall.countDocuments(query);
 
       res.status(200).json({
           success: true,
@@ -130,8 +136,43 @@ exports.getAllPrayers = async (req, res) => {
           currentPage: page,
       });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: "Error fetching prayers" });
+      console.error("Error fetching prayers:", error);
+      res.status(500).json({ success: false, error: error.message });
   }
 };
+
+
+exports.approvePrayer = async (req, res) => {
+  try {
+      const prayer = await PrayerWall.findByIdAndUpdate(
+          req.params.id,
+          { prayerWallStatus: 'Confirmed' },
+          { new: true }
+      );
+      if (!prayer) return res.status(404).json({ success: false, message: "Prayer not found" });
+
+      res.status(200).json({ success: true, message: "Prayer approved", prayer });
+  } catch (error) {
+      console.error("Error approving prayer:", error);
+      res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+exports.rejectPrayer = async (req, res) => {
+  try {
+      const prayer = await PrayerWall.findByIdAndUpdate(
+          req.params.id,
+          { prayerWallStatus: 'Cancelled' },
+          { new: true }
+      );
+      if (!prayer) return res.status(404).json({ success: false, message: "Prayer not found" });
+
+      res.status(200).json({ success: true, message: "Prayer rejected", prayer });
+  } catch (error) {
+      console.error("Error rejecting prayer:", error);
+      res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
 

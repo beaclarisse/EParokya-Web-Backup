@@ -101,9 +101,7 @@ const AdminDates = () => {
                         <select name="category" value={form.category} onChange={handleInputChange} style={{ width: '100%' }}>
                             <option value="">Select Category</option>
                             <option value="Wedding">Wedding</option>
-                            <option value="Funeral">Funeral</option>
                             <option value="Christening">Christening</option>
-                            <option value="Counseling">Counseling</option>
                         </select>
                     </label>
                     <label style={{ flexBasis: 'calc(50% - 10px)' }}>

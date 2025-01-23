@@ -46,6 +46,7 @@ const WeddingForm = () => {
         PermitFromtheParishOftheBride: "",
         ChildBirthCertificate: "",
     });
+    const [user, setUser] = useState(null);
     const addNinong = () => {
         setFormData((prev) => ({
             ...prev,
@@ -104,6 +105,21 @@ const WeddingForm = () => {
             images: { ...prev.images, [name]: file },
         }));
     };
+  
+    const config = {
+        withCredentials: true,
+    };
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/profile`, config);
+                setUser(response.data.user);
+            } catch (error) {
+                console.error('Error fetching user:', error.response ? error.response.data : error.message);
+            }
+        };
+        fetchUser();
+    }, []);
 
     const handleClearFields = () => {
         setFormData({
@@ -145,8 +161,6 @@ const WeddingForm = () => {
             ];
 
             console.log("Form data before submit:", formData);
-
-            // Append image files to FormData
             imageFields.forEach((field) => {
                 const file = formData.images[field];
                 if (file) {
@@ -155,8 +169,6 @@ const WeddingForm = () => {
                     console.log("No file for field:", field);
                 }
             });
-
-            // Append other form fields (non-image data)
             Object.entries(formData).forEach(([key, value]) => {
                 if (key !== 'images' && !imageFields.includes(key)) {
                     if (Array.isArray(value)) {
@@ -169,12 +181,12 @@ const WeddingForm = () => {
                 }
             });
 
-            const config = {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-                },
-            };
+            // const config = {
+            //     headers: {
+            //         "Content-Type": "multipart/form-data",
+            //         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            //     },
+            // };
 
             const response = await axios.post(
                 `${process.env.REACT_APP_API}/api/v1/submitWeddingForm`,
@@ -185,7 +197,6 @@ const WeddingForm = () => {
             toast.success("Wedding form submitted successfully!");
             console.log("Response:", response.data);
 
-            // Clear the form data after submission
             setFormData({
                 dateOfApplication: "",
                 weddingDate: "",
@@ -443,7 +454,7 @@ const WeddingForm = () => {
 
             {/* Ninong Section */}
             <fieldset className="form-group">
-                <legend>Ninongs</legend>
+                <legend>Ninong</legend>
                 {formData.Ninong.map((ninong, index) => (
                     <div key={index}>
                         <Form.Group>
@@ -487,7 +498,7 @@ const WeddingForm = () => {
 
             {/* Ninang Section */}
             <fieldset className="form-group">
-                <legend>Ninangs</legend>
+                <legend>Ninang</legend>
                 {formData.Ninang.map((ninang, index) => (
                     <div key={index}>
                         <Form.Group>
