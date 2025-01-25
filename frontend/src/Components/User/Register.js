@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Metadata from '../Layout/MetaData';
 import { useDispatch, useSelector } from 'react-redux';
 import { register, clearErrors } from '../../Redux/actions/userActions';
+import axios from 'axios'; 
 
 const Register = () => {
     const dispatch = useDispatch();
@@ -18,8 +19,9 @@ const Register = () => {
         zip: '',
         city: '',
         country: '',
+        ministryCategory: '',
     });
-
+    const [ministryCategories, setMinistryCategories] = useState([]); 
     const { name, email, password, age, preference, phone, barangay, zip, city, country } = user;
     const [avatar, setAvatar] = useState('');
     const [avatarPreview, setAvatarPreview] = useState('/images/default_avatar.jpg');
@@ -33,7 +35,19 @@ const Register = () => {
             alert(error);
             dispatch(clearErrors());
         }
+
+        const fetchMinistryCategories = async () => {
+            try {
+                const { data } = await axios.get('/api/v1/getAllMinistryCategories'); 
+                setMinistryCategories(data.categories);
+            } catch (err) {
+                console.error('Failed to fetch ministry categories:', err);
+            }
+        };
+
+        fetchMinistryCategories();
     }, [error, isAuthenticated, navigate, dispatch]);
+
 
     const submitHandler = (e) => {
         e.preventDefault();
@@ -50,6 +64,7 @@ const Register = () => {
         formData.set('city', city);
         formData.set('country', country);
         formData.set('avatar', avatar);
+        formData.set('ministryCategory', ministryCategories); 
 
         dispatch(register(formData));
     };
@@ -74,7 +89,7 @@ const Register = () => {
         if (e.target.name === 'avatar') {
             const file = e.target.files[0];
             setAvatar(file);
-    
+
             const reader = new FileReader();
             reader.onload = () => {
                 if (reader.readyState === 2) {
@@ -187,6 +202,27 @@ const Register = () => {
                             />
                         </div>
 
+                         {/* Ministry Category */}
+                         <div className="form-group mb-3">
+                            <label htmlFor="ministryCategory_field">Ministry Category</label>
+                            <select
+                                id="ministryCategory_field"
+                                className="form-control"
+                                name="ministryCategories"
+                                value={ministryCategories}
+                                onChange={onChange}
+                                required
+                            >
+                                <option value="">Select Ministry Category</option>
+                                {ministryCategories.map((category) => (
+                                    <option key={category._id} value={category._id}>
+                                        {category.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+
                         {/* Barangay */}
                         <div className="form-group mb-3">
                             <label htmlFor="barangay_field">Baranggay</label>
@@ -243,33 +279,32 @@ const Register = () => {
                             />
                         </div>
 
-                        {/* Avatar */}
-                        <div className='form-group mb-4'>
-                            <label htmlFor='avatar_upload'>Avatar</label>
-                            <div className='d-flex align-items-center mt-2'>
-                                <figure className='avatar mr-3'>
+                       {/* Avatar */}
+                        <div className="form-group mb-4">
+                            <label htmlFor="avatar_upload">Avatar</label>
+                            <div className="d-flex align-items-center mt-2">
+                                <figure className="avatar mr-3">
                                     <img
                                         src={avatarPreview}
-                                        className='rounded-circle'
-                                        alt='Avatar Preview'
+                                        alt="Avatar Preview"
                                         style={{
                                             objectFit: 'cover',
                                             width: '80px',
                                             height: '80px',
-                                            borderRadius: '50%',
+                                            borderRadius: '50%', 
                                         }}
                                     />
                                 </figure>
-                                <div className='custom-file'>
+                                <div className="custom-file">
                                     <input
-                                        type='file'
-                                        name='avatar'
-                                        className='custom-file-input'
-                                        id='customFile'
+                                        type="file"
+                                        name="avatar"
+                                        className="custom-file-input"
+                                        id="customFile"
                                         accept="images/*"
                                         onChange={onChange}
                                     />
-                                    <label className='custom-file-label' htmlFor='customFile'>
+                                    <label className="custom-file-label" htmlFor="customFile">
                                         Choose Avatar
                                     </label>
                                 </div>
@@ -289,6 +324,9 @@ const Register = () => {
             </div>
         </Fragment>
     );
+
+
+    
 };
 
 export default Register;

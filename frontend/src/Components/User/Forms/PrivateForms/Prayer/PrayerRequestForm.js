@@ -78,10 +78,11 @@ const PrayerRequestForm = () => {
         }
 
         try {
+            const submissionData = { ...formData, userId: user?._id }; 
             const response = await axios.post(
                 `${process.env.REACT_APP_API}/api/v1/prayerRequestSubmit`,
-                formData, config
-                
+                submissionData,
+                config
             );
             toast.success('Prayer request submitted successfully!');
             handleClear();

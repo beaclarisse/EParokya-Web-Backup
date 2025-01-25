@@ -43,8 +43,8 @@ const SideBar = () => {
             </Link>
           </Nav.Item>
           <Nav.Item>
-            <Link to="/admin/calendar" className="sidebar-link" style={styles.sidebarLink}>
-              Prayer Wall
+            <Link to="/admin/prayerReview" className="sidebar-link" style={styles.sidebarLink}>
+              Prayer Wall Requests
             </Link>
           </Nav.Item>
           <Nav.Item>
@@ -151,22 +151,22 @@ const SideBar = () => {
                   </Link>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <Link to="/admin/prayerRequest" className="sidebar-link" style={styles.sidebarLink}>
+                  <Link to="/admin/prayerRequestList" className="sidebar-link" style={styles.sidebarLink}>
                     Mass Intentions
                   </Link>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <Link to="/admin/counseling" className="sidebar-link" style={styles.sidebarLink}>
+                  <Link to="/admin/counselingList" className="sidebar-link" style={styles.sidebarLink}>
                     Counseling
                   </Link>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <Link to="/admin/houseBlessing" className="sidebar-link" style={styles.sidebarLink}>
+                  <Link to="/admin/houseBlessingList" className="sidebar-link" style={styles.sidebarLink}>
                     House Blessings
                   </Link>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <Link to="/admin/streetMass" className="sidebar-link" style={styles.sidebarLink}>
+                  <Link to="/admin/streetMassList" className="sidebar-link" style={styles.sidebarLink}>
                    Street Mass
                   </Link>
                 </Dropdown.Item>

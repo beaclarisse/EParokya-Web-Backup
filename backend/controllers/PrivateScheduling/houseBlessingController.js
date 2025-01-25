@@ -7,27 +7,36 @@ exports.createHouseBlessing = async (req, res) => {
             fullName,
             contactNumber,
             address,
-            blessingDate,
+            blessingDate, 
             blessingTime,
             userId,
         } = req.body;
+
+        if (!fullName || !contactNumber || !address || !blessingDate || !blessingTime || !userId) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
 
         const newHouseBlessing = new HouseBlessing({
             fullName,
             contactNumber,
             address,
-            blessingDate,
+            blessingDate, 
             blessingTime,
             userId,
         });
 
         const savedHouseBlessing = await newHouseBlessing.save();
-        res.status(201).json({ message: 'House blessing request created successfully', houseBlessing: savedHouseBlessing });
+        res.status(201).json({ 
+            message: 'House blessing request created successfully', 
+            houseBlessing: savedHouseBlessing 
+        });
     } catch (error) {
         console.error('Error creating house blessing request:', error);
         res.status(500).json({ error: 'Failed to create house blessing request' });
     }
 };
+
+
 
 exports.getUserHouseBlessingRequests = async (req, res) => {
     try {
@@ -42,10 +51,10 @@ exports.getUserHouseBlessingRequests = async (req, res) => {
 
 exports.getAllHouseBlessingRequests = async (req, res) => {
     try {
-        const houseBlessingRequests = await HouseBlessing.find();
+        const houseBlessingRequests = await HouseBlessing.find().populate('userId', 'name email'); 
         res.status(200).json({ houseBlessingRequests });
     } catch (error) {
-        console.error('Error fetching all house blessing requests:', error);
+        console.error('Error fetching house blessing requests:', error);
         res.status(500).json({ error: 'Failed to fetch house blessing requests' });
     }
 };

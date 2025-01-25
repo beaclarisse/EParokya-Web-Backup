@@ -14,6 +14,9 @@ exports.createCounseling = async (req, res) => {
             userId,
         } = req.body;
 
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is required' });
+        }
         const newCounseling = new Counseling({
             person,
             purpose,
@@ -48,13 +51,14 @@ exports.getUserCounselingRequests = async (req, res) => {
 // Fetch all counseling requests (Admin)
 exports.getAllCounselingRequests = async (req, res) => {
     try {
-        const counselingRequests = await Counseling.find();
+        const counselingRequests = await Counseling.find().populate('userId', 'name email'); 
         res.status(200).json({ counselingRequests });
     } catch (error) {
         console.error('Error fetching all counseling requests:', error);
         res.status(500).json({ error: 'Failed to fetch counseling requests' });
     }
 };
+
 
 // Update counseling status (Approve/Cancel)
 exports.updateCounselingStatus = async (req, res) => {

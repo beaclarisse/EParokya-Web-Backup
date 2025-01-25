@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaEdit, FaTrash, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import "../../Layout/styles/style.css";
 import SideBar from '../SideBar';
@@ -17,7 +17,6 @@ const AdminAnnouncementList = () => {
         const fetchAnnouncements = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllAnnouncements`);
-                console.log('Fetched Announcements:', response.data.announcements);
                 setAnnouncements(response.data.announcements || []);
             } catch (error) {
                 console.error('Error fetching announcements:', error);
@@ -28,7 +27,6 @@ const AdminAnnouncementList = () => {
         const fetchCategories = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllannouncementCategory`);
-                console.log('Fetched Categories:', response.data.categories);
                 setCategories(response.data.categories || []);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -37,9 +35,8 @@ const AdminAnnouncementList = () => {
         };
 
         fetchAnnouncements();
-        fetchCategories(); // Fetch categories
+        fetchCategories();
     }, []);
-
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value.toLowerCase());
@@ -82,80 +79,78 @@ const AdminAnnouncementList = () => {
     return (
         <div className="announcement-list">
             <SideBar />
-            {filteredAnnouncements.map((announcement) => (
-                <div className="announcement-box" key={announcement._id}>
-                    {/* Announcement Header */}
-                    <div className="announcement-header">
-                        <img
-                            src="/public/../../../../EPAROKYA-SYST.png"
-                            alt="Saint Joseph Parish"
-                            className="profile-pic"
-                        />
-                        <div>
-                            <h3>{announcement.name}</h3>
+            <div className="announcement-container">
+                {filteredAnnouncements.map((announcement) => (
+                    <div className="announcement-box" key={announcement._id}>
+                        {/* Announcement Header */}
+                        <div className="announcement-header">
+                            <img
+                                src="/public/../../../../EPAROKYA-SYST.png"
+                                alt="Saint Joseph Parish"
+                                className="profile-pic"
+                            />
+                            <div>
+                                <h3>{announcement.name}</h3>
+                                <p>
+                                    Created on:{" "}
+                                    {new Date(announcement.dateCreated).toLocaleDateString()}
+                                </p>
+                            </div>
+                            <div className="actions">
+                                <FaEdit
+                                    onClick={() =>
+                                        navigate(`/admin/updateAnnouncementPage/${announcement._id}`)
+                                    }
+                                />
+                                <FaTrash onClick={() => handleDelete(announcement._id)} />
+                            </div>
+                        </div>
+
+                        <div className="announcement-body">
+                            <p>{announcement.description}</p>
+                            <p className="rich-description">{announcement.richDescription}</p>
+                            {announcement.images && Array.isArray(announcement.images) && announcement.images.length > 0 ? (
+                                <div className="image-slider">
+                                    {announcement.images.map((img, index) => (
+                                        <img
+                                            key={index}
+                                            src={img.url}
+                                            alt={`Slide ${index + 1}`}
+                                            onClick={() => setPreviewImage(img.url)}
+                                        />
+                                    ))}
+                                </div>
+                            ) : announcement.image ? (
+                                <img
+                                    src={announcement.image}
+                                    alt="Announcement"
+                                    className="single-image"
+                                />
+                            ) : null}
+                        </div>
+
+                        {/* Announcement Footer */}
+                        <div className="announcement-footer">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={announcement.isFeatured}
+                                    onChange={() =>
+                                        toggleFeatured(announcement._id, announcement.isFeatured)
+                                    }
+                                />
+                                Featured
+                            </label>
+                            <p>Tags: {announcement.tags.join(", ")}</p>
                             <p>
-                                Created on:{" "}
-                                {new Date(announcement.dateCreated).toLocaleDateString()}
+                                Category: {announcement.announcementCategory?.name || "N/A"}
                             </p>
                         </div>
-                        <div className="actions">
-                            <FaEdit
-                                onClick={() =>
-                                    navigate(`/admin/updateAnnouncementPage/${announcement._id}`)
-                                }
-                            />
-                            <FaTrash onClick={() => handleDelete(announcement._id)} />
-                        </div>
                     </div>
-
-                    <div className="announcement-body">
-                        <p>{announcement.description}</p>
-                        <p className="rich-description">{announcement.richDescription}</p>
-                        {announcement.images && Array.isArray(announcement.images) && announcement.images.length > 0 ? (
-                            <div className="image-slider">
-                                {announcement.images.map((img, index) => (
-                                    <img
-                                        key={index}
-                                        src={img.url}
-                                        alt={`Slide ${index + 1}`}
-                                        onClick={() => setPreviewImage(img.url)}
-                                    />
-                                ))}
-                            </div>
-                        ) : announcement.image ? (
-                            <img
-                                src={announcement.image}
-                                alt="Announcement"
-                                className="single-image"
-                            />
-                        ) : null}
-                    </div>
-
-
-                    {/* Announcement Footer */}
-                    <div className="announcement-footer">
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={announcement.isFeatured}
-                                onChange={() =>
-                                    toggleFeatured(announcement._id, announcement.isFeatured)
-                                }
-                            />
-                            Featured
-                        </label>
-                        <p>Tags: {announcement.tags.join(", ")}</p>
-                        <p>
-                            Category: {announcement.announcementCategory?.name || "N/A"}
-                        </p>
-                    </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
-
     );
-
-
 };
 
 export default AdminAnnouncementList;

@@ -14,7 +14,7 @@ const NavigationForm = () => {
                 { name: 'Mass Intentions', path: '/user/prayerRequest' },
                 { name: 'Counseling', path: '/user/counselingForm' },
                 { name: 'Street Mass', path: '/user/counselingForm' },
-                { name: 'House Blessing', path: '/user/counselingForm' },
+                { name: 'House Blessing', path: '/user/houseBlessingForm' },
 
 
             ],

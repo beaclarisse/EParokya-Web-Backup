@@ -7,26 +7,33 @@ import Header from './Components/Layout/Header';
 import React, { useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
+// User Routes
 import { Login } from './Components/User/Login'
 import Register from './Components/User/Register'
 import Profile from './Components/User/Profile';
 import UserCalendar from './Components/User/UserCalendar';
 import NavigationForms from './Components/User/NavigationForms';
 
+// User Forms
 import BaptismForm from './Components/User/Forms/PrivateForms/Baptism/BaptismForm';
 import FuneralForm from './Components/User/Forms/PrivateForms/Funeral/FuneralForm';
 import WeddingForm from './Components/User/Forms/PrivateForms/Wedding/WeddingForm';
 
 import CounselingForm from './Components/User/Forms/PrivateForms/Counseling/CounselingForm';
 import PrayerRequestForm from './Components/User/Forms/PrivateForms/Prayer/PrayerRequestForm';
+import HouseBlessingForm from './Components/User/Forms/PrivateForms/PrivateSchedule/HouseBlessingForm';
 
 
+// User Navigations
 import PrayerWall from './Components/User/PrayerWall/PrayerWall';
 
 import ProtectedRoute from './Components/Route/protectedRoute';
 
+// Admin Routes
 //Dashboard
 import Dashboard from './Components/Admin/Dashboard';
+
 //User
 import UsersList from './Components/Admin/User/UserList';
 import UpdateUser from './Components/Admin/User/UserUpdate';
@@ -35,7 +42,6 @@ import UpdateUser from './Components/Admin/User/UserUpdate';
 import Calendar from './Components/Admin/Calendar/Calendar';
 import AdminDate from './Components/Admin/AdminDate';
 import AddEvent from './Components/Admin/Calendar/AddEvent';
-
 
 //Post
 import CreatePost from './Components/Admin/Post/Post';
@@ -46,13 +52,15 @@ import EventPost from './Components/Admin/EventPost/EventPostCreate';
 import EventPostLists from './Components/Admin/EventPost/EventPostList';
 import EventPostUpdate from './Components/Admin/EventPost/UpdateEventPost';
 
+// Announcement
 import AnnouncementCategory from './Components/Admin/Announcement/CreateAnnouncementCategory';
 import Announcement from './Components/Admin/Announcement/CreateAnnouncement';
 import AnnouncementList from './Components/Admin/Announcement/AnnouncementList';
 
+// Prayer
 import AdminPrayerReview from './Components/Admin/Prayers/AdminPrayerReview';
 
-
+// Private Forms
 import WeddingList from './Components/Admin/Wedding/WeddingList';
 import WeddingDetails from './Components/Admin/Wedding/WeddingDetails';
 
@@ -62,8 +70,12 @@ import BaptismDetails from './Components/Admin/Baptism/BapstismDetails';
 import FuneralList from './Components/Admin/Funeral/FuneralList';
 import FuneralDetails from './Components/Admin/Funeral/FuneralDetails';
 
-//Admin
+import CounselingList from './Components/Admin/Counseling/CounselingList';
+import PrayerRequestList from './Components/Admin/Prayers/prayerRequestList';
+import HouseBlessingList from './Components/Admin/PrivateSchedule/houseBlessingList';
 
+
+//Admin
 import MinistryCategory from './Components/Admin/Ministries/CreateMinistryCategory';
 
 
@@ -90,6 +102,7 @@ function App() {
         <Route path="/user/weddingForm" element={<WeddingForm />} exact="true" />
         <Route path="/user/counselingForm" element={<CounselingForm />} exact="true" />
         <Route path="/user/prayerRequest" element={<PrayerRequestForm />} exact="true" />
+        <Route path="/user/houseBlessingForm" element={<HouseBlessingForm />} exact="true" />
 
 
         <Route path="/user/prayerWall" element={<PrayerWall />} exact="true" />
@@ -112,6 +125,15 @@ function App() {
         <Route path="/admin/announcementCategory/create" element={<ProtectedRoute isAdmin={true}><AnnouncementCategory /></ProtectedRoute>} />
         <Route path="/admin/create/announcement" element={<ProtectedRoute isAdmin={true}><Announcement /></ProtectedRoute>} />
         <Route path="/admin/announcementList" element={<ProtectedRoute isAdmin={true}><AnnouncementList /></ProtectedRoute>} />
+
+        {/* counseling */}
+        <Route path="/admin/counselingList" element={<ProtectedRoute isAdmin={true}><CounselingList /></ProtectedRoute>} />
+
+        {/* prayer */}
+        <Route path="/admin/prayerRequestList" element={<ProtectedRoute isAdmin={true}><PrayerRequestList /></ProtectedRoute>} />
+
+        {/* Private Scheduling */}
+        <Route path="/admin/houseBlessingList" element={<ProtectedRoute isAdmin={true}><HouseBlessingList /></ProtectedRoute>} />
 
         {/* Post */}
         <Route path="/admin/post/create" element={<ProtectedRoute isAdmin={true}><CreatePost /></ProtectedRoute>} />

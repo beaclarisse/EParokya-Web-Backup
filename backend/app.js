@@ -12,7 +12,7 @@ const prayerWall = require('./routes/PrayerWall/prayerWall')
 const counseling = require('./routes/counseling')
 const prayerRequest = require('./routes/PrayerWall/prayerRequest')
 
-const houseBlessing = require('./routes/PrayerWall/prayerRequest')
+const houseBlessing = require('./routes/PrivateScheduling/houseBlessing')
 // const memberBatchYear = require('./routes/Members/memberBatchYear')
 
 

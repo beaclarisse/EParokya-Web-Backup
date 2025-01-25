@@ -39,10 +39,9 @@ exports.getUserPrayerRequests = async (req, res) => {
     }
 };
 
-// Fetch all prayer requests (Admin)
 exports.getAllPrayerRequests = async (req, res) => {
     try {
-        const prayerRequests = await PrayerRequest.find();
+        const prayerRequests = await PrayerRequest.find().populate('userId', 'name email'); 
         res.status(200).json({ prayerRequests });
     } catch (error) {
         console.error('Error fetching all prayer requests:', error);
@@ -50,7 +49,6 @@ exports.getAllPrayerRequests = async (req, res) => {
     }
 };
 
-// Add an intention to a prayer request
 exports.addIntentionToPrayerRequest = async (req, res) => {
     try {
         const { id } = req.params;

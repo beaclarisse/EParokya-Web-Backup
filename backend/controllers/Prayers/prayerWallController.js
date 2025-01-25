@@ -112,34 +112,34 @@ exports.toggleLike = async (req, res) => {
 
 exports.getAllPrayers = async (req, res) => {
   try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-      const skip = (page - 1) * limit;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const query = {};
+    if (req.query.status) {
+      query.prayerWallStatus = req.query.status; 
+    }
 
-      // Fetch all prayers, optionally filter by status if provided
-      const query = {};
-      if (req.query.status) {
-          query.prayerWallStatus = req.query.status; // Add filter only if status is present
-      }
+    const prayers = await PrayerWall.find(query)
+      .populate("userId", "name _id") 
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
 
-      const prayers = await PrayerWall.find(query)
-          .skip(skip)
-          .limit(limit)
-          .sort({ createdAt: -1 });
+    const total = await PrayerWall.countDocuments(query);
 
-      const total = await PrayerWall.countDocuments(query);
-
-      res.status(200).json({
-          success: true,
-          prayers,
-          total,
-          currentPage: page,
-      });
+    res.status(200).json({
+      success: true,
+      prayers,
+      total,
+      currentPage: page,
+    });
   } catch (error) {
-      console.error("Error fetching prayers:", error);
-      res.status(500).json({ success: false, error: error.message });
+    console.error("Error fetching prayers:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
 };
+
 
 
 exports.approvePrayer = async (req, res) => {

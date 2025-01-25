@@ -64,11 +64,13 @@ const CounselingForm = () => {
             toast.error('Please fill out all required fields!');
             return;
         }
-
+    
         try {
+            const submissionData = { ...formData, userId: user?._id }; 
             const response = await axios.post(
                 `${process.env.REACT_APP_API}/api/v1/counselingSubmit`,
-                formData, config
+                submissionData,
+                config
             );
             toast.success('Counseling form submitted successfully!');
             handleClear();
@@ -77,6 +79,7 @@ const CounselingForm = () => {
             toast.error('Failed to submit the form. Please try again.');
         }
     };
+    
 
     return (
         <Row className="mt-4">
@@ -149,7 +152,8 @@ const CounselingForm = () => {
 
                     <h4 className="mt-4">Tirahan</h4>
                     <Form.Group>
-                        <Form.Label>Block</Form.Label>
+                        <Form.Label>Block (Format: Block No.)
+                        </Form.Label>
                         <Form.Control
                             type="text"
                             value={formData.address.block}
@@ -157,7 +161,7 @@ const CounselingForm = () => {
                         />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Lot</Form.Label>
+                        <Form.Label>Lot (Format: Lot No.)</Form.Label>
                         <Form.Control
                             type="text"
                             value={formData.address.lot}
@@ -172,7 +176,7 @@ const CounselingForm = () => {
                             onChange={(e) => handleChange(e, 'address.street')}
                         />
 
-                        <Form.Label>Phase</Form.Label>
+                        <Form.Label>Phase (Format: Phase No.)</Form.Label>
                         <Form.Control
                             type="text"
                             value={formData.address.phase}
@@ -198,7 +202,7 @@ const CounselingForm = () => {
                         />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Oras</Form.Label>
+                        <Form.Label>Oras (Format: 7:00PM)</Form.Label>
                         <Form.Control
                             type="text"
                             value={formData.counselingTime}

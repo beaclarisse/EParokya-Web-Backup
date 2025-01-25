@@ -4,8 +4,8 @@ import "../../Layout/styles/style.css";
 import SideBar from "../SideBar";
 import { useNavigate } from "react-router-dom";
 
-const CounselingList = () => {
-    const [counselingForms, setCounselingForms] = useState([]);
+const HouseBlessingList = () => {
+    const [houseBlessingForms, setHouseBlessingForms] = useState([]);
     const [filteredForms, setFilteredForms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,34 +13,34 @@ const CounselingList = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
 
-    const fetchCounselingForms = async () => {
+    const fetchHouseBlessingForms = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllcounseling`);
-            const forms = response.data.counselingRequests || []; 
-            setCounselingForms(forms);
+            const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllhouseBlessing`);
+            const forms = response.data.houseBlessingRequests || [];
+            setHouseBlessingForms(forms);
             setFilteredForms(forms);
         } catch (err) {
-            setError(err.response?.data?.message || "Error fetching counseling forms.");
+            setError(err.response?.data?.message || "Error fetching house blessings forms.");
         } finally {
             setLoading(false);
         }
     };
-    
-    const handleCardClick = (counselingId) => {
-        navigate(`/admin/counselingDetails/${counselingId}`);
+
+    const handleCardClick = (houseBlessingId) => {
+        navigate(`/admin/houseBlessingDetails/${houseBlessingId}`);
     };
 
     const filterForms = () => {
-        let filtered = counselingForms;
+        let filtered = houseBlessingForms;
 
         if (activeFilter !== "All") {
-            filtered = filtered.filter((form) => form.counselingStatus === activeFilter);
+            filtered = filtered.filter((form) => form.blessingStatus === activeFilter);
         }
 
         if (searchTerm) {
             filtered = filtered.filter((form) =>
-                form.person?.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
+                form.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -48,24 +48,24 @@ const CounselingList = () => {
     };
 
     useEffect(() => {
-        fetchCounselingForms();
+        fetchHouseBlessingForms();
     }, []);
 
     useEffect(() => {
         filterForms();
-    }, [activeFilter, searchTerm, counselingForms]);
+    }, [activeFilter, searchTerm, houseBlessingForms]);
 
     return (
         <div style={{ display: "flex", height: "100vh" }}>
             <SideBar />
             <div style={{ flex: 1, padding: "20px", overflowY: "auto" }}>
-                <h1 className="counseling-title">Counseling Records</h1>
+                <h1 className="houseBlessing-title">House Blessing Records</h1>
 
-                <div className="counseling-filters">
+                <div className="houseBlessing-filters">
                     {["All", "Pending", "Confirmed", "Cancelled"].map((status) => (
                         <button
                             key={status}
-                            className={`counseling-filter-button ${activeFilter === status ? "active" : ""}`}
+                            className={`houseBlessing-filter-button ${activeFilter === status ? "active" : ""}`}
                             onClick={() => setActiveFilter(status)}
                         >
                             {status}
@@ -86,56 +86,42 @@ const CounselingList = () => {
                 {error && <p className="error-text">Error: {error}</p>}
 
                 {loading ? (
-                    <p className="loading-text">Loading submitted counseling forms...</p>
+                    <p className="loading-text">Loading submitted house blessings forms...</p>
                 ) : filteredForms.length === 0 ? (
-                    <p className="empty-text">No counseling forms available.</p>
+                    <p className="empty-text">No house blessings forms available.</p>
                 ) : (
-                    <div className="counseling-list">
+                    <div className="houseBlessing-list">
                         {filteredForms.map((item, index) => (
                             <div
                                 key={item._id}
-                                className={`counseling-card ${item.counselingStatus?.toLowerCase() || ""}`}
+                                className={`houseBlessing-card ${item.blessingStatus?.toLowerCase() || ""}`}
                                 onClick={() => handleCardClick(item._id)}
                             >
-                                <div className="status-badge">{item.counselingStatus}</div>
+                                <div className="status-badge">{item.blessingStatus}</div>
                                 <h3 className="card-title">Record #{index + 1}</h3>
                                 <div className="card-details">
                                     <p>
-                                        <strong>Full Name:</strong> {item.person?.fullName || "N/A"}
-                                    </p>
-                                    <p>
-                                        <strong>Purpose:</strong> {item.purpose || "N/A"}
+                                        <strong>Full Name:</strong> {item.fullName || "N/A"}
                                     </p>
                                     <p>
                                         <strong>Contact Number:</strong> {item.contactNumber || "N/A"}
                                     </p>
                                     <p>
-                                        <strong>Counseling Date:</strong>{" "}
-                                        {item.counselingDate
-                                            ? new Date(item.counselingDate).toLocaleDateString()
-                                            : "N/A"}
+                                        <strong>House Blessing Date:</strong> {item.blessingDate ? new Date(item.blessingDate).toLocaleDateString() : "N/A"}
                                     </p>
                                     <p>
-                                        <strong>Counseling Time:</strong> {item.counselingTime || "N/A"}
+                                        <strong>House Blessing Time:</strong> {item.blessingTime || "N/A"}
                                     </p>
                                     <p>
                                         <strong>Address:</strong>
+                                        {item.address?.houseDetails || "N/A"},
                                         {item.address?.block || "N/A"},
                                         {item.address?.lot || "N/A"},
-                                        {item.address?.street || "N/A"},
                                         {item.address?.phase || "N/A"},
-                                        {item.address?.baranggay || "N/A"}
-                                    </p>
-
-                                    <p>
-                                        <strong>Contact Person:</strong> {item.contactPerson?.fullName || "N/A"}
-                                    </p>
-                                    <p>
-                                        <strong>Contact Person Contact Number:</strong> {item.contactPerson?.contactNumber || "N/A"}
-                                    </p>
-
-                                    <p>
-                                        <strong>Relationship:</strong> {item.contactPerson?.relationship || "N/A"}
+                                        {item.address?.street || "N/A"},
+                                        {item.address?.baranggay || "N/A"},
+                                        {item.address?.district || "N/A"},
+                                        {item.address?.city || "N/A"},
                                     </p>
                                     <p>
                                         <strong>Submitted By:</strong>
@@ -156,4 +142,4 @@ const CounselingList = () => {
     );
 };
 
-export default CounselingList;
+export default HouseBlessingList;
