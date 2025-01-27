@@ -61,7 +61,7 @@ const AdminPrayerReview = () => {
     const handleApprove = async (prayerId) => {
         try {
             await axios.put(
-                `${process.env.REACT_APP_API}/api/v1/admin/approvePrayer/${prayerId}`,
+                `${process.env.REACT_APP_API}/api/v1/confirmPrayer/${prayerId}`,
                 {},
                 config
             );

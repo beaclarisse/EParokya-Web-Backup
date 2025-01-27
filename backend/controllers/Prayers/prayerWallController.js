@@ -49,38 +49,62 @@ exports.getPendingPrayers = async (req, res) => {
   }
 };
 
-exports.confirmPrayerRequest = async (req, res) => {
-  const prayerId = req.params.id;
 
-  try {
-    const prayer = await PrayerWall.findById(prayerId);
-
-    if (!prayer) {
-      return res.status(404).json({ message: "Prayer request not found." });
-    }
-
-    prayer.prayerWallStatus = "Confirmed";
-    prayer.confirmedAt = new Date();
-
-    await prayer.save();
-
-    res.status(200).json({ message: "Prayer request confirmed.", prayer });
-  } catch (error) {
-    console.error("Error confirming prayer request:", error);
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
-
+//with pagination
 exports.getConfirmedPrayers = async (req, res) => {
   try {
-    const confirmedPrayers = await PrayerWall.find({ prayerWallStatus: "Confirmed" }).populate("userId", "name");
+    const { page = 1, limit = 10 } = req.query; 
+    const skip = (page - 1) * limit;
 
-    res.status(200).json({ prayers: confirmedPrayers });
+    const confirmedPrayers = await PrayerWall.find({ prayerWallStatus: "Confirmed" })
+      .populate("userId", "name")
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await PrayerWall.countDocuments({ prayerWallStatus: "Confirmed" });
+
+    res.status(200).json({ prayers: confirmedPrayers, total });
   } catch (error) {
     console.error("Error fetching confirmed prayers:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+exports.toggleInclude = async (req, res) => {
+  const prayerId = req.params.prayerId; 
+  const userId = req.user._id;
+
+  try {
+    const prayer = await PrayerWall.findById(prayerId);
+
+    if (!prayer) {
+      return res.status(404).json({ message: "Prayer not found." });
+    }
+
+    if (!Array.isArray(prayer.includedBy)) {
+      prayer.includedBy = [];
+    }
+
+    const includedIndex = prayer.includedBy.indexOf(userId);
+
+    if (includedIndex === -1) {
+      prayer.includedBy.push(userId);
+      await prayer.save();
+      return res.status(200).json({
+        message: "Prayer include status updated.",
+        includes: prayer.includedBy.length,
+        includedByUser: true,
+      });
+    } else {
+      return res.status(400).json({ message: "You have already included this prayer." });
+    }
+  } catch (error) {
+    console.error("Error toggling include on prayer:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
 
 exports.toggleLike = async (req, res) => {
   const prayerId = req.params.id;
@@ -143,20 +167,29 @@ exports.getAllPrayers = async (req, res) => {
 
 
 exports.approvePrayer = async (req, res) => {
-  try {
-      const prayer = await PrayerWall.findByIdAndUpdate(
-          req.params.id,
-          { prayerWallStatus: 'Confirmed' },
-          { new: true }
-      );
-      if (!prayer) return res.status(404).json({ success: false, message: "Prayer not found" });
+  const { prayerId } = req.params;
 
-      res.status(200).json({ success: true, message: "Prayer approved", prayer });
+  try {
+    const prayer = await PrayerWall.findById(prayerId);
+    if (!prayer) {
+      return res.status(404).json({ success: false, message: "Prayer request not found." });
+    }
+    prayer.prayerWallStatus = "Confirmed";
+    prayer.confirmedAt = new Date();
+
+    await prayer.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Prayer request approved successfully.",
+      prayer,
+    });
   } catch (error) {
-      console.error("Error approving prayer:", error);
-      res.status(500).json({ success: false, error: error.message });
+    console.error("Error approving prayer request:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
 };
+
 
 exports.rejectPrayer = async (req, res) => {
   try {
