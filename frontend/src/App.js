@@ -27,6 +27,8 @@ import HouseBlessingForm from './Components/User/Forms/PrivateForms/PrivateSched
 
 // User Navigations
 import PrayerWall from './Components/User/PrayerWall/PrayerWall';
+import AnnouncementDetails from './Components/AnnouncementDetails';
+
 
 import ProtectedRoute from './Components/Route/protectedRoute';
 
@@ -94,6 +96,8 @@ function App() {
         <Route path="/login" element={<Login />} exact="true" />
         <Route path="/register" element={<Register />} exact="true" />
         <Route path="/profile" element={<Profile />} exact="true" />
+        <Route path="/announcementDetails/:id" element={<AnnouncementDetails />} exact="true" />
+
         <Route path="/user/calendar" element={<UserCalendar />} exact="true" />
         <Route path="/user/NavigationForms" element={<NavigationForms />} exact="true" />
 

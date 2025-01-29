@@ -49,29 +49,40 @@ exports.getPendingPrayers = async (req, res) => {
   }
 };
 
-
 //with pagination
 exports.getConfirmedPrayers = async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query; 
+    const { page = 1, limit = 10 } = req.query;
     const skip = (page - 1) * limit;
+    const userId = req.user?._id; 
 
     const confirmedPrayers = await PrayerWall.find({ prayerWallStatus: "Confirmed" })
-      .populate("userId", "name")
+      .populate("userId", "name avatar") 
       .skip(skip)
-      .limit(Number(limit));
+      .limit(Number(limit))
+      .lean();
 
+    const prayersWithIncludeData = confirmedPrayers.map((prayer) => ({
+      ...prayer,
+      user: prayer.userId, 
+      likes: prayer.likedBy?.length || 0,
+      likedByUser: userId ? prayer.likedBy?.includes(userId) : false,
+      includeCount: prayer.includeBy?.length || 0, 
+      includedByUser: userId ? prayer.includeBy?.includes(userId) : false, 
+    }));
+    
     const total = await PrayerWall.countDocuments({ prayerWallStatus: "Confirmed" });
 
-    res.status(200).json({ prayers: confirmedPrayers, total });
+    res.status(200).json({ prayers: prayersWithIncludeData, total });
   } catch (error) {
     console.error("Error fetching confirmed prayers:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
 
+
 exports.toggleInclude = async (req, res) => {
-  const prayerId = req.params.prayerId; 
+  const prayerId = req.params.prayerId;
   const userId = req.user._id;
 
   try {
@@ -81,18 +92,19 @@ exports.toggleInclude = async (req, res) => {
       return res.status(404).json({ message: "Prayer not found." });
     }
 
-    if (!Array.isArray(prayer.includedBy)) {
-      prayer.includedBy = [];
+    if (!Array.isArray(prayer.includeBy)) {
+      prayer.includeBy = [];
     }
 
-    const includedIndex = prayer.includedBy.indexOf(userId);
+    const includedIndex = prayer.includeBy.indexOf(userId);
 
     if (includedIndex === -1) {
-      prayer.includedBy.push(userId);
+      prayer.includeBy.push(userId);
       await prayer.save();
+
       return res.status(200).json({
         message: "Prayer include status updated.",
-        includes: prayer.includedBy.length,
+        includes: prayer.includeBy.length,
         includedByUser: true,
       });
     } else {
@@ -105,9 +117,8 @@ exports.toggleInclude = async (req, res) => {
 };
 
 
-
 exports.toggleLike = async (req, res) => {
-  const prayerId = req.params.id;
+  const prayerId = req.params.prayerId;
   const userId = req.user._id;
 
   try {

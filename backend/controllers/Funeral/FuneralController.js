@@ -236,7 +236,7 @@ exports.cancelFuneral = async (req, res) => {
 exports.createComment = async (req, res) => {
     try {
         const { funeralId } = req.params;
-        console.log('Received funeralId:', funeralId);
+        // console.log('Received funeralId:', funeralId);
 
         const { 
             selectedComment, 

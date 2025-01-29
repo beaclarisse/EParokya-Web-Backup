@@ -16,7 +16,8 @@ const prayerWallSchema = new mongoose.Schema({
         default: 'Pending',
         enum: ['Pending', 'Confirmed', 'Cancelled'],
     },
-        likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    includeBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     createdAt: {
         type: Date,
         default: Date.now,

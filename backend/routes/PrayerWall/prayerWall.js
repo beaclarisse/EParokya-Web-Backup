@@ -11,7 +11,7 @@ router.get("/prayer-wall", PrayerWallController.getConfirmedPrayers);
 router.get("/pending", isAuthenticatedUser, PrayerWallController.getPendingPrayers);
 router.put("/confirmPrayer/:prayerId", isAuthenticatedUser, PrayerWallController.approvePrayer);
 router.put("/toggleInclude/:prayerId", isAuthenticatedUser, PrayerWallController.toggleInclude); 
-router.put("/toggle-like/:prayerId", isAuthenticatedUser, PrayerWallController.toggleLike);
+router.put("/toggleLike/:prayerId", isAuthenticatedUser, PrayerWallController.toggleLike);
 router.put("/:prayerId/approve", isAuthenticatedUser, PrayerWallController.approvePrayer);
 router.put("/:prayerId/reject", isAuthenticatedUser, PrayerWallController.rejectPrayer);
 

@@ -22,6 +22,7 @@ const customEvent = require('./routes/customEvent')
 const ministryCategory = require('./routes/ministryCategory')
 const announcement = require('./routes/Announcement/announcement')
 const announcementCategory = require('./routes/Announcement/announcementCategory')
+const announcementComment = require('./routes/Announcement/announcementComment')
 
 
 const post = require('./routes/post')
@@ -50,6 +51,7 @@ app.use('/api/v1', customEvent);
 app.use('/api/v1', ministryCategory);
 app.use('/api/v1', announcementCategory);
 app.use('/api/v1', announcement);
+app.use('/api/v1', announcementComment);
 app.use('/api/v1', counseling);
 app.use('/api/v1', prayerRequest);
 app.use('/api/v1', houseBlessing);

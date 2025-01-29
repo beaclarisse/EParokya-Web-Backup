@@ -1485,6 +1485,238 @@ form {
   }
 }
 
+/* announcementDetails */
+
+body {
+  font-family: Helvetica, sans-serif;
+}
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Profile Image */
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Name & Date Styling */
+.post-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-user-name {
+  font-weight: bold;
+  font-size: 16px;
+  margin: 0;
+}
+
+.post-date {
+  font-size: 14px;
+  color: gray;
+}
+
+/* Title (Smaller & Bold) */
+.announcement-title {
+  font-size: 20px; /* Smaller than default h1 */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.announcement-image {
+  max-width: 600px;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* Swiper Slider */
+.swiper {
+  max-width: 600px;
+}
+
+.swiper-slide img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.announcement-details-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Left Sidebar */
+.guest-sidebar {
+  width: 250px;
+}
+
+/* Announcement in the Center */
+.announcement-container {
+  flex: 2;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.announcement-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.like-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.like-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Right Side - Liked Users */
+.liked-users-container {
+  width: 250px;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  height: fit-content;
+}
+
+.liked-users-container h3 {
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
+.liked-users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.liked-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Comment Box */
+.comment-box {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Comment Header */
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comment-user {
+  font-weight: bold;
+}
+
+.comment-date {
+  font-size: 12px;
+  color: gray;
+}
+
+/* Comment Footer */
+.comment-footer {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Replies Section */
+.replies-section {
+  margin-left: 20px;
+  border-left: 2px solid #ddd;
+  padding-left: 15px;
+  margin-top: 10px;
+}
+
+.reply-box {
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.reply-input-container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  background: #fff;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.reply-input {
+  width: 80%; 
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 8px 12px;
+  outline: none;
+  font-size: 14px;
+}
+
+.submit-reply-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #154314;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  margin-left: 10px;
+}
+
+
 /* prayerWall */
 /* General layout for the prayer wall container */
 .prayer-wall-container {
@@ -1616,6 +1848,50 @@ form {
   background-color: #007bff;
   color: white;
 }
+
+.prayerModal {
+  position: fixed; /* Ensures the modal stays in place */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Offset to center correctly */
+  z-index: 1000; /* Ensure it's above other elements */
+  background: white; /* Modal background color */
+  padding: 20px; /* Add some space inside the modal */
+  border-radius: 10px; /* Optional: rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: add shadow */
+  width: 90%; /* Make it responsive */
+  max-width: 400px; /* Limit maximum size */
+}
+
+.prayerModal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Dimmed background */
+  z-index: 999; /* Below the modal */
+}
+
+/* heart icon button for likes */
+.like-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 1.2rem;
+}
+
+.like-button i {
+  transition: color 0.3s;
+}
+
+.like-button:hover i {
+  transform: scale(1.2);
+}
+
 
 
 /* admin pryaer review */

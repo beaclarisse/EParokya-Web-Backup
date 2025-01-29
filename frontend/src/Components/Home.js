@@ -1,132 +1,99 @@
-import React, { useEffect, useState } from 'react';
-import GuestSideBar from './GuestSideBar';
-import MetaData from './Layout/MetaData';
+import React, { useEffect, useState } from "react";
+import GuestSideBar from "./GuestSideBar";
+import MetaData from "./Layout/MetaData";
+import axios from 'axios';
+import { FaHeart, FaComment } from "react-icons/fa";
+// import { useNavigation } from '@react-navigation/native';
 
 export const Home = () => {
-  const [posts, setPosts] = useState([]);
-  const [events, setEvents] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [eventsLoading, setEventsLoading] = useState(true);
-  const [currentIndexes, setCurrentIndexes] = useState({});
-  const [currentIndexess, setCurrentIndexess] = useState({});
-  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const bannerImages = [
     `${process.env.PUBLIC_URL}/EParokya-SampleBanner.png`,
-    `${process.env.PUBLIC_URL}/EParokya2-SampleBanner.png`
+    `${process.env.PUBLIC_URL}/EParokya2-SampleBanner.png`,
   ];
+
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBannerIndex((prevIndex) => (prevIndex + 1) % bannerImages.length);
     }, 3000);
-
     return () => clearInterval(interval);
   }, []);
 
-  const fetchPosts = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`${process.env.REACT_APP_API}/api/v1/posts`);
-      const data = await response.json();
+  useEffect(() => {
+    fetchAnnouncements();
+    fetchCategories();
+  }, []);
 
-      if (data.success) {
-        setPosts(data.posts || []);
-        const initialIndexes = {};
-        data.posts.forEach((post) => {
-          initialIndexes[post._id] = 0;
-        });
-        setCurrentIndexes(initialIndexes);
-      } else {
-        console.error("Failed to load posts:", data.message);
-      }
+  const fetchAnnouncements = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllAnnouncements`);
+      console.log(response.data);
+      setAnnouncements(response.data.announcements || []);
+      setFilteredAnnouncements(response.data.announcements || []); // Ensure initial filtering works
     } catch (error) {
-      console.error("Error fetching posts:", error);
+      console.error('Error fetching announcements:', error);
+      setAnnouncements([]);
+      setFilteredAnnouncements([]);
+    } finally {
+      setLoading(false); // Ensure loading state is turned off after fetching
+    }
+  };
+
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllannouncementCategory`);
+      console.log(response.data);
+      setCategories(response.data.categories || []);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setCategories([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchEvents = async () => {
-    try {
-      setEventsLoading(true);
-      const response = await fetch(`${process.env.REACT_APP_API}/api/v1/eventpost`);
-      const data = await response.json();
-
-      console.log(data)
-      if (data.success) {
-        setEvents(data.events || []);
-        const initialIndexes = {};
-        data.events.forEach((event) => {
-          initialIndexes[event._id] = 0;
-        });
-        setCurrentIndexess(initialIndexes);
-      } else {
-        console.error("Failed to load events:", data.message);
-      }
-    } catch (error) {
-      console.error("Error fetching events:", error);
-    } finally {
-      setEventsLoading(false);
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    if (term) {
+      const filtered = announcements.filter(
+        (announcement) =>
+          announcement.name.toLowerCase().includes(term.toLowerCase()) ||
+          announcement.tags.some((tag) => tag.toLowerCase().includes(term.toLowerCase()))
+      );
+      setFilteredAnnouncements(filtered);
+    } else {
+      setFilteredAnnouncements(announcements);
     }
   };
 
-  useEffect(() => {
-    fetchPosts();
-    fetchEvents();
-  }, []);
-
-  const handleNextImage = (postId) => {
-    const post = posts.find(post => post._id === postId);
-    if (post?.images?.length) {
-      setCurrentIndexes((prevIndexes) => ({
-        ...prevIndexes,
-        [postId]: (prevIndexes[postId] + 1) % post.images.length,
-      }));
-    }
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategory(categoryId);
   };
 
-  const handlePreviousImage = (postId) => {
-    const post = posts.find(post => post._id === postId);
-    if (post?.images?.length) {
-      setCurrentIndexes((prevIndexes) => ({
-        ...prevIndexes,
-        [postId]: (prevIndexes[postId] - 1 + post.images.length) % post.images.length,
-      }));
-    }
-  };
-
-  const handleNextImageEvent = (eventId) => {
-    setCurrentIndexess((prevIndexes) => ({
-      ...prevIndexes,
-      [eventId]: (prevIndexes[eventId] + 1) % events.find(event => event._id === eventId).images.length,
-    }));
-  };
-
-  const handlePreviousImageEvent = (eventId) => {
-    setCurrentIndexess((prevIndexes) => ({
-      ...prevIndexes,
-      [eventId]: (prevIndexes[eventId] - 1 + events.find(event => event._id === eventId).images.length) %
-        events.find(event => event._id === eventId).images.length,
-    }));
-  };
+  const displayedAnnouncements = selectedCategory
+    ? announcements.filter(
+      (announcement) =>
+        announcement.announcementCategory?._id === selectedCategory
+    )
+    : announcements;
 
   return (
     <div style={styles.homeContainer}>
       <MetaData title="Home" />
-
       <div style={styles.contentContainer}>
         <GuestSideBar />
 
         <div style={styles.mainContent}>
-          <div style={styles.searchContainer}>
-            <input
-              type="text"
-              placeholder="Search"
-              style={styles.searchInput}
-            />
-          </div>
-
+          {/* Banner */}
           <div style={styles.bannerContainer}>
             <img
               src={bannerImages[currentBannerIndex]}
@@ -134,97 +101,83 @@ export const Home = () => {
               style={styles.bannerImage}
             />
           </div>
-          <div style={styles.homediv}>
-            <h1 style={styles.sectionTitle}>Featured Posts</h1>
 
+          {/* Search Bar */}
+          <div style={styles.searchBarContainer}>
+            <input
+              type="text"
+              placeholder="Search announcements by name or tags"
+              value={searchTerm}
+              onChange={(e) => handleSearch(e.target.value)}
+              style={styles.searchInput}
+            />
+          </div>
+
+          {/* Categories */}
+          <div style={styles.categoriesContainer}>
+            {/* "All" category to reset filtering */}
+            <span
+              style={{
+                ...styles.category,
+                backgroundColor: selectedCategory === null ? "#2c3e50" : "#3a5a40",
+              }}
+              onClick={() => handleCategoryClick(null)}
+            >
+              All
+            </span>
+
+            {categories.map((category) => (
+              <span
+                key={category._id}
+                style={{
+                  ...styles.category,
+                  backgroundColor:
+                    selectedCategory === category._id ? "#2c3e50" : "#3a5a40",
+                }}
+                onClick={() => handleCategoryClick(category._id)}
+              >
+                {category.name}
+              </span>
+            ))}
+          </div>;
+
+          {/* Announcements */}
+          <div style={styles.announcementsContainer}>
             {loading ? (
-              <p>Loading posts...</p>
+              <p>Loading announcements...</p>
+            ) : displayedAnnouncements.length > 0 ? (
+              displayedAnnouncements.map((announcement) => (
+                <div key={announcement._id} style={styles.announcementCard}>
+                  {/* User Info */}
+                  <div style={styles.userInfo}>
+                    <img
+                      src="/public/../../../../EPAROKYA-SYST.png" // Adjusted path
+                      alt="Saint Joseph Parish"
+                      style={styles.profileImage}
+                    />
+                    <span style={styles.userName}>Saint Joseph Parish</span>
+                  </div>
+
+                  <h2 style={styles.announcementTitle}>{announcement.name}</h2>
+                  <p style={styles.announcementDescription}>{announcement.description}</p>
+                  <p style={styles.announcementCategory}>
+                    Category: {announcement.announcementCategory?.name || "Uncategorized"}
+                  </p>
+                  <p style={styles.tags}>Tags: {announcement.tags.join(", ")}</p>
+
+                  {/* Like & Comment Section */}
+                  <div style={styles.reactionsContainer}>
+                    <span style={styles.reaction}>
+                      <FaHeart color="red" /> {announcement.likedBy.length || 0}
+                    </span>
+                    <span style={styles.reaction}>
+                      <FaComment color="blue" /> {announcement.comments.length || 0}
+                    </span>
+                  </div>
+                </div>
+              ))
             ) : (
-              <div style={styles.postsGrid}>
-                {posts.length > 0 ? (
-                  posts.map((post) => (
-                    <div key={post._id} style={styles.postCard}>
-                      <h2 style={styles.postTitle}>{post.name}</h2>
-                      <p style={styles.postDescription}>{post.description}</p>
-
-                      {post.images?.length > 0 && (
-                        <div style={styles.imageCarousel}>
-                          <img
-                            src={post.images[currentIndexes[post._id] || 0].url}
-                            alt={post.name || 'Post image'}
-                            style={styles.postImage}
-                          />
-                          <div style={styles.carouselControls}>
-                            <button
-                              onClick={() => handlePreviousImage(post._id)}
-                              style={styles.carouselButton}
-                            >
-                              Previous
-                            </button>
-                            <span style={styles.carouselCounter}>
-                              {(currentIndexes[post._id] || 0) + 1} / {post.images.length}
-                            </span>
-                            <button
-                              onClick={() => handleNextImage(post._id)}
-                              style={styles.carouselButton}
-                            >
-                              Next
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <p>No posts available</p>
-                )}
-              </div>
-            )}
-
-            <h1 style={styles.sectionTitle}>Featured Events</h1>
-
-            {eventsLoading ? (
-              <p>Loading events...</p>
-            ) : (
-              <div style={styles.eventsGrid}>
-                {events.length > 0 ? (
-                  events.map((event) => (
-                    <div key={event._id} style={styles.eventCard}>
-                      <h2 style={styles.eventTitle}>{event.title}</h2>
-                      <p style={styles.eventDescription}>{event.description}</p>
-                      {event.images?.length > 0 && (
-                        <div style={styles.imageCarousel}>
-                          <img
-                            src={event.images[currentIndexess[event._id] || 0].url}
-                            alt={event.name || 'Event image'}
-                            style={styles.postImage}
-                          />
-                          <div style={styles.carouselControls}>
-                            <button
-                              onClick={() => handlePreviousImageEvent(event._id)}
-                              style={styles.carouselButton}
-                            >
-                              <span style={styles.carouselButtonIcon}>←</span>
-                            </button>
-                            <span style={styles.carouselCounter}>
-                              {(currentIndexess[event._id] || 0) + 1} / {event.images.length}
-                            </span>
-                            <button
-                              onClick={() => handleNextImageEvent(event._id)}
-                              style={styles.carouselButton}
-                            >
-                             <span style={styles.carouselButtonIcon}>→</span>
-                            </button>
-                          </div>
-                        </div>
-                      )}
-
-                    </div>
-                  ))
-                ) : (
-                  <p>No events available</p>
-                )}
-              </div>
+              <p>No announcements available.</p>
             )}
           </div>
         </div>
@@ -232,145 +185,114 @@ export const Home = () => {
     </div>
   );
 };
-
 const styles = {
   homeContainer: {
-    display: 'flex',
-  },
-  homediv: {
-    padding: "15px",
-    backgroundColor: '#c2d8be',
+    display: "flex",
   },
   contentContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '100%',
-    backgroundColor: '#f9f9f9',
+    display: "flex",
+    width: "100%",
+    backgroundColor: "#f9f9f9",
   },
   mainContent: {
     flex: 1,
-    padding: '40px',
-    backgroundColor: '#f9f9f9',
-  },
-  searchContainer: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    marginBottom: '10px',
-  },
-  searchInput: {
-    padding: '10px',
-    borderRadius: '8px',
-    border: '1px solid #ddd',
-    width: '200px',
+    padding: "20px",
   },
   bannerContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: '30px',
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "20px",
   },
   bannerImage: {
-    width: '100%',
-    maxWidth: '1500px',
-    height: '500px',
-    borderRadius: '10px',
-    objectFit: 'cover',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    width: "100%",
+    maxWidth: "1200px",
+    borderRadius: "8px",
+    objectFit: "cover",
   },
-  sectionTitle: {
-    fontSize: '32px',
-    color: '#333',
-    textAlign: 'left',
-    marginBottom: '20px',
-    marginTop: "20px"
+  searchBarContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "20px",
   },
-  postsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-    gap: '20px',
-    padding: '20px',
-    borderRadius: '10px',
+  searchInput: {
+    width: "60%",
+    padding: "10px",
+    fontSize: "16px",
+    borderRadius: "8px",
+    border: "1px solid #ddd",
   },
-  postCard: {
-    padding: '20px',
-    backgroundColor: '#4a6a57',
-    borderRadius: '10px',
-    textAlign: 'center',
-    color: '#fff',
+  categoriesContainer: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "10px",
+    marginBottom: "20px",
+    flexWrap: "wrap",
   },
-  postTitle: {
-    fontSize: '20px',
-    color: '#fff',
-    marginBottom: '10px',
+  category: {
+    padding: "8px 12px",
+    backgroundColor: "#3a5a40",
+    color: "#fff",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontSize: "14px",
   },
-  postDescription: {
-    color: '#ddd',
-    marginBottom: '10px',
+  announcementsContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+    gap: "20px",
   },
-  imageCarousel: {
-    position: 'relative',
+  announcementCard: {
+    backgroundColor: "#e9ecef",
+    padding: "15px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
   },
-  postImage: {
-    width: '100%',
-    height: 'auto',
-    maxHeight: '150px',
-    borderRadius: '10px',
-    objectFit: 'cover',
+  userInfo: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    marginBottom: "10px",
   },
-  carouselControls: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '10px',
+  profileImage: {
+    width: "40px",
+    height: "40px",
+    borderRadius: "50%",
+    objectFit: "cover",
   },
-  carouselButton: {
-    // backgroundColor: '#007bff',
-    // color: '#fff',
-    border: 'none',
-    padding: '10px 15px',
-    margin: '0 5px',
-    cursor: 'pointer',
-    borderRadius: '50%',
-    fontSize: '16px',  
-    transition: 'background-color 0.3s ease',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  userName: {
+    fontWeight: "bold",
+    fontSize: "14px",
   },
-  carouselButtonIcon: {
-    fontSize: '18px',
-    fontWeight: 'bold',
+  announcementTitle: {
+    fontSize: "18px",
+    fontWeight: "bold",
+    marginBottom: "10px",
   },
-  carouselCounter: {
-    fontSize: '14px',
-    color: '#fff',
+  announcementDescription: {
+    fontSize: "14px",
+    marginBottom: "10px",
   },
-  eventsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-    gap: '20px',
-    padding: '30px',
-    borderRadius: '10px',
+  announcementCategory: {
+    fontSize: "12px",
+    marginBottom: "5px",
+    fontStyle: "italic",
   },
-  eventCard: {
-    padding: '20px',
-    backgroundColor: '#3a5a40',
-    borderRadius: '10px',
-    textAlign: 'center',
-    color: '#fff',
+  tags: {
+    fontSize: "12px",
+    color: "#555",
   },
-  eventTitle: {
-    fontSize: '20px',
-    color: '#fff',
-    marginBottom: '10px',
+  reactionsContainer: {
+    display: "flex",
+    gap: "15px",
+    alignItems: "center",
+    marginTop: "10px",
   },
-  eventDescription: {
-    color: '#ddd',
-    marginBottom: '10px',
-  },
-  eventDate: {
-    color: '#ccc',
+  reaction: {
+    display: "flex",
+    alignItems: "center",
+    gap: "5px",
+    fontSize: "14px",
   },
 };
-
 
 export default Home;
