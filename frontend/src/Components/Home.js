@@ -3,7 +3,7 @@ import GuestSideBar from "./GuestSideBar";
 import MetaData from "./Layout/MetaData";
 import axios from 'axios';
 import { FaHeart, FaComment } from "react-icons/fa";
-// import { useNavigation } from '@react-navigation/native';
+import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -12,6 +12,7 @@ export const Home = () => {
   const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const navigate = useNavigate();
 
   const bannerImages = [
     `${process.env.PUBLIC_URL}/EParokya-SampleBanner.png`,
@@ -79,6 +80,10 @@ export const Home = () => {
     setSelectedCategory(categoryId);
   };
 
+  const handleCardClick = (announcementId) => {
+    navigate(`/announcementDetails/${announcementId}`);
+  };
+
   const displayedAnnouncements = selectedCategory
     ? announcements.filter(
       (announcement) =>
@@ -115,7 +120,6 @@ export const Home = () => {
 
           {/* Categories */}
           <div style={styles.categoriesContainer}>
-            {/* "All" category to reset filtering */}
             <span
               style={{
                 ...styles.category,
@@ -147,11 +151,16 @@ export const Home = () => {
               <p>Loading announcements...</p>
             ) : displayedAnnouncements.length > 0 ? (
               displayedAnnouncements.map((announcement) => (
-                <div key={announcement._id} style={styles.announcementCard}>
+                <div
+                  key={announcement._id}
+                  style={styles.announcementCard}
+                  onClick={() => handleCardClick(announcement._id)}
+                >
+
                   {/* User Info */}
                   <div style={styles.userInfo}>
                     <img
-                      src="/public/../../../../EPAROKYA-SYST.png" // Adjusted path
+                      src="/public/../../../../EPAROKYA-SYST.png" 
                       alt="Saint Joseph Parish"
                       style={styles.profileImage}
                     />
