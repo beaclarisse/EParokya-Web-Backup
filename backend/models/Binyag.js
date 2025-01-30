@@ -4,6 +4,7 @@ const BaptismSchema = new mongoose.Schema({
 
   baptismDate: { type: Date, required: false },
   baptismTime: { type: String, required: false, },
+  phone: { type: String, required: true },
 
   child: {
     fullName: { type: String, required: false },

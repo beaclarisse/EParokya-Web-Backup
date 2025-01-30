@@ -20,11 +20,11 @@ const BaptismDetails = () => {
     const [comments, setComments] = useState([]);
 
     const [zoom, setZoom] = useState(1);
-      const [offset, setOffset] = useState({ x: 0, y: 0 });
-      const [isDragging, setIsDragging] = useState(false);
-      const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-      const [isModalOpen, setIsModalOpen] = useState(false);
-      const [selectedImage, setSelectedImage] = useState("");
+    const [offset, setOffset] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState("");
 
     const predefinedComments = [
         "Confirmed and on schedule",
@@ -55,34 +55,34 @@ const BaptismDetails = () => {
     const openModal = (image) => {
         setSelectedImage(image);
         setIsModalOpen(true);
-      };
-    
-      const closeModal = () => {
+    };
+
+    const closeModal = () => {
         setSelectedImage("");
         setIsModalOpen(false);
-      };
-    
-      if (loading) return <div>Loading...</div>;
-      if (error) return <div>Error: {error}</div>;
-    
-    
-      const handleMouseDown = (e) => {
+    };
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+
+
+    const handleMouseDown = (e) => {
         e.preventDefault();
         setIsDragging(true);
         setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
-      };
-    
-      const handleMouseMove = (e) => {
+    };
+
+    const handleMouseMove = (e) => {
         if (!isDragging) return;
         setOffset({
-          x: e.clientX - dragStart.x,
-          y: e.clientY - dragStart.y,
+            x: e.clientX - dragStart.x,
+            y: e.clientY - dragStart.y,
         });
-      };
-    
-      const handleMouseUp = () => {
+    };
+
+    const handleMouseUp = () => {
         setIsDragging(false);
-      };
+    };
 
     const handleSubmitComment = async (e) => {
         e.preventDefault();
@@ -114,9 +114,8 @@ const BaptismDetails = () => {
     const handleConfirm = async () => {
         try {
             const response = await axios.post(
-                `${process.env.REACT_APP_API}/binyag/${baptismId}/confirm`,
-                
-                {withCredentials: true},
+                `${process.env.REACT_APP_API}/api/v1/${baptismId}/confirmBaptism`,
+                { withCredentials: true },
             );
             alert(response.data.message);
             navigate("/baptism-list");
@@ -129,7 +128,7 @@ const BaptismDetails = () => {
     const handleDecline = async () => {
         const token = localStorage.getItem("jwt");
         try {
-        await axios.post(`${process.env.REACT_APP_API}/binyag/decline/${baptismId}`, null, {
+            await axios.post(`${process.env.REACT_APP_API}/api/v1/decline/${baptismId}`, null, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             alert("Baptism declined.");

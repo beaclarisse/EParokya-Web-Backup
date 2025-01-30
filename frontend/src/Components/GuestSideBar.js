@@ -84,10 +84,11 @@ const GuestSideBar = () => {
     <div style={styles.sidebarContainer}>
       <div style={styles.profileContainer}>
         <img
-          src={user.avatar}
-          alt={`${user.name}'s profile`}
+          src={user && user.avatar ? user.avatar.url : `${process.env.PUBLIC_URL}/public/../EPAROKYA-SYST.png`}
+          alt={`${user && user.name ? user.name : "Guest"}'s profile`}
           style={styles.profilePicture}
         />
+
         <h2 style={styles.welcomeText}>Hello {user.name}!</h2>
       </div>
 

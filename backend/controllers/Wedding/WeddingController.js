@@ -97,13 +97,13 @@ exports.submitWeddingForm = async (req, res) => {
 };
 
 
-
 exports.getAllWeddings = async (req, res) => {
   try {
-    const weddingList = await Wedding.find({}, 'brideName groomName weddingDate weddingStatus')
-      .populate('userId', 'name');
+    const weddingList = await Wedding.find({}, 'brideName groomName bridePhone groomPhone weddingDate weddingTime weddingStatus userId')
+  .populate('userId', 'name');
 
-    if (!weddingList) {
+
+    if (!weddingList || weddingList.length === 0) {
       return res.status(404).json({ success: false, message: "No weddings found." });
     }
 
@@ -116,7 +116,7 @@ exports.getAllWeddings = async (req, res) => {
 
 exports.getWeddingById = async (req, res) => {
   try {
-    const { weddingId } = req.params;
+    const { weddingId } = req.params; 
 
     if (!mongoose.Types.ObjectId.isValid(weddingId)) {
       return res.status(400).json({ message: "Invalid wedding ID format." });

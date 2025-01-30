@@ -9,5 +9,6 @@ router.post('/ministryCategory/create', ministryCategoryController.createMinistr
 
 router.delete('/deleteMinistryCategory/:ministryId', ministryCategoryController.deleteMinistry );
 router.put('/updateMinistryCategory/:ministryId', ministryCategoryController.updateMinistryCategory );
+router.get("/:ministryCategoryId/users", ministryCategoryController.getUsersByMinistryCategory);
 
 module.exports = router;

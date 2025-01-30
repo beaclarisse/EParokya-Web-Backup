@@ -29,6 +29,6 @@ router.post('/decline/:baptismId', BaptismController.declineBaptism);
 router.post('/:baptismId/admin/addComment', BaptismController.addBaptismComment);
 
 router.get('/getBaptism/:id', BaptismController.getBaptismById);
-router.post('/:baptismId/confirm', BaptismController.confirmBaptism);
+router.post('/:baptismId/confirmBaptism', BaptismController.confirmBaptism);
 
 module.exports = router;

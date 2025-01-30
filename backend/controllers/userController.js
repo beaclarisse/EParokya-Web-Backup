@@ -3,6 +3,7 @@ const sendToken = require('../utils/jwtToken');
 const cloudinary = require('cloudinary')
 const crypto = require('crypto')
 const sendEmail = require('../utils/sendEmail');
+const MinistryCategory = require("../models/ministryCategory");
 
 exports.registerUser = async (req, res, next) => {
     const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
@@ -371,4 +372,51 @@ exports.getRegisteredUsersCount = async (req, res, next) => {
 //         res.status(500).json({ success: false, message: 'Server error', error: error.message });
 //     }
 // };
+
+exports.getUsersByMinistryCategory = async (req, res) => {
+    try {
+        const { ministryCategoryId } = req.params;
+        const { search, category } = req.query; 
+
+        const ministryCategory = await MinistryCategory.findById(ministryCategoryId);
+        if (!ministryCategory) {
+            return res.status(404).json({ message: "Ministry category not found" });
+        }
+
+        let filter = { ministryCategory: ministryCategoryId };
+
+        if (search) {
+            filter.$or = [
+                { name: { $regex: search, $options: "i" } }, 
+                { email: { $regex: search, $options: "i" } } 
+            ];
+        }
+
+        if (category) {
+            filter.ministryCategory = category;
+        }
+        const users = await User.find(filter)
+            .populate("ministryCategory")
+            .sort({ createdAt: -1 }); 
+
+        if (!users.length) {
+            return res.status(404).json({ message: "No users found for this ministry category" });
+        }
+
+        res.status(200).json({
+            ministryCategory: ministryCategory.name,
+            users: users.map(user => ({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar?.url || "",
+                joined: user.createdAt, 
+                ministryCategory: user.ministryCategory.map(cat => cat.name).join(", ") 
+            })),
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error });
+    }
+};
 

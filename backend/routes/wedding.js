@@ -34,7 +34,7 @@ router.post(
 //     '/submitWeddingForm', upload.single('image'),  WeddingFormController.submitWeddingForm
 //   );
 
-router.get('/getAllWeddings', isAuthenticatedUser, authorizeAdmin("admin"), WeddingFormController.getAllWeddings);
+router.get('/getAllWeddings', WeddingFormController.getAllWeddings);
 router.get('/confirmedWedding',  WeddingFormController.getConfirmedWeddings);
 router.get('/stats/weddingsPerMonth', isAuthenticatedUser, WeddingFormController.getWeddingsPerMonth);
 router.get('/stats/weddingStatusCount', isAuthenticatedUser, WeddingFormController.getWeddingStatusCounts);
@@ -43,7 +43,7 @@ router.get('/weddingDate',  WeddingFormController.getAvailableDates);
 router.post('/book/date',  WeddingFormController.bookDate);
 router.post('/admin/available-dates', isAuthenticatedUser, authorizeAdmin, WeddingFormController.addAvailableDate);
 
-router.get('/getWeddingById/:weddingId', isAuthenticatedUser, authorizeAdmin("admin"), WeddingFormController.getWeddingById);
+router.get('/getWeddingById/:weddingId',  WeddingFormController.getWeddingById);
 router.post('/:weddingId/confirm',  WeddingFormController.confirmWedding);
 router.post('/:weddingId/decline', WeddingFormController.declineWedding);
 router.delete('/admin/available-dates/:weddingId', isAuthenticatedUser, authorizeAdmin, WeddingFormController.removeAvailableDate);

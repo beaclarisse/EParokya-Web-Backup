@@ -116,7 +116,7 @@ exports.getBaptismById = async (req, res) => {
 
 // Confirm Baptism
 exports.confirmBaptism = async (req, res) => {
-  const baptismId = req.params.id;
+  const baptismId = req.params.baptismId;
 
   try {
     const baptism = await Baptism.findById(baptismId);
