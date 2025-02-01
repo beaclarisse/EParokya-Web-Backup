@@ -3,6 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import GuestSidebar from '../../../../GuestSideBar';
+// import termsAndConditionsText from "../../../../Term";
 
 const WeddingForm = () => {
     const [formData, setFormData] = useState({
@@ -59,6 +60,10 @@ const WeddingForm = () => {
             Ninang: [...prev.Ninang, { name: "", address: { street: "", zip: "", city: "" } }],
         }));
     };
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAgreed, setIsAgreed] = useState(false);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -137,7 +142,6 @@ const WeddingForm = () => {
     };
 
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -180,13 +184,6 @@ const WeddingForm = () => {
                     }
                 }
             });
-
-            // const config = {
-            //     headers: {
-            //         "Content-Type": "multipart/form-data",
-            //         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-            //     },
-            // };
 
             const response = await axios.post(
                 `${process.env.REACT_APP_API}/api/v1/submitWeddingForm`,

@@ -61,23 +61,36 @@ const Profile = () => {
                   <strong>Name:</strong> {user.name}
                 </p>
                 <p>
-                  <strong>Address:</strong> {`${user.barangay}, ${user.city}, ${user.country}`}
+                  <strong>Address:</strong> {user.barangay || 'N/A'}, {user.city || 'N/A'}, {user.country || 'N/A'}
                 </p>
                 <p>
-                  <strong>Age:</strong> {user.age}
+                  <strong>Age:</strong> {user.age || 'N/A'}
                 </p>
                 <p>
-                  <strong>Gender:</strong> {user.preference}
+                  <strong>Gender:</strong> {user.preference || 'N/A'}
                 </p>
                 <p>
-                  <strong>Phone:</strong> {user.phone}
+                  <strong>Phone:</strong> {user.phone || 'N/A'}
                 </p>
                 <p>
-                  <strong>Email:</strong> {user.email}
+                  <strong>Email:</strong> {user.email || 'N/A'}
                 </p>
+
+                {/* ✅ Fix: Display ministry categories correctly */}
                 <p>
-                  <strong>Ministry:</strong> {user.ministryCategory || 'N/A'}
+                  <strong>Ministry:</strong>{' '}
+                  {user.ministryCategory && user.ministryCategory.length > 0 ? (
+                    <ul>
+                      {user.ministryCategory.map((category) => (
+                        <li key={category._id}>{category.name}</li> // ✅ Ensure "category.name" exists
+                      ))}
+                    </ul>
+                  ) : (
+                    'N/A'
+                  )}
                 </p>
+
+
               </div>
             </div>
           </div>

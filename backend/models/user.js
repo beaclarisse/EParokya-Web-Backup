@@ -104,7 +104,7 @@ const userSchema = new mongoose.Schema({
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'ministryCategory',
-            required: false,
+            required: true,
         }
     ],
     email: {

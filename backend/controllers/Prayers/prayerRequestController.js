@@ -41,7 +41,10 @@ exports.getUserPrayerRequests = async (req, res) => {
 
 exports.getAllPrayerRequests = async (req, res) => {
     try {
-        const prayerRequests = await PrayerRequest.find().populate('userId', 'name email'); 
+        const prayerRequests = await PrayerRequest.find()
+        .populate('userId', 'name email')
+        .populate('Intentions');
+
         res.status(200).json({ prayerRequests });
     } catch (error) {
         console.error('Error fetching all prayer requests:', error);

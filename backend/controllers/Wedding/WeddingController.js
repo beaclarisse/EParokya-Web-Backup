@@ -1,4 +1,6 @@
+const { WeddingChecklist } = require('../../models/weddingChecklist'); 
 const { Wedding } = require('../../models/weddings');
+
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 
@@ -96,7 +98,7 @@ exports.submitWeddingForm = async (req, res) => {
   }
 };
 
-
+// getting the wedding
 exports.getAllWeddings = async (req, res) => {
   try {
     const weddingList = await Wedding.find({}, 'brideName groomName bridePhone groomPhone weddingDate weddingTime weddingStatus userId')
@@ -122,7 +124,7 @@ exports.getWeddingById = async (req, res) => {
       return res.status(400).json({ message: "Invalid wedding ID format." });
     }
 
-    const wedding = await Wedding.findById(weddingId).populate('userId');
+    const wedding = await Wedding.findById(weddingId).populate('userId', 'name email');
 
     if (!wedding) {
       return res.status(404).json({ message: "Wedding not found." });
@@ -135,6 +137,17 @@ exports.getWeddingById = async (req, res) => {
   }
 };
 
+exports.getConfirmedWeddings = async (req, res) => {
+  try {
+    const confirmedWeddings = await Wedding.find({ weddingStatus: 'Confirmed' });
+    res.status(200).json(confirmedWeddings);
+  } catch (error) {
+    console.error("Error fetching confirmed weddings:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// controls for the wedding
 exports.confirmWedding = async (req, res) => {
   try {
     const { weddingId } = req.params;
@@ -185,44 +198,140 @@ exports.declineWedding = async (req, res) => {
   }
 };
 
-exports.getConfirmedWeddings = async (req, res) => {
+exports.updateWeddingDate = async (req, res) => {
   try {
-    const confirmedWeddings = await Wedding.find({ weddingStatus: 'Confirmed' });
-    res.status(200).json(confirmedWeddings);
+    const { weddingId } = req.params;
+    const { newDate, reason } = req.body;
+
+    const wedding = await Wedding.findById(weddingId);
+    if (!wedding) {
+      return res.status(404).json({ message: "Wedding not found" });
+    }
+
+    wedding.weddingDate = newDate;
+    wedding.adminRescheduled = { date: newDate, reason: reason };
+
+    await wedding.save();
+
+    return res.status(200).json({ message: "Wedding date updated successfully", wedding });
   } catch (error) {
-    console.error("Error fetching confirmed weddings:", error);
-    res.status(500).json({ success: false, error: error.message });
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
+// Comments for the admin
 exports.addComment = async (req, res) => {
   try {
     const { weddingId } = req.params;
-    const { comment } = req.body;
+    const { selectedComment, additionalComment } = req.body;
+
+    if (!selectedComment && !additionalComment) {
+      return res.status(400).json({ message: "Comment cannot be empty." });
+    }
 
     if (!mongoose.Types.ObjectId.isValid(weddingId)) {
       return res.status(400).json({ message: "Invalid wedding ID format." });
     }
 
     const wedding = await Wedding.findById(weddingId);
-
     if (!wedding) {
       return res.status(404).json({ message: "Wedding not found." });
     }
 
-    wedding.comments.push({ text: comment, date: new Date() });
+    // Ensure correct field names based on your schema
+    const newComment = {
+      selectedComment: selectedComment || "",
+      additionalComment: additionalComment || "",
+      createdAt: new Date(),
+    };
+
+    wedding.comments.push(newComment);
     await wedding.save();
 
-    res.status(200).json({ message: "Comment added.", wedding });
+    res.status(200).json({ message: "Comment added.", comment: newComment });
   } catch (error) {
     console.error("Error adding comment:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
 
+exports.updateAdditionalReq = async (req, res) => {
+  try {
+    const { weddingId } = req.params;
+    // Expect req.body to contain the additionalReq object
+    // Example: { additionalReq: { PreMarriageSeminar1: { date, time }, ... } }
+    const { additionalReq } = req.body;
+
+    const wedding = await Wedding.findById(weddingId);
+    if (!wedding) {
+      return res.status(404).json({ message: "Wedding not found" });
+    }
+
+    // Update the entire additionalReq object (plus update createdAt if needed)
+    wedding.additionalReq = { ...additionalReq, createdAt: new Date() };
+
+    await wedding.save();
+
+    res.json({ message: "Additional requirements updated successfully", wedding });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// checklist for the wedding
+exports.getWeddingChecklist = async (req, res) => {
+  try {
+    const { weddingId } = req.params;
+    const wedding = await Wedding.findById(weddingId).populate('checklistId');
+    if (!wedding) {
+      return res.status(404).json({ message: 'Wedding not found' });
+    }
+    res.json({ checklist: wedding.checklistId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Update (or create) the checklist for a wedding
+exports.updateWeddingChecklist = async (req, res) => {
+  try {
+    const { weddingId } = req.params;
+    const checklistData = req.body;
+
+    console.log("Received weddingId:", weddingId);
+    console.log("Checklist Data:", checklistData);
+
+    const wedding = await Wedding.findById(weddingId);
+    if (!wedding) {
+      return res.status(404).json({ message: 'Wedding not found' });
+    }
+
+    let updatedChecklist;
+    if (!wedding.checklistId) {
+      console.log("No checklist found, creating a new one...");
+      updatedChecklist = await WeddingChecklist.create(checklistData);
+      wedding.checklistId = updatedChecklist._id;
+      await wedding.save();
+      return res.json({ message: 'Checklist created successfully', checklist: updatedChecklist });
+    } else {
+      console.log("Updating existing checklist with ID:", wedding.checklistId);
+      updatedChecklist = await WeddingChecklist.findByIdAndUpdate(
+        wedding.checklistId,
+        checklistData,
+        { new: true }
+      );
+      return res.json({ message: 'Checklist updated successfully', checklist: updatedChecklist });
+    }
+  } catch (err) {
+    console.error("Error updating wedding checklist:", err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 //Dates
-
 exports.getAvailableDates = async (req, res) => {
   try {
     const bookedDates = await Wedding.find({ isBooked: true }).select('date');
@@ -268,6 +377,8 @@ exports.removeAvailableDate = async (req, res) => {
   }
 };
 
+
+// For user:
 exports.getMySubmittedForms = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -304,7 +415,6 @@ exports.getWeddingsPerMonth = async (req, res) => {
   });
   res.json(result);
 };
-
 exports.getWeddingStatusCounts = async (req, res) => {
   try {
     const counts = await Wedding.aggregate([

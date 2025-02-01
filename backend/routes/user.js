@@ -22,8 +22,8 @@ const { isAuthenticatedUser, authorizeAdmin } = require('../middleware/auth');
 
 router.post('/register', upload.single("avatar"), registerUser);
 router.post('/login', LoginUser);
-router.get('/logout', Logout);
 router.get('/profile', isAuthenticatedUser, Profile);
+router.get('/logout', Logout);
 
 router.get("/stats/registeredUsersCount", getRegisteredUsersCount);
 

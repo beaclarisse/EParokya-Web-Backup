@@ -4,38 +4,146 @@ const cloudinary = require('cloudinary')
 const crypto = require('crypto')
 const sendEmail = require('../utils/sendEmail');
 const MinistryCategory = require("../models/ministryCategory");
+const mongoose = require('mongoose');
+
+// exports.registerUser = async (req, res, next) => {
+//     const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+//         folder: 'baghub/avatar',
+//         width: 150,
+//         crop: "scale"
+//     }, (err, res) => {
+//         console.log(err, res);
+//     });
+//     const { name, email, password, role } = req.body;
+//     const user = await User.create({
+//         name,
+//         email,
+//         password,
+//         avatar: {
+//             public_id: result.public_id,
+//             url: result.secure_url
+//         },
+
+//         // role,
+//     })
+
+//     // const token = user.getJwtToken();
+//     if (!user) {
+//         return res.status(500).json({
+//             success: false,
+//             message: 'user not created'
+//         })
+//     }
+//     sendToken(user, 200, res)
+
+// }
+
+
 
 exports.registerUser = async (req, res, next) => {
-    const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
-        folder: 'baghub/avatar',
-        width: 150,
-        crop: "scale"
-    }, (err, res) => {
-        console.log(err, res);
-    });
-    const { name, email, password, role } = req.body;
-    const user = await User.create({
-        name,
-        email,
-        password,
-        avatar: {
-            public_id: result.public_id,
-            url: result.secure_url
-        },
+    try {
+        console.log('Received ministryCategory:', req.body.ministryCategory);
 
-        // role,
-    })
+        // Upload avatar
+        const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+            folder: 'baghub/avatar',
+            width: 150,
+            crop: "scale"
+        });
 
-    // const token = user.getJwtToken();
-    if (!user) {
-        return res.status(500).json({
-            success: false,
-            message: 'user not created'
-        })
+        // Extract fields
+        const { name, email, password, age, preference, phone, barangay, zip, city, country, ministryCategory } = req.body;
+
+        let ministryCategoryArray = [];
+
+        // Ensure ministryCategory is processed correctly
+        if (ministryCategory) {
+            let categoryArray = Array.isArray(ministryCategory) ? ministryCategory : [ministryCategory];
+
+            // Log the data before processing
+            console.log('Raw request body:', req.body);
+
+            // Process the categories if they are valid
+            ministryCategoryArray = categoryArray
+                .map(item => {
+                    // Check if it's an object and try to extract the ID
+                    if (typeof item === "string") {
+                        return item; // It's already an ID
+                    } else if (item && item._id) {
+                        return item._id; // Extract _id if it's an object
+                    } else {
+                        return null;
+                    }
+                })
+                .filter(id => mongoose.Types.ObjectId.isValid(id)) // Ensure valid ObjectId
+                .map(id => new mongoose.Types.ObjectId(id)); // Convert to ObjectId
+
+            // Log the processed ministry categories
+            console.log('Processed ministryCategory:', ministryCategoryArray);
+        }
+
+        // Create user
+        const user = await User.create({
+            name,
+            email,
+            password,
+            avatar: {
+                public_id: result.public_id,
+                url: result.secure_url
+            },
+            age,
+            preference,
+            phone,
+            barangay,
+            zip,
+            city,
+            country,
+            ministryCategory: ministryCategoryArray, // Save the processed category IDs
+        });
+
+        if (!user) {
+            return res.status(500).json({
+                success: false,
+                message: 'User not created'
+            });
+        }
+
+        sendToken(user, 200, res);
+    } catch (error) {
+        console.error('Error registering user:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
-    sendToken(user, 200, res)
+};
 
-}
+
+
+
+
+exports.Profile = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id)
+            .populate("ministryCategory") 
+            .select("-password"); 
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
 
 exports.LoginUser = async (req, res, next) => {
     const { email, password } = req.body;
@@ -160,15 +268,15 @@ exports.updatePassword = async (req, res, next) => {
 
 }
 
-exports.Profile = async (req, res, next) => {
-    // console.log(req.header('authorization'))
-    const user = await User.findById(req.user.id);
+// exports.Profile = async (req, res, next) => {
+//     // console.log(req.header('authorization'))
+//     const user = await User.findById(req.user.id);
 
-    res.status(200).json({
-        success: true,
-        user
-    })
-}
+//     res.status(200).json({
+//         success: true,
+//         user
+//     })
+// }
 
 
 exports.UpdateProfile = async (req, res, next) => {
@@ -419,4 +527,3 @@ exports.getUsersByMinistryCategory = async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
 };
-

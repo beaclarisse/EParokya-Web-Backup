@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Metadata from '../Layout/MetaData';
 import { useDispatch, useSelector } from 'react-redux';
 import { register, clearErrors } from '../../Redux/actions/userActions';
-import axios from 'axios'; 
+import axios from 'axios';
 
 const Register = () => {
     const dispatch = useDispatch();
@@ -19,9 +19,10 @@ const Register = () => {
         zip: '',
         city: '',
         country: '',
-        ministryCategory: '',
+        ministryCategory: [],
     });
-    const [ministryCategories, setMinistryCategories] = useState([]); 
+    const [ministryCategories, setMinistryCategories] = useState([]);
+    const [selectedMinistryCategories, setSelectedMinistryCategories] = useState([]);
     const { name, email, password, age, preference, phone, barangay, zip, city, country } = user;
     const [avatar, setAvatar] = useState('');
     const [avatarPreview, setAvatarPreview] = useState('/images/default_avatar.jpg');
@@ -38,10 +39,16 @@ const Register = () => {
 
         const fetchMinistryCategories = async () => {
             try {
-                const { data } = await axios.get('/api/v1/getAllMinistryCategories'); 
-                setMinistryCategories(data.categories);
+                const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllMinistryCategories`);
+                console.log("Fetched Ministry Categories:", data); // Log full response to verify
+                if (data.success && data.categories) {
+                    setMinistryCategories(data.categories); // Set categories if successful
+                } else {
+                    console.error('Categories not found in response:', data);
+                }
             } catch (err) {
                 console.error('Failed to fetch ministry categories:', err);
+                setMinistryCategories([]); // Default to empty array if error occurs
             }
         };
 
@@ -51,6 +58,7 @@ const Register = () => {
 
     const submitHandler = (e) => {
         e.preventDefault();
+        if (loading) return;
 
         const formData = new FormData();
         formData.set('name', name);
@@ -63,8 +71,17 @@ const Register = () => {
         formData.set('zip', zip);
         formData.set('city', city);
         formData.set('country', country);
-        formData.set('avatar', avatar);
-        formData.set('ministryCategory', ministryCategories); 
+        if (avatar) {
+            formData.set('avatar', avatar); 
+        }
+        ministryCategories.forEach((categoryId) => {
+            formData.append('ministryCategory', categoryId);
+        });
+
+
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}:`, value); // Check that the value is the correct ObjectId string
+        }
 
         dispatch(register(formData));
     };
@@ -86,23 +103,42 @@ const Register = () => {
 
 
     const onChange = (e) => {
-        if (e.target.name === 'avatar') {
-            const file = e.target.files[0];
-            setAvatar(file);
-
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (reader.readyState === 2) {
+        const { name, value, type, checked, files } = e.target;
+    
+        if (type === 'file') {
+            if (files.length > 0) {
+                const file = files[0];
+                const reader = new FileReader();
+    
+                reader.onloadend = () => {
+                    setAvatar(reader.result);
                     setAvatarPreview(reader.result);
-                }
-            };
-            reader.readAsDataURL(file);
+                };
+    
+                reader.readAsDataURL(file);
+            }
+        } else if (name === 'ministryCategory') {
+            setUser((prevState) => {
+                const updatedCategories = checked
+                    ? [...prevState.ministryCategory, value] // Add value (category._id)
+                    : prevState.ministryCategory.filter(id => id !== value); // Remove value (category._id)
+    
+                return { ...prevState, ministryCategory: updatedCategories };
+            });
         } else {
-            setUser({ ...user, [e.target.name]: e.target.value });
+            setUser((prevState) => ({
+                ...prevState,
+                [name]: value,
+            }));
         }
     };
+    
 
     
+    
+    
+
+
     return (
         <Fragment>
             <Metadata title={'Register User'} />
@@ -202,24 +238,31 @@ const Register = () => {
                             />
                         </div>
 
-                         {/* Ministry Category */}
-                         <div className="form-group mb-3">
-                            <label htmlFor="ministryCategory_field">Ministry Category</label>
-                            <select
-                                id="ministryCategory_field"
-                                className="form-control"
-                                name="ministryCategories"
-                                value={ministryCategories}
-                                onChange={onChange}
-                                required
-                            >
-                                <option value="">Select Ministry Category</option>
-                                {ministryCategories.map((category) => (
-                                    <option key={category._id} value={category._id}>
-                                        {category.name}
-                                    </option>
-                                ))}
-                            </select>
+                        {/* Ministry Category */}
+                        <div className="form-group mb-3">
+                            <label>Ministry Category</label>
+                            <div>
+                                {ministryCategories && ministryCategories.length > 0 ? (
+                                    ministryCategories.map((category) => (
+                                        <div key={category._id} className="form-check">
+                                            <input
+                                                type="checkbox"
+                                                id={`category_${category._id}`}
+                                                className="form-check-input"
+                                                name="ministryCategory"
+                                                value={category._id}
+                                                checked={user.ministryCategory?.includes(category._id)}
+                                                onChange={onChange}
+                                            />
+                                            <label htmlFor={`category_${category._id}`} className="form-check-label">
+                                                {category.name}
+                                            </label>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No ministry categories available</p>
+                                )}
+                            </div>
                         </div>
 
 
@@ -253,7 +296,7 @@ const Register = () => {
 
                         {/* City */}
                         <div className="form-group mb-3">
-                            <label htmlFor="city_field">City</label>
+                            <label htmlFor="city_field">District (Format:District No.)</label>
                             <input
                                 type="text"
                                 id="city_field"
@@ -279,7 +322,7 @@ const Register = () => {
                             />
                         </div>
 
-                       {/* Avatar */}
+                        {/* Avatar */}
                         <div className="form-group mb-4">
                             <label htmlFor="avatar_upload">Avatar</label>
                             <div className="d-flex align-items-center mt-2">
@@ -291,7 +334,7 @@ const Register = () => {
                                             objectFit: 'cover',
                                             width: '80px',
                                             height: '80px',
-                                            borderRadius: '50%', 
+                                            borderRadius: '50%',
                                         }}
                                     />
                                 </figure>
@@ -326,7 +369,7 @@ const Register = () => {
     );
 
 
-    
+
 };
 
 export default Register;

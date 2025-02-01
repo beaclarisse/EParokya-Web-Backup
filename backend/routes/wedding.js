@@ -39,13 +39,20 @@ router.get('/confirmedWedding',  WeddingFormController.getConfirmedWeddings);
 router.get('/stats/weddingsPerMonth', isAuthenticatedUser, WeddingFormController.getWeddingsPerMonth);
 router.get('/stats/weddingStatusCount', isAuthenticatedUser, WeddingFormController.getWeddingStatusCounts);
 
+router.get('/getWeddingChecklist/:weddingId', WeddingFormController.getWeddingChecklist);
+router.put('/updateWeddingChecklist/:weddingId', WeddingFormController.updateWeddingChecklist);
+
 router.get('/weddingDate',  WeddingFormController.getAvailableDates);
 router.post('/book/date',  WeddingFormController.bookDate);
+router.put('/updateWeddingDate/:weddingId', WeddingFormController.updateWeddingDate);
+router.post('/:weddingId/commentWedding',  WeddingFormController.addComment);
+router.post('/updateAdditionalReq/:weddingId',  WeddingFormController.updateAdditionalReq);
+
 router.post('/admin/available-dates', isAuthenticatedUser, authorizeAdmin, WeddingFormController.addAvailableDate);
 
 router.get('/getWeddingById/:weddingId',  WeddingFormController.getWeddingById);
-router.post('/:weddingId/confirm',  WeddingFormController.confirmWedding);
-router.post('/:weddingId/decline', WeddingFormController.declineWedding);
+router.post('/:weddingId/confirmWedding',  WeddingFormController.confirmWedding);
+router.post('/:weddingId/declineWedding', WeddingFormController.declineWedding);
 router.delete('/admin/available-dates/:weddingId', isAuthenticatedUser, authorizeAdmin, WeddingFormController.removeAvailableDate);
 
 //wedding dates

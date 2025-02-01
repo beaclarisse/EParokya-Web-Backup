@@ -7,6 +7,8 @@ import { useParams } from "react-router-dom";
 import Modal from "react-modal";
 import DateTimePicker from "react-datetime-picker";
 import 'react-datetime-picker/dist/DateTimePicker.css';
+import { toast, ToastContainer } from 'react-toastify';
+
 
 Modal.setAppElement("#root");
 
@@ -17,12 +19,16 @@ const FuneralDetails = () => {
     const [error, setError] = useState(null);
 
     const [priest, setPriest] = useState("");
-    const [selectedDate, setSelectedDate] = useState("");
     const [selectedComment, setSelectedComment] = useState("");
     const [rescheduledDate, setRescheduledDate] = useState("");
     const [rescheduledReason, setRescheduledReason] = useState("");
     const [additionalComment, setAdditionalComment] = useState("");
     const [comments, setComments] = useState([]);
+
+    const [newDate, setNewDate] = useState("");
+    const [reason, setReason] = useState("");
+    const [updatedFuneralDate, setUpdatedFuneralDate] = useState(funeralDetails?.funeralDate || "");
+
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [deathCertificateImage, setDeathCertificateImage] = useState("");
@@ -56,15 +62,148 @@ const FuneralDetails = () => {
         fetchFuneralDetails();
     }, [funeralId]);
 
-    const handleSubmitComment = () => {
-        console.log({
-            priest,
-            selectedDate,
-            selectedComment,
-            rescheduledDate,
-            rescheduledReason,
-            additionalComment,
-        });
+    const handleConfirm = async (funeralId) => {
+        try {
+
+            const response = await axios.post(
+                `${process.env.REACT_APP_API}/api/v1/confirmFuneral/${funeralId}`,
+                { withCredentials: true },
+
+            );
+            console.log("Confirmation response:", response.data);
+            toast.success("Funeral confirmed successfully!", {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 3000,
+            });
+        } catch (error) {
+            console.error("Error confirming funeral:", error.response || error.message);
+            toast.error(
+                error.response?.data?.message || "Failed to confirm the funeral.",
+                {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 3000,
+                }
+            );
+        }
+    };
+
+    const handleDecline = async (funeralId, token) => {
+        try {
+            const response = await axios.post(
+                `${process.env.REACT_APP_API}/api/v1/declineFuneral/${funeralId}`,
+                { withCredentials: true },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            console.log("Declining response:", response.data);
+            toast.success("Funeral declined successfully!", {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 3000,
+            });
+        } catch (error) {
+            console.error("Error decline funeral:", error.response || error.message);
+            toast.error(
+                error.response?.data?.message || "Failed to decline the funeral.",
+                {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 3000,
+                }
+            );
+        }
+    };
+
+    const handleUpdate = async () => {
+        if (!newDate || !reason) {
+            alert("Please select a date and provide a reason.");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const response = await axios.put(
+                `${process.env.REACT_APP_API}/api/v1/updateFuneralDate/${funeralDetails._id}`,
+                { newDate, reason }
+            );
+
+            setUpdatedFuneralDate(response.data.funeral.funeralDate);
+            alert("Funeral date updated successfully!");
+        } catch (error) {
+            console.error("Error updating funeral date:", error);
+            alert("Failed to update funeral date.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSubmitComment = async () => {
+        if (!selectedComment && !additionalComment) {
+            alert("Please select or enter a comment.");
+            return;
+        }
+        const commentData = {
+            selectedComment: selectedComment || "",
+            additionalComment: additionalComment || "",
+        };
+        // console.log("Sending comment:", commentData); 
+        try {
+            const response = await fetch(
+                `${process.env.REACT_APP_API}/api/v1/commentFuneral/${funeralId}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(commentData),
+                }
+            );
+
+            const data = await response.json();
+            // console.log("Response from server:", data); 
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to submit comment.");
+            }
+            alert("Comment submitted successfully!");
+        } catch (error) {
+            console.error("Error submitting comment:", error);
+            alert("Failed to submit comment.");
+        }
+    };
+
+    const handleAddPriest = async () => {
+        if (!priest) {
+            alert("Please enter priest name.");
+            return;
+        }
+        const commentData = {
+            priest: priest || "",
+
+        };
+        // console.log("Sending comment:", commentData); 
+        try {
+            const response = await fetch(
+                `${process.env.REACT_APP_API}/api/v1/addPriest/${funeralId}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(commentData),
+                }
+            );
+
+            const data = await response.json();
+            // console.log("Response from server:", data); 
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to submit priest.");
+            }
+            alert("Priest submitted successfully!");
+        } catch (error) {
+            console.error("Error submitting priest:", error);
+            alert("Failed to submit priest comment.");
+        }
     };
 
     const openModal = () => setIsModalOpen(true);
@@ -107,10 +246,10 @@ const FuneralDetails = () => {
                 {funeralDetails?.deathCertificate && (
                     <div className="death-certificate-container">
                         <img
-                            src={funeralDetails.deathCertificate}
+                            src={funeralDetails.deathCertificate.url}
                             alt="Death Certificate"
                             onClick={() => {
-                                setImageUrl(funeralDetails.deathCertificate);
+                                setImageUrl(funeralDetails.deathCertificate.url);
                                 setIsModalOpen(true);
                             }}
                             className="death-certificate-thumbnail"
@@ -135,22 +274,14 @@ const FuneralDetails = () => {
                     </div>
                 </Modal>
 
-
+                {/* Admin Display of Comment */}
                 <div className="admin-comments-section">
                     <h2>Admin Comments</h2>
                     {comments.length > 0 ? (
                         comments.map((comment, index) => (
                             <div key={index} className="admin-comment">
-                                <p><strong>Priest:</strong> {comment?.priest || "N/A"}</p>
-                                <p><strong>Scheduled Date:</strong> {comment?.scheduledDate ? new Date(comment.scheduledDate).toLocaleDateString() : "Not set"}</p>
                                 <p><strong>Selected Comment:</strong> {comment?.selectedComment || "N/A"}</p>
                                 <p><strong>Additional Comment:</strong> {comment?.additionalComment || "N/A"}</p>
-                                {comment?.adminRescheduled?.date && (
-                                    <p><strong>Rescheduled Date:</strong> {new Date(comment.adminRescheduled.date).toLocaleDateString()}</p>
-                                )}
-                                {comment?.adminRescheduled?.reason && (
-                                    <p><strong>Reason for Rescheduling:</strong> {comment.adminRescheduled.reason}</p>
-                                )}
                             </div>
                         ))
                     ) : (
@@ -158,19 +289,47 @@ const FuneralDetails = () => {
                     )}
                 </div>
 
+                {/* for Rescheduling */}
+                <div className="wedding-date-box">
+                    <h3>Updated Funeral Date</h3>
+                    <p className="date">
+                        {updatedFuneralDate ? new Date(updatedFuneralDate).toLocaleDateString() : "N/A"}
+                    </p>
+
+                    {funeralDetails?.adminRescheduled?.reason && (
+                        <div className="reschedule-reason">
+                            <h3>Reason for Rescheduling</h3>
+                            <p>{funeralDetails.adminRescheduled.reason}</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Admin wedding Date  */}
+                <div className="admin-section">
+                    <h2>Select Updated Funeral Date:</h2>
+                    <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
+                    <label>Reason:</label>
+                    <textarea value={reason} onChange={(e) => setReason(e.target.value)} />
+                </div>
+
+                 {/* Display of Priest */}
+                 <div className="admin-comments-section">
+                    <h2>Priest</h2>
+                    {comments.length > 0 ? (
+                        comments.map((comment, index) => (
+                            <div key={index} className="admin-comment">
+                                <p><strong>Priest:</strong> {comment?.priest || "N/A"}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No priest.</p>
+                    )}
+                </div>
+
+
+                {/* Admin Creating a Comment */}
                 <div className="admin-section">
                     <h2>Submit Admin Comment</h2>
-                    <input
-                        type="text"
-                        placeholder="Priest Name"
-                        value={priest}
-                        onChange={(e) => setPriest(e.target.value)}
-                    />
-                    <input
-                        type="date"
-                        value={selectedDate}
-                        onChange={(e) => setSelectedDate(e.target.value)}
-                    />
                     <select
                         value={selectedComment}
                         onChange={(e) => setSelectedComment(e.target.value)}
@@ -180,18 +339,6 @@ const FuneralDetails = () => {
                             <option key={index} value={comment}>{comment}</option>
                         ))}
                     </select>
-                    <input
-                        type="date"
-                        placeholder="Rescheduled Date (optional)"
-                        value={rescheduledDate}
-                        onChange={(e) => setRescheduledDate(e.target.value)}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Reason for Rescheduling"
-                        value={rescheduledReason}
-                        onChange={(e) => setRescheduledReason(e.target.value)}
-                    />
                     <textarea
                         placeholder="Additional Comments"
                         value={additionalComment}
@@ -199,8 +346,31 @@ const FuneralDetails = () => {
                     />
                     <button onClick={handleSubmitComment}>Submit Comment</button>
                 </div>
+
+
+                {/* Adding of Priest */}
+                <div className="admin-section">
+                    <h2>Priest Name</h2>
+                    <textarea
+                        placeholder="Priest Name"
+                        value={priest}
+                        onChange={(e) => setPriest(e.target.value)}
+                    />
+                    <button onClick={handleAddPriest}>Add Priest</button>
+                </div>
+
+
+
+                <div className="button-container">
+                    <button onClick={() => handleConfirm(funeralId)}>Confirm Funeral</button>
+                    <button onClick={() => handleDecline(funeralId)}>Decline</button>
+                    <button onClick={handleUpdate} disabled={loading}>
+                        {loading ? "Updating..." : "Update Funeral Date"}
+                    </button>
+                </div>
             </div>
         </div>
+
     );
 };
 

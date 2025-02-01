@@ -17,7 +17,7 @@ const PrayerRequestList = () => {
         try {
             setLoading(true);
             const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/admin/getAllPrayerRequest`);
-            const forms = response.data.prayerRequests || []; 
+            const forms = response.data.prayerRequests || [];
             setprayerRequestForms(forms);
             setFilteredForms(forms);
         } catch (err) {
@@ -26,8 +26,8 @@ const PrayerRequestList = () => {
             setLoading(false);
         }
     };
-    
-    
+
+
     const handleCardClick = (prayerId) => {
         navigate(`/admin/prayerRequestDetails/${prayerId}`);
     };
@@ -103,7 +103,7 @@ const PrayerRequestList = () => {
                                 <div className="card-details">
                                     <p>
                                         <strong>Offeror's Full Name:</strong> {item.
-offerrorsName || "N/A"}
+                                            offerrorsName || "N/A"}
                                     </p>
                                     <p>
                                         <strong>Prayer Request Date:</strong>{" "}
@@ -112,9 +112,17 @@ offerrorsName || "N/A"}
                                             : "N/A"}
                                     </p>
                                     <p>
-                                        <strong>Intentions:</strong>
-                                        {item.intentions?.name || "N/A"},
+                                        <strong>Intentions:</strong>{" "}
+                                        {Array.isArray(item.Intentions) && item.Intentions.length > 0
+                                            ? item.Intentions.map((Intentions, i) => (
+                                                <span key={Intentions._id || i}>
+                                                    {Intentions.name || "Unnamed"}
+                                                    {i !== item.Intentions.length - 1 ? ", " : ""}
+                                                </span>
+                                            ))
+                                            : "N/A"}
                                     </p>
+
                                     <p>
                                         <strong>Submitted By:</strong>
                                     </p>

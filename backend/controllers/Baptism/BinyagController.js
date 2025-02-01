@@ -1,3 +1,4 @@
+const { BaptismChecklist } = require('../../models/baptismChecklist'); 
 const Baptism = require("../../models/Binyag");
 const mongoose = require("mongoose");
 const cloudinary = require('cloudinary').v2;
@@ -8,6 +9,7 @@ exports.submitBaptismForm = async (req, res) => {
     const {
       baptismDate,
       baptismTime,
+      phone,
       child,
       parents,
       ninong,
@@ -52,6 +54,7 @@ exports.submitBaptismForm = async (req, res) => {
     const baptism = new Baptism({
       baptismDate,
       baptismTime,
+      phone,
       child: child ? JSON.parse(child) : null,
       parents: parents ? JSON.parse(parents) : null,
       ninong: ninong ? JSON.parse(ninong) : [],
@@ -70,7 +73,6 @@ exports.submitBaptismForm = async (req, res) => {
     res.status(500).json({ success: false, message: 'Error creating baptism', error: error.message });
   }
 };
-
 
 exports.listBaptismForms = async (req, res) => {
   try {
@@ -95,7 +97,6 @@ exports.listBaptismForms = async (req, res) => {
   }
 };
 
-
 // Get Baptism By ID
 exports.getBaptismById = async (req, res) => {
   console.log("Request ID:", req.params.id);
@@ -114,7 +115,7 @@ exports.getBaptismById = async (req, res) => {
   }
 };
 
-// Confirm Baptism
+// Baptism Controls
 exports.confirmBaptism = async (req, res) => {
   const baptismId = req.params.baptismId;
 
@@ -134,7 +135,6 @@ exports.confirmBaptism = async (req, res) => {
   }
 };
 
-// Decline Baptism
 exports.declineBaptism = async (req, res) => {
   try {
     const baptism = await Baptism.findByIdAndUpdate(
@@ -146,6 +146,29 @@ exports.declineBaptism = async (req, res) => {
     res.send(baptism);
   } catch (err) {
     res.status(500).send('Server error.');
+  }
+};
+
+// reschedule
+exports.updateBaptismDate = async (req, res) => {
+  try {
+    const { baptismId } = req.params;
+    const { newDate, reason } = req.body;
+
+    const baptism = await Baptism.findById(baptismId);
+    if (!baptism) {
+      return res.status(404).json({ message: "Baptism not found" });
+    }
+
+    baptism.baptismDate = newDate;
+    baptism.adminRescheduled = { date: newDate, reason: reason };
+
+    await baptism.save();
+
+    return res.status(200).json({ message: "Baptism date updated successfully", baptism });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -165,33 +188,95 @@ exports.getConfirmedBaptisms = async (req, res) => {
 
 // Add Comment to Baptism
 exports.addBaptismComment = async (req, res) => {
-  const baptismId = req.params.id;
-
   try {
+    const { baptismId } = req.params;
+    const { selectedComment, additionalComment } = req.body;
+
+    if (!selectedComment && !additionalComment) {
+      return res.status(400).json({ message: "Comment cannot be empty." });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(baptismId)) {
+      return res.status(400).json({ message: "Invalid baptism ID format." });
+    }
+
     const baptism = await Baptism.findById(baptismId);
     if (!baptism) {
-      return res.status(404).json({ message: "Baptism not found" });
+      return res.status(404).json({ message: "Baptism not found." });
     }
 
     const newComment = {
-      priest: req.body.priest,
-      scheduledDate: req.body.scheduledDate,
-      selectedComment: req.body.selectedComment,
-      additionalComment: req.body.additionalComment,
+      selectedComment: selectedComment || "",
+      additionalComment: additionalComment || "",
+      createdAt: new Date(),
     };
 
-    baptism.comments = baptism.comments || []; // Initialize comments array if not existing
     baptism.comments.push(newComment);
     await baptism.save();
 
-    res.status(201).json(baptism.comments);
+    res.status(200).json({ message: "Comment added.", comment: newComment });
   } catch (error) {
-    console.error("Error adding comment to baptism:", error);
+    console.error("Error adding comment:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
 
-// Get My Submitted Forms
+// Baptism Checklist
+exports.getBaptismChecklist = async (req, res) => {
+  try {
+    const { baptismId } = req.params;
+    const baptism = await Baptism.findById(baptismId).populate('checklistId');
+    if (!baptism) {
+      return res.status(404).json({ message: 'Baptism not found' });
+    }
+    res.json({ checklist: baptism.checklistId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// update Baptism Checklist
+exports.updateBaptismChecklist = async (req, res) => {
+  try {
+    const { baptismId } = req.params;
+    const checklistData = req.body;
+
+    console.log("Received baptismId:", baptismId);
+    console.log("Checklist Data:", checklistData);
+
+    const baptism = await Baptism.findById(baptismId);
+    if (!baptism) {
+      return res.status(404).json({ message: 'Baptism not found' });
+    }
+
+    let updatedChecklist;
+    if (!baptism.checklistId) {
+
+      console.log("No checklist found, creating a new one...");
+      updatedChecklist = await BaptismChecklist.create(checklistData);
+
+      baptism.checklistId = updatedChecklist._id;
+
+      await baptism.save();
+      return res.json({ message: 'Checklist created successfully', checklist: updatedChecklist });
+    } else {
+
+      console.log("Updating existing checklist with ID:", baptism.checklistId);
+      updatedChecklist = await BaptismChecklist.findByIdAndUpdate(
+        baptism.checklistId,
+        checklistData,
+        { new: true }
+      );
+      return res.json({ message: 'Checklist updated successfully', checklist: updatedChecklist });
+    }
+  } catch (err) {
+    console.error("Error updating baptism checklist:", err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
 exports.getMySubmittedForms = async (req, res) => {
   try {
     const userId = req.user.id;

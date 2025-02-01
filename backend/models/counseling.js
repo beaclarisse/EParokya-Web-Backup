@@ -56,6 +56,7 @@ const counselingSchema = new mongoose.Schema({
     ],
 
     priest: { type: String, required: false },
+    termsAndConditionsId: { type: mongoose.Schema.Types.ObjectId, ref: 'TermsAndConditions' }
 });
 
 module.exports = mongoose.model('counseling', counselingSchema);

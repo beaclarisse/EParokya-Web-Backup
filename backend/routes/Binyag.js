@@ -18,15 +18,18 @@ router.post(
   isAuthenticatedUser, BaptismController.submitBaptismForm
 );
 
-
 router.get('/mySubmittedForms', isAuthenticatedUser, BaptismController.getMySubmittedForms);
 router.get('/confirmedBaptism', BaptismController.getConfirmedBaptisms);
+router.get('/getBaptismChecklist/:baptismId', BaptismController.getBaptismChecklist);
 
 router.get('/stats/baptsimsPerMonth', BaptismController.getBaptismPerMonth);
 router.get('/stats/baptismStatusCount', isAuthenticatedUser, BaptismController.getBaptismStatusCounts);
+router.put('/updateBaptismChecklist/:baptismId', BaptismController.updateBaptismChecklist);
 
-router.post('/decline/:baptismId', BaptismController.declineBaptism);
+router.post('/:baptismId/declineBaptism', BaptismController.declineBaptism);
 router.post('/:baptismId/admin/addComment', BaptismController.addBaptismComment);
+router.put('/:baptismId/updateBaptismDate', BaptismController.updateBaptismDate);
+
 
 router.get('/getBaptism/:id', BaptismController.getBaptismById);
 router.post('/:baptismId/confirmBaptism', BaptismController.confirmBaptism);

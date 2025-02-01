@@ -3,6 +3,9 @@ import './App.css';
 import { Home } from './Components/Home';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './Components/Layout/Header';
+import TermsModal from './Components/TermsModal';
+import TermsAndConditionText from './Components/TermsAndConditionText';
+
 
 import React, { useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -65,9 +68,12 @@ import AdminPrayerReview from './Components/Admin/Prayers/AdminPrayerReview';
 // Private Forms
 import WeddingList from './Components/Admin/Wedding/WeddingList';
 import WeddingDetails from './Components/Admin/Wedding/WeddingDetails';
+import WeddingChecklist from './Components/Admin/Wedding/WeddingChecklist';
 
 import BaptismList from './Components/Admin/Baptism/BaptismList';
 import BaptismDetails from './Components/Admin/Baptism/BapstismDetails';
+import BaptismChecklist from './Components/Admin/Baptism/BaptismChecklist';
+
 
 import FuneralList from './Components/Admin/Funeral/FuneralList';
 import FuneralDetails from './Components/Admin/Funeral/FuneralDetails';
@@ -75,6 +81,9 @@ import FuneralDetails from './Components/Admin/Funeral/FuneralDetails';
 import CounselingList from './Components/Admin/Counseling/CounselingList';
 import PrayerRequestList from './Components/Admin/Prayers/prayerRequestList';
 import HouseBlessingList from './Components/Admin/PrivateSchedule/houseBlessingList';
+
+import CounselingDetails from './Components/Admin/Counseling/CounselingDetails';
+import HouseBlessingDetails from './Components/Admin/PrivateSchedule/HouseBlessingDetails';
 
 
 //Admin
@@ -132,12 +141,14 @@ function App() {
 
         {/* counseling */}
         <Route path="/admin/counselingList" element={<ProtectedRoute isAdmin={true}><CounselingList /></ProtectedRoute>} />
+        <Route path="/admin/counselingDetails/:counselingId" element={<ProtectedRoute isAdmin={true}><CounselingDetails /></ProtectedRoute>} />
 
         {/* prayer */}
         <Route path="/admin/prayerRequestList" element={<ProtectedRoute isAdmin={true}><PrayerRequestList /></ProtectedRoute>} />
 
         {/* Private Scheduling */}
         <Route path="/admin/houseBlessingList" element={<ProtectedRoute isAdmin={true}><HouseBlessingList /></ProtectedRoute>} />
+        <Route path="/admin/houseBlessingDetails/:blessingId" element={<ProtectedRoute isAdmin={true}><HouseBlessingDetails /></ProtectedRoute>} />
 
         {/* Post */}
         <Route path="/admin/post/create" element={<ProtectedRoute isAdmin={true}><CreatePost /></ProtectedRoute>} />
@@ -159,6 +170,9 @@ function App() {
         <Route path="/admin/weddingDetails/:weddingId" element={<ProtectedRoute isAdmin={true}><WeddingDetails /></ProtectedRoute>} />
         <Route path="/admin/baptismDetails/:baptismId" element={<ProtectedRoute isAdmin={true}><BaptismDetails /></ProtectedRoute>} />
         <Route path="/admin/funeralDetails/:funeralId" element={<ProtectedRoute isAdmin={true}><FuneralDetails /></ProtectedRoute>} />
+
+        <Route path="/admin/weddingChecklist/:weddingId" element={<ProtectedRoute isAdmin={true}><WeddingChecklist /></ProtectedRoute>} />
+        <Route path="/admin/baptismChecklist/:baptismId" element={<ProtectedRoute isAdmin={true}><BaptismChecklist /></ProtectedRoute>} />
 
 
         {/* Guest View */}
