@@ -41,12 +41,10 @@ const HouseBlessingsDetails = () => {
                     `${process.env.REACT_APP_API}/api/v1/getHouseBlessing/${blessingId}`,
                     { withCredentials: true }
                 );
-                // console.log("API Response:", response.data);
                 setBlessingDetails(response.data.houseBlessing);
                 setComments(response.data.houseBlessing.comments || []);
-
+                setUpdatedBlessingDate(response.data.blessingDate);
             } catch (err) {
-                // console.error("API Error:", err);
                 setError("Failed to fetch house blessing details.");
             } finally {
                 setLoading(false);
@@ -62,13 +60,11 @@ const HouseBlessingsDetails = () => {
                 `${process.env.REACT_APP_API}/api/v1/${blessingId}/confirmBlessing`,
                 { withCredentials: true }
             );
-            // console.log("Confirmation response:", response.data);
             toast.success("House blessing confirmed successfully!", {
                 position: toast.POSITION.TOP_RIGHT,
                 autoClose: 3000,
             });
         } catch (error) {
-            // console.error("Error confirming house blessing:", error.response || error.message);
             toast.error(
                 error.response?.data?.message || "Failed to confirm the house blessing.",
                 {
@@ -85,13 +81,11 @@ const HouseBlessingsDetails = () => {
                 `${process.env.REACT_APP_API}/api/v1/${blessingId}/declineBlessing`,
                 { withCredentials: true }
             );
-            console.log("Declining response:", response.data);
             toast.success("House blessing declined successfully!", {
                 position: toast.POSITION.TOP_RIGHT,
                 autoClose: 3000,
             });
         } catch (error) {
-            console.error("Error declining house blessing:", error.response || error.message);
             toast.error(
                 error.response?.data?.message || "Failed to decline the house blessing.",
                 {
@@ -152,7 +146,6 @@ const HouseBlessingsDetails = () => {
             }
             alert("Comment submitted successfully!");
         } catch (error) {
-            // console.error("Error submitting comment:", error);
             alert("Failed to submit comment.");
         }
     };
@@ -182,6 +175,7 @@ const HouseBlessingsDetails = () => {
                 throw new Error(data.message || "Failed to submit priest.");
             }
             alert("Priest submitted successfully!");
+            setPriest(""); 
         } catch (error) {
             console.error("Error submitting priest:", error);
             alert("Failed to submit priest comment.");
@@ -192,111 +186,127 @@ const HouseBlessingsDetails = () => {
     if (error) return <div>Error: {error}</div>;
 
     return (
-        <div className="house-blessing-details-container">
+        <div className="wedding-details-page">
             <SideBar />
-            <div className="house-blessing-details-content">
-                <h1>House Blessing Details</h1>
-                <div className="details">
-                    <p>Full Name: {blessingDetails?.fullName || "N/A"}</p>
-                    <p>Contact Number: {blessingDetails?.contactNumber || "N/A"}</p>
-                    <p>Address: {blessingDetails?.address?.houseDetails || "N/A"},
-                        {blessingDetails?.address?.phase || "N/A"},
-                        {blessingDetails?.address?.street || "N/A"},
-                        {blessingDetails?.address?.baranggay || "N/A"},
-                        {blessingDetails?.address?.district || "N/A"},
-                        {blessingDetails?.address?.city || "N/A"}</p>
-                    <p>Blessing Date: {blessingDetails?.blessingDate ? new Date(blessingDetails.blessingDate).toLocaleDateString() : "N/A"}</p>
-                    <p>Blessing Time: {blessingDetails?.blessingTime || "N/A"}</p>
-                    <p>Blessing Status: {blessingDetails?.blessingStatus || "N/A"}</p>
-                    <p>Confirmed At: {blessingDetails?.confirmedAt ? new Date(blessingDetails.confirmedAt).toLocaleDateString() : "N/A"}</p>
-                </div>
-
-                {/* Admin Display of Comment */}
-                <div className="admin-comments-section">
-                    <h2>Admin Comments</h2>
-                    {(comments && comments.length > 0) ? (
-                        comments.map((comment, index) => (
-                            <div key={index} className="admin-comment">
-                                <p><strong>Selected Comment:</strong> {comment?.selectedComment || "N/A"}</p>
-                                <p><strong>Additional Comment:</strong> {comment?.additionalComment || "N/A"}</p>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No admin comments yet.</p>
-                    )}
-
-                </div>
-
-                {/* for Rescheduling */}
-                <div className="blessing-date-box">
-                    <h3>Updated Blessing Date</h3>
-                    <p className="date">
-                        {blessingDetails?.adminRescheduled?.date ? new Date(blessingDetails.adminRescheduled.date).toLocaleDateString() : "N/A"}
-                    </p>
-
-                    {blessingDetails?.adminRescheduled?.reason && (
-                        <div className="reschedule-reason">
-                            <h3>Reason for Rescheduling</h3>
-                            <p>{blessingDetails.adminRescheduled.reason}</p>
+            <div className="house-details-content">
+                <div className="house-details-grid">
+                    {/* House Details Box */}
+                    <div className="house-details-box">
+                        <h3>House Blessing Details</h3>
+                        <div className="house-details-item">
+                            <p><strong>Full Name:</strong> {blessingDetails?.fullName || "N/A"}</p>
                         </div>
-                    )}
-                </div>
+                        <div className="house-details-item">
+                            <p><strong>Contact Number:</strong> {blessingDetails?.contactNumber || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Address:</strong> {blessingDetails?.address?.houseDetails || "N/A"},
+                                {blessingDetails?.address?.phase || "N/A"},
+                                {blessingDetails?.address?.street || "N/A"},
+                                {blessingDetails?.address?.baranggay || "N/A"},
+                                {blessingDetails?.address?.district || "N/A"},
+                                {blessingDetails?.address?.city || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Blessing Date:</strong> {blessingDetails?.blessingDate ? new Date(blessingDetails.blessingDate).toLocaleDateString() : "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Blessing Time:</strong> {blessingDetails?.blessingTime || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Blessing Status:</strong> {blessingDetails?.blessingStatus || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Confirmed At:</strong> {blessingDetails?.confirmedAt ? new Date(blessingDetails.confirmedAt).toLocaleDateString() : "N/A"}</p>
+                        </div>
+                    </div>
 
-                {/* Admin Blessing Date */}
-                <div className="admin-section">
-                    <h2>Select Updated Blessing Date:</h2>
-                    <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
-                    <label>Reason:</label>
-                    <textarea value={reason} onChange={(e) => setReason(e.target.value)} />
-                </div>
+                    {/* Admin Comments Section */}
+                    <div className="house-comments-section">
+                        <h2>Admin Comments</h2>
+                        {(comments && comments.length > 0) ? (
+                            comments.map((comment, index) => (
+                                <div key={index} className="admin-comment">
+                                    <p><strong>Selected Comment:</strong> {comment?.selectedComment || "N/A"}</p>
+                                    <p><strong>Additional Comment:</strong> {comment?.additionalComment || "N/A"}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>No admin comments yet.</p>
+                        )}
+                    </div>
 
-                {/* Display of Priest */}
-                <div className="admin-comments-section">
-                    <h2>Priest</h2>
-                    <p><strong>Priest:</strong> {blessingDetails?.priest || "N/A"}</p>
+                    {/* Updated Blessing Date Section */}
+                    <div className="blessing-date-box">
+                        <h3>Updated Blessing Date</h3>
+                        <p className="date">
+                            {blessingDetails?.adminRescheduled?.date ? new Date(blessingDetails.adminRescheduled.date).toLocaleDateString() : "N/A"}
+                        </p>
+                        {blessingDetails?.adminRescheduled?.reason && (
+                            <div className="reschedule-reason">
+                                <h3>Reason for Rescheduling</h3>
+                                <p>{blessingDetails.adminRescheduled.reason}</p>
+                            </div>
+                        )}
+                    </div>
 
-                </div>
+                    {/* Priest Section */}
+                    <div className="house-comments-section">
+                        <h2>Priest</h2>
+                        <p><strong>Priest:</strong> {blessingDetails?.priest || "N/A"}</p>
+                    </div>
 
-                {/* Admin Creating a Comment */}
-                <div className="admin-section">
-                    <h2>Submit Admin Comment</h2>
-                    <select
-                        value={selectedComment}
-                        onChange={(e) => setSelectedComment(e.target.value)}
-                    >
-                        <option value="" disabled>Select a comment</option>
-                        {predefinedComments.map((comment, index) => (
-                            <option key={index} value={comment}>{comment}</option>
-                        ))}
-                    </select>
-                    <textarea
-                        placeholder="Additional Comments"
-                        value={additionalComment}
-                        onChange={(e) => setAdditionalComment(e.target.value)}
-                    />
-                    <button onClick={handleSubmitComment}>Submit Comment</button>
-                </div>
+                    {/* Admin Section for Updating Blessing Date */}
+                    <div className="house-section">
+                        <h2>Select Updated Blessing Date:</h2>
+                        <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
+                        <label>Reason:</label>
+                        <textarea value={reason} onChange={(e) => setReason(e.target.value)} />
+                    </div>
+                    <div className="button-container">
+                        <button onClick={handleUpdate} disabled={loading}>
+                            {loading ? "Updating..." : "Update Blessing Date"}
+                        </button></div>
 
-                {/* Adding of Priest */}
-                <div className="admin-section">
-                    <h2>Priest Name</h2>
-                    <textarea
-                        placeholder="Priest Name"
-                        value={priest}
-                        onChange={(e) => setPriest(e.target.value)}
-                    />
-                    <button onClick={handleAddPriest}>Add Priest</button>
-                </div>
 
-                <div className="button-container">
-                    <button onClick={() => handleConfirm(blessingId)}>Confirm Blessing</button>
-                    <button onClick={() => handleDecline(blessingId)}>Decline</button>
-                    <button onClick={handleUpdate} disabled={loading}>
-                        {loading ? "Updating..." : "Update Blessing Date"}
-                    </button>
+                    {/* Admin Comment Submission */}
+                    <div className="house-section">
+                        <h2>Submit Admin Comment</h2>
+                        <select value={selectedComment} onChange={(e) => setSelectedComment(e.target.value)}>
+                            <option value="" disabled>Select a comment</option>
+                            {predefinedComments.map((comment, index) => (
+                                <option key={index} value={comment}>{comment}</option>
+                            ))}
+                        </select>
+                        <textarea
+                            placeholder="Additional Comments"
+                            value={additionalComment}
+                            onChange={(e) => setAdditionalComment(e.target.value)}
+                        />
+                        <div className="button-container">
+                            <button onClick={handleSubmitComment}>Submit Comment</button>
+                        </div>
+                    </div>
+
+                    {/* Adding Priest */}
+                    <div className="house-section">
+                        <h2>Priest Name</h2>
+                        <textarea
+                            placeholder="Priest Name"
+                            value={priest}
+                            onChange={(e) => setPriest(e.target.value)}
+                        />
+                        <button onClick={handleAddPriest}>Add Priest</button>
+                    </div>
+
+                    <div className="button-container">
+                        <button onClick={() => handleConfirm(blessingId)}>Confirm Blessing</button>
+                        <button onClick={() => handleDecline(blessingId)}>Decline</button>
+                    </div>
                 </div>
             </div>
         </div>
+
     );
 };
 

@@ -16,11 +16,16 @@ const BaptismDetails = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const [priest, setPriest] = useState("");
     const [selectedDate, setSelectedDate] = useState("");
     const [selectedComment, setSelectedComment] = useState("");
     const [additionalComment, setAdditionalComment] = useState("");
     const [comments, setComments] = useState([]);
+    const [adminNotes, setAdminNotes] = useState([]);
+    const [priest, setPriest] = useState("");
+    const [recordedBy, setrecordedBy] = useState("");
+    const [bookNumber, setbookNumber] = useState("");
+    const [pageNumber, setpageNumber] = useState("");
+    const [lineNumber, setlineNumber] = useState("");
 
     const [newDate, setNewDate] = useState("");
     const [reason, setReason] = useState("");
@@ -32,6 +37,9 @@ const BaptismDetails = () => {
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState("");
+    const [birthCertificateImage, setbirthCertificateImage] = useState("");
+    const [marriageCertificateImage, setmarriageCertificateImage] = useState("");
+    const [baptismPermitImage, setbaptismPermitImage] = useState("");
 
     const predefinedComments = [
         "Confirmed and on schedule",
@@ -46,9 +54,16 @@ const BaptismDetails = () => {
                 const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getBaptism/${baptismId}`,
                     { withCredentials: true });
 
+                console.log("API Response:", response.data); 
+
                 setBaptismDetails(response.data);
                 setSelectedDate(response.data.baptismDate || "");
                 setComments(response.data.comments || []);
+                setAdminNotes(response.data.adminNotes);
+                setbirthCertificateImage(response.data.birthCertificate || "");
+                setmarriageCertificateImage(response.data.marriageCertificate || "");
+                setbaptismPermitImage(response.data.baptismPermit || "");
+
             } catch (err) {
                 console.error(err);
                 setError("Failed to fetch baptism details");
@@ -58,6 +73,7 @@ const BaptismDetails = () => {
         };
         fetchBaptismDetails();
     }, [baptismId]);
+
 
     const openModal = (image) => {
         setSelectedImage(image);
@@ -101,7 +117,7 @@ const BaptismDetails = () => {
 
         try {
             const response = await axios.post(
-                `${process.env.REACT_APP_API}/api/v1/${baptismId}/admin/addComment`,
+                `${process.env.REACT_APP_API}/api/v1/commentBaptism/${baptismId}`,
                 newComment,
             );
             setComments([...comments, response.data]);
@@ -111,6 +127,35 @@ const BaptismDetails = () => {
         } catch (error) {
             console.error("Error submitting comment:", error.response || error);
             alert("Failed to submit the comment.");
+        }
+    };
+
+    const handleAdminNotes = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem("jwt");
+        const newadminNotes = {
+            priest,
+            recordedBy,
+            bookNumber,
+            pageNumber,
+            lineNumber,
+        };
+
+        try {
+            const response = await axios.post(
+                `${process.env.REACT_APP_API}/api/v1/adminAdditionalNotes/${baptismId}`,
+                newadminNotes,
+            );
+            setAdminNotes([...adminNotes, response.data]);
+            setPriest("");
+            setrecordedBy("");
+            setbookNumber("");
+            setpageNumber("");
+            setlineNumber("");
+            alert("Additional notes submitted.");
+        } catch (error) {
+            console.error("Error submitting additional notes:", error.response || error);
+            alert("Failed to submit the additional notes.");
         }
     };
 
@@ -220,18 +265,17 @@ const BaptismDetails = () => {
                         {baptismDetails?.NinangGodparents?.map((gp) => gp.name).join(", ") || "N/A"}
                     </p>
 
-
                     <div className="details-box">
                         <h3>Baptismal Documents</h3>
-                        {['PhotocopyOfBirthCertificate', 'PhotocopyOfMarriageCertificate'].map((doc, index) => (
+                        {['birthCertificate', 'marriageCertificate'].map((doc, index) => (
                             <div key={index} className="grid-row">
                                 <p>{doc.replace(/([A-Z])/g, ' $1').trim()}:</p>
-                                {baptismDetails?.[doc]?.url ? (
+                                {baptismDetails?.docs?.[doc]?.url ? (
                                     <img
-                                        src={baptismDetails[doc].url}
+                                        src={baptismDetails.docs[doc].url}
                                         alt={doc}
                                         style={{ maxWidth: "100px", maxHeight: "100px", objectFit: "contain", cursor: "pointer" }}
-                                        onClick={() => openModal(baptismDetails[doc].url)}
+                                        onClick={() => openModal(baptismDetails.docs[doc].url)}
                                     />
                                 ) : (
                                     "N/A"
@@ -239,7 +283,6 @@ const BaptismDetails = () => {
                             </div>
                         ))}
                     </div>
-
 
                     {/* Modal with Zoom and Drag Functionality */}
                     <Modal
@@ -347,7 +390,6 @@ const BaptismDetails = () => {
                     <textarea value={reason} onChange={(e) => setReason(e.target.value)} />
                 </div>
 
-
                 <h3>Comments</h3>
                 <ul>
                     {comments.map((comments, index) => (
@@ -357,6 +399,62 @@ const BaptismDetails = () => {
                         </li>
                     ))}
                 </ul>
+
+                {/* Display of Additional Notes */}
+                <div className="admin-comments-section">
+                    <h2>Additional Notes</h2>
+                    {baptismDetails?.adminNotes?.priest ? (
+                        <div className="admin-comment">
+                            <p>
+                                <strong>Priest:</strong> {baptismDetails.adminNotes.priest}
+                            </p>
+                        </div>
+                    ) : (
+                        <p>No priest.</p>
+                    )}
+
+                    {baptismDetails?.adminNotes?.recordedBy ? (
+                        <div className="admin-comment">
+                            <p>
+                                <strong>Recorded By:</strong> {baptismDetails.adminNotes.recordedBy}
+                            </p>
+                        </div>
+                    ) : (
+                        <p>No record.</p>
+                    )}
+
+                    {baptismDetails?.adminNotes?.bookNumber ? (
+                        <div className="admin-comment">
+                            <p>
+                                <strong>Book Number:</strong> {baptismDetails.adminNotes.bookNumber}
+                            </p>
+                        </div>
+                    ) : (
+                        <p>No book number.</p>
+                    )}
+
+                    {baptismDetails?.adminNotes?.pageNumber ? (
+                        <div className="admin-comment">
+                            <p>
+                                <strong>Page Number:</strong> {baptismDetails.adminNotes.pageNumber}
+                            </p>
+                        </div>
+                    ) : (
+                        <p>No page number.</p>
+                    )}
+
+                    {baptismDetails?.adminNotes?.lineNumber ? (
+                        <div className="admin-comment">
+                            <p>
+                                <strong>Line Number:</strong> {baptismDetails.adminNotes.lineNumber}
+                            </p>
+                        </div>
+                    ) : (
+                        <p>No line number.</p>
+                    )}
+
+
+                </div>
 
                 {/* for Rescheduling */}
                 <div className="wedding-date-box">
@@ -371,6 +469,46 @@ const BaptismDetails = () => {
                             <p>{baptismDetails.adminRescheduled.reason}</p>
                         </div>
                     )}
+                </div>
+
+                {/* Adding of additional notes */}
+                <div className="admin-section">
+                    <h4>Priest Name</h4>
+                    <textarea
+                        placeholder="Priest Name"
+                        value={priest}
+                        onChange={(e) => setPriest(e.target.value)}
+                    />
+
+                    <h4>Recored By</h4>
+                    <textarea
+                        placeholder="Recorded By"
+                        value={recordedBy}
+                        onChange={(e) => setrecordedBy(e.target.value)}
+                    />
+
+                    <h4>Book Number</h4>
+                    <textarea
+                        placeholder="Book Number"
+                        value={bookNumber}
+                        onChange={(e) => setbookNumber(e.target.value)}
+                    />
+
+                    <h4>Page Number</h4>
+                    <textarea
+                        placeholder="Page Number"
+                        value={pageNumber}
+                        onChange={(e) => setpageNumber(e.target.value)}
+                    />
+
+                    <h4>Line Number</h4>
+                    <textarea
+                        placeholder="Line Number"
+                        value={lineNumber}
+                        onChange={(e) => setlineNumber(e.target.value)}
+                    />
+
+                    <button onClick={handleAdminNotes}>Add Notes</button>
                 </div>
 
                 <div className="actions">

@@ -65,6 +65,8 @@ exports.submitWeddingForm = async (req, res) => {
     const ninongArray = Ninong ? JSON.parse(Ninong) : [];
     const ninangArray = Ninang ? JSON.parse(Ninang) : [];
 
+    const userId = req.user._id;
+    
     const newWeddingForm = new Wedding({
       dateOfApplication,
       weddingDate,
@@ -84,6 +86,7 @@ exports.submitWeddingForm = async (req, res) => {
       groomBirthDate,
       groomPhone,
       ...images,
+      userId,
     });
 
     await newWeddingForm.save();
@@ -188,7 +191,7 @@ exports.declineWedding = async (req, res) => {
       return res.status(404).json({ message: "Wedding not found." });
     }
 
-    wedding.weddingStatus = "Declined";
+    wedding.weddingStatus = "Cancelled";
     await wedding.save();
 
     res.status(200).json({ message: "Wedding declined." });
@@ -394,6 +397,25 @@ exports.getMySubmittedForms = async (req, res) => {
   } catch (error) {
     console.error("Error fetching submitted wedding forms:", error);
     res.status(500).json({ message: "Failed to fetch submitted wedding forms." });
+  }
+};
+
+exports.getFuneralFormById = async (req, res) => {
+  try {
+      const { formId } = req.params; 
+
+      const weddingForm = await Wedding.findById(formId)
+          .populate('userId', 'name email') 
+          .lean();
+
+      if (!weddinglForm) {
+          return res.status(404).json({ message: "Wedding form not found." });
+      }
+
+      res.status(200).json(weddingForm);
+  } catch (error) {
+      console.error("Error fetching wedding form by ID:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 

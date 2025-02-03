@@ -8,6 +8,8 @@ router.post("/submitPrayer", isAuthenticatedUser, PrayerWallController.submitPra
 router.get("/getAllPrayers", isAuthenticatedUser, PrayerWallController.getAllPrayers);
 router.get("/prayer-wall", PrayerWallController.getConfirmedPrayers);
 
+// router.get('/getAllUserSubmittedPrayerWall', isAuthenticatedUser, PrayerWallController.getMySubmittedPrayerWall);
+
 router.get("/pending", isAuthenticatedUser, PrayerWallController.getPendingPrayers);
 router.put("/confirmPrayer/:prayerId", isAuthenticatedUser, PrayerWallController.approvePrayer);
 router.put("/toggleInclude/:prayerId", isAuthenticatedUser, PrayerWallController.toggleInclude); 

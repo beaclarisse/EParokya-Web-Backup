@@ -22,7 +22,7 @@ const WeddingList = () => {
                 withCredentials: true,
             });
     
-            console.log("Frontend API Response:", response.data); // Debugging output
+            console.log("Frontend API Response:", response.data); 
     
             if (response.data && Array.isArray(response.data)) {
                 setWeddingForms(response.data);
@@ -60,7 +60,7 @@ const WeddingList = () => {
                 <h1 className="wedding-title">Wedding Records</h1>
 
                 <div className="wedding-filters">
-                    {["All", "Confirmed", "Pending", "Declined"].map((status) => (
+                    {["All", "Confirmed", "Pending", "Cancelled"].map((status) => (
                         <button
                             key={status}
                             className={`wedding-filter-button ${filteredStatus === status ? "active" : ""}`}
@@ -88,7 +88,7 @@ const WeddingList = () => {
                         {filterWeddingForms().map((item, index) => {
                             const statusColor =
                                 item.weddingStatus === "Confirmed" ? "#4caf50" :
-                                    item.weddingStatus === "Declined" ? "#ff5722" : "#ffd700";
+                                    item.weddingStatus === "Cancelled" ? "#ff5722" : "#ffd700";
 
                             return (
                                 <div

@@ -114,8 +114,13 @@ const SideBar = () => {
                 Resource Page
               </Dropdown.Toggle>
               <Dropdown.Menu>
+              <Dropdown.Item>
+                  <Link to="/admin/resourceCategory/create" className="sidebar-link" style={styles.sidebarLink}>
+                    Create Resource Category
+                  </Link>
+                </Dropdown.Item>
                 <Dropdown.Item>
-                  <Link to="/admin/weddingList" className="sidebar-link" style={styles.sidebarLink}>
+                  <Link to="/admin/resource/create" className="sidebar-link" style={styles.sidebarLink}>
                     Create Resource
                   </Link>
                 </Dropdown.Item>

@@ -8,7 +8,7 @@ import Modal from "react-modal";
 import DateTimePicker from "react-datetime-picker";
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import { toast, ToastContainer } from 'react-toastify';
-
+// import { useFocusEffect } from '@react-navigation/native';
 
 Modal.setAppElement("#root");
 
@@ -20,8 +20,6 @@ const FuneralDetails = () => {
 
     const [priest, setPriest] = useState("");
     const [selectedComment, setSelectedComment] = useState("");
-    const [rescheduledDate, setRescheduledDate] = useState("");
-    const [rescheduledReason, setRescheduledReason] = useState("");
     const [additionalComment, setAdditionalComment] = useState("");
     const [comments, setComments] = useState([]);
 
@@ -29,10 +27,13 @@ const FuneralDetails = () => {
     const [reason, setReason] = useState("");
     const [updatedFuneralDate, setUpdatedFuneralDate] = useState(funeralDetails?.funeralDate || "");
 
-
+    const [zoom, setZoom] = useState(1);
+    const [offset, setOffset] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState("");
     const [deathCertificateImage, setDeathCertificateImage] = useState("");
-    const [imageUrl, setImageUrl] = useState(null);
 
 
     const predefinedComments = [
@@ -51,7 +52,8 @@ const FuneralDetails = () => {
                 );
                 setFuneralDetails(response.data);
                 setComments(response.data.comments || []);
-                setDeathCertificateImage(response.data.deathCertificate || "");  // Assume `deathCertificate` field contains image URL
+                setPriest(response.data.priest);
+                setDeathCertificateImage(response.data.deathCertificate || "");
             } catch (err) {
                 console.error("API Error:", err);
                 setError("Failed to fetch funeral details.");
@@ -147,7 +149,6 @@ const FuneralDetails = () => {
             selectedComment: selectedComment || "",
             additionalComment: additionalComment || "",
         };
-        // console.log("Sending comment:", commentData); 
         try {
             const response = await fetch(
                 `${process.env.REACT_APP_API}/api/v1/commentFuneral/${funeralId}`,
@@ -178,7 +179,7 @@ const FuneralDetails = () => {
             return;
         }
         const commentData = {
-            priest: priest || "",
+            name: priest || "",
 
         };
         // console.log("Sending comment:", commentData); 
@@ -206,171 +207,224 @@ const FuneralDetails = () => {
         }
     };
 
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
+    const openModal = (image) => {
+        setSelectedImage(image);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setSelectedImage("");
+        setIsModalOpen(false);
+    };
+    const handleMouseDown = (e) => {
+        e.preventDefault();
+        setIsDragging(true);
+        setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+    };
+
+    const handleMouseMove = (e) => {
+        if (!isDragging) return;
+        setOffset({
+            x: e.clientX - dragStart.x,
+            y: e.clientY - dragStart.y,
+        });
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
-        <div className="funeral-details-container">
+        <div className="wedding-details-page">
             <SideBar />
-            <div className="funeral-details-content">
-                <h1>Funeral Details</h1>
-                <div className="details">
-                    <p>Name: {funeralDetails?.name || "N/A"}</p>
-                    <p>Age: {funeralDetails?.age || "N/A"}</p>
-                    <p>Contact Person: {funeralDetails?.contactPerson || "N/A"}</p>
-                    <p>Relationship: {funeralDetails?.relationship || "N/A"}</p>
-                    <p>Phone: {funeralDetails?.phone || "N/A"}</p>
-                    <p>Address: {funeralDetails?.address?.state || "N/A"}, {funeralDetails?.address?.country || "N/A"}, {funeralDetails?.address?.zip || "N/A"}</p>
-                    <p>Place of Death: {funeralDetails?.placeOfDeath || "N/A"}</p>
-                    <p>Funeral Date: {funeralDetails?.funeralDate ? new Date(funeralDetails.funeralDate).toLocaleDateString() : "N/A"}</p>
-                    <p>Time: {funeralDetails?.funeraltime || "N/A"}</p>
-                    <p>Service Type: {funeralDetails?.serviceType || "N/A"}</p>
-                    <p>Priest Visit: {funeralDetails?.priestVisit || "N/A"}</p>
-                    <p>Reason of Death: {funeralDetails?.reasonOfDeath || "N/A"}</p>
-                    <p>Funeral Mass Date: {funeralDetails?.funeralMassDate ? new Date(funeralDetails.funeralMassDate).toLocaleDateString() : "N/A"}</p>
-                    <p>Funeral Mass Time: {funeralDetails?.funeralMasstime || "N/A"}</p>
-                    <p>Funeral Mass: {funeralDetails?.funeralMass || "N/A"}</p>
-                    <p>Funeral Status: {funeralDetails?.funeralStatus || "N/A"}</p>
-                    <p>Confirmed At: {funeralDetails?.confirmedAt ? new Date(funeralDetails.confirmedAt).toLocaleDateString() : "N/A"}</p>
-                    {funeralDetails?.placingOfPall?.by && (
-                        <p>Placing of Pall by: {funeralDetails.placingOfPall.by}</p>
-                    )}
-                    {funeralDetails?.placingOfPall?.familyMembers?.length > 0 && (
-                        <p>Family Members Placing Pall: {funeralDetails.placingOfPall.familyMembers.join(", ")}</p>
-                    )}
-                </div>
-
-                {funeralDetails?.deathCertificate && (
-                    <div className="death-certificate-container">
-                        <img
-                            src={funeralDetails.deathCertificate.url}
-                            alt="Death Certificate"
-                            onClick={() => {
-                                setImageUrl(funeralDetails.deathCertificate.url);
-                                setIsModalOpen(true);
-                            }}
-                            className="death-certificate-thumbnail"
-                        />
-                    </div>
-                )}
-
-                <Modal
-                    isOpen={isModalOpen}
-                    onRequestClose={() => setIsModalOpen(false)}
-                    contentLabel="Death Certificate Preview"
-                    className="modal"
-                    overlayClassName="overlay"
-                >
-                    <button onClick={() => setIsModalOpen(false)} className="close-modal-button">Close</button>
-                    <div className="modal-content">
-                        <img
-                            src={imageUrl}
-                            alt="Death Certificate"
-                            className="death-certificate-modal-image"
-                        />
-                    </div>
-                </Modal>
-
-                {/* Admin Display of Comment */}
-                <div className="admin-comments-section">
-                    <h2>Admin Comments</h2>
-                    {comments.length > 0 ? (
-                        comments.map((comment, index) => (
-                            <div key={index} className="admin-comment">
-                                <p><strong>Selected Comment:</strong> {comment?.selectedComment || "N/A"}</p>
-                                <p><strong>Additional Comment:</strong> {comment?.additionalComment || "N/A"}</p>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No admin comments yet.</p>
-                    )}
-                </div>
-
-                {/* for Rescheduling */}
-                <div className="wedding-date-box">
-                    <h3>Updated Funeral Date</h3>
-                    <p className="date">
-                        {updatedFuneralDate ? new Date(updatedFuneralDate).toLocaleDateString() : "N/A"}
-                    </p>
-
-                    {funeralDetails?.adminRescheduled?.reason && (
-                        <div className="reschedule-reason">
-                            <h3>Reason for Rescheduling</h3>
-                            <p>{funeralDetails.adminRescheduled.reason}</p>
+            <div className="house-details-content">
+                <div className="house-details-grid">
+                    {/* Funeral Details Box */}
+                    <div className="house-details-box">
+                        <h3>Funeral Details</h3>
+                        <div className="house-details-item">
+                            <p><strong>Name:</strong> {funeralDetails?.name || "N/A"}</p>
                         </div>
-                    )}
-                </div>
-
-                {/* Admin wedding Date  */}
-                <div className="admin-section">
-                    <h2>Select Updated Funeral Date:</h2>
-                    <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
-                    <label>Reason:</label>
-                    <textarea value={reason} onChange={(e) => setReason(e.target.value)} />
-                </div>
-
-                 {/* Display of Priest */}
-                 <div className="admin-comments-section">
-                    <h2>Priest</h2>
-                    {comments.length > 0 ? (
-                        comments.map((comment, index) => (
-                            <div key={index} className="admin-comment">
-                                <p><strong>Priest:</strong> {comment?.priest || "N/A"}</p>
+                        <div className="house-details-item">
+                            <p><strong>Age:</strong> {funeralDetails?.age || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Contact Person:</strong> {funeralDetails?.contactPerson || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Relationship:</strong> {funeralDetails?.relationship || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Phone:</strong> {funeralDetails?.phone || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Address:</strong> {funeralDetails?.address?.state || "N/A"}, {funeralDetails?.address?.country || "N/A"}, {funeralDetails?.address?.zip || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Place of Death:</strong> {funeralDetails?.placeOfDeath || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Funeral Date:</strong> {funeralDetails?.funeralDate ? new Date(funeralDetails.funeralDate).toLocaleDateString() : "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Time:</strong> {funeralDetails?.funeraltime || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Service Type:</strong> {funeralDetails?.serviceType || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Priest Visit:</strong> {funeralDetails?.priestVisit || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Reason of Death:</strong> {funeralDetails?.reasonOfDeath || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Funeral Mass Date:</strong> {funeralDetails?.funeralMassDate ? new Date(funeralDetails.funeralMassDate).toLocaleDateString() : "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Funeral Mass Time:</strong> {funeralDetails?.funeralMasstime || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Funeral Mass:</strong> {funeralDetails?.funeralMass || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Funeral Status:</strong> {funeralDetails?.funeralStatus || "N/A"}</p>
+                        </div>
+                        <div className="house-details-item">
+                            <p><strong>Confirmed At:</strong> {funeralDetails?.confirmedAt ? new Date(funeralDetails.confirmedAt).toLocaleDateString() : "N/A"}</p>
+                        </div>
+                        {funeralDetails?.placingOfPall?.by && (
+                            <div className="house-details-item">
+                                <p><strong>Placing of Pall by:</strong> {funeralDetails.placingOfPall.by}</p>
                             </div>
-                        ))
-                    ) : (
-                        <p>No priest.</p>
-                    )}
-                </div>
-
-
-                {/* Admin Creating a Comment */}
-                <div className="admin-section">
-                    <h2>Submit Admin Comment</h2>
-                    <select
-                        value={selectedComment}
-                        onChange={(e) => setSelectedComment(e.target.value)}
-                    >
-                        <option value="" disabled>Select a comment</option>
-                        {predefinedComments.map((comment, index) => (
-                            <option key={index} value={comment}>{comment}</option>
+                        )}
+                        {funeralDetails?.placingOfPall?.familyMembers?.length > 0 && (
+                            <div className="house-details-item">
+                                <p><strong>Family Members Placing Pall:</strong> {funeralDetails.placingOfPall.familyMembers.join(", ")}</p>
+                            </div>
+                        )}
+                    </div>
+    
+                    {/* Death Certificate Section */}
+                    <div className="house-details-box">
+                        <h3>Death Certificate</h3>
+                        {['deathCertificate'].map((doc, index) => (
+                            <div key={index} className="house-details-item">
+                                <p>{doc.replace(/([A-Z])/g, ' $1').trim()}:</p>
+                                {funeralDetails?.[doc]?.url ? (
+                                    <img
+                                        src={funeralDetails[doc].url}
+                                        alt={doc}
+                                        style={{ maxWidth: "100px", maxHeight: "100px", objectFit: "contain", cursor: "pointer" }}
+                                        onClick={() => openModal(funeralDetails[doc].url)}
+                                    />
+                                ) : (
+                                    "N/A"
+                                )}
+                            </div>
                         ))}
-                    </select>
-                    <textarea
-                        placeholder="Additional Comments"
-                        value={additionalComment}
-                        onChange={(e) => setAdditionalComment(e.target.value)}
-                    />
-                    <button onClick={handleSubmitComment}>Submit Comment</button>
-                </div>
-
-
-                {/* Adding of Priest */}
-                <div className="admin-section">
-                    <h2>Priest Name</h2>
-                    <textarea
-                        placeholder="Priest Name"
-                        value={priest}
-                        onChange={(e) => setPriest(e.target.value)}
-                    />
-                    <button onClick={handleAddPriest}>Add Priest</button>
-                </div>
-
-
-
-                <div className="button-container">
-                    <button onClick={() => handleConfirm(funeralId)}>Confirm Funeral</button>
-                    <button onClick={() => handleDecline(funeralId)}>Decline</button>
-                    <button onClick={handleUpdate} disabled={loading}>
-                        {loading ? "Updating..." : "Update Funeral Date"}
-                    </button>
+                    </div>
+    
+                    {/* Admin Comments Section */}
+                    <div className="house-comments-section">
+                        <h2>Admin Comments</h2>
+                        {comments.length > 0 ? (
+                            comments.map((comment, index) => (
+                                <div key={index} className="admin-comment">
+                                    <p><strong>Selected Comment:</strong> {comment?.selectedComment || "N/A"}</p>
+                                    <p><strong>Additional Comment:</strong> {comment?.additionalComment || "N/A"}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>No admin comments yet.</p>
+                        )}
+                    </div>
+    
+                    {/* Updated Funeral Date Section */}
+                    <div className="blessing-date-box">
+                        <h3>Updated Funeral Date</h3>
+                        <p className="date">
+                            {updatedFuneralDate ? new Date(updatedFuneralDate).toLocaleDateString() : "N/A"}
+                        </p>
+                        {funeralDetails?.adminRescheduled?.reason && (
+                            <div className="reschedule-reason">
+                                <h3>Reason for Rescheduling</h3>
+                                <p>{funeralDetails.adminRescheduled.reason}</p>
+                            </div>
+                        )}
+                    </div>
+    
+                    {/* Priest Section */}
+                    <div className="house-comments-section">
+                        <h2>Priest</h2>
+                        {funeralDetails?.Priest?.name ? (
+                            <div className="admin-comment">
+                                <p><strong>Priest:</strong> {funeralDetails.Priest.name}</p>
+                            </div>
+                        ) : (
+                            <p>No priest.</p>
+                        )}
+                    </div>
+    
+                    {/* Admin Section for Updating Funeral Date */}
+                    <div className="house-section">
+                        <h2>Select Updated Funeral Date:</h2>
+                        <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
+                        <label>Reason:</label>
+                        <textarea value={reason} onChange={(e) => setReason(e.target.value)} />
+                        <div className="button-container">
+                            <button onClick={handleUpdate} disabled={loading}>
+                                {loading ? "Updating..." : "Update Funeral Date"}
+                            </button>
+                        </div>
+                    </div>
+    
+                    {/* Admin Comment Submission */}
+                    <div className="house-section">
+                        <h2>Submit Admin Comment</h2>
+                        <select
+                            value={selectedComment}
+                            onChange={(e) => setSelectedComment(e.target.value)}
+                        >
+                            <option value="" disabled>Select a comment</option>
+                            {predefinedComments.map((comment, index) => (
+                                <option key={index} value={comment}>{comment}</option>
+                            ))}
+                        </select>
+                        <textarea
+                            placeholder="Additional Comments"
+                            value={additionalComment}
+                            onChange={(e) => setAdditionalComment(e.target.value)}
+                        />
+                        <div className="button-container">
+                            <button onClick={handleSubmitComment}>Submit Comment</button>
+                        </div>
+                    </div>
+    
+                    {/* Adding Priest */}
+                    <div className="house-section">
+                        <h2>Priest Name</h2>
+                        <textarea
+                            placeholder="Priest Name"
+                            value={priest}
+                            onChange={(e) => setPriest(e.target.value)}
+                        />
+                        <div className="button-container">
+                            <button onClick={handleAddPriest}>Add Priest</button>
+                        </div>
+                    </div>
+    
+                    {/* Confirmation and Decline Buttons */}
+                    <div className="button-container">
+                        <button onClick={() => handleConfirm(funeralId)}>Confirm Funeral</button>
+                        <button onClick={() => handleDecline(funeralId)}>Decline</button>
+                    </div>
                 </div>
             </div>
         </div>
-
     );
 };
 

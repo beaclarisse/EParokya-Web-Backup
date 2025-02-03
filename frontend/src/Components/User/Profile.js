@@ -39,7 +39,7 @@ const Profile = () => {
                 <Link to="/password/update" className="btn-profile">
                   Change Password
                 </Link>
-                <Link to="/submitted-forms" className="btn-profile">
+                <Link to="/user/SubmittedFormsNavigation" className="btn-profile">
                   View Forms
                 </Link>
                 <Link to="/prayer-wall" className="btn-profile">

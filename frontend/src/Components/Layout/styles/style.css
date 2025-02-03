@@ -832,6 +832,9 @@ button {
   color: white;
 }
 
+
+/* House Blessing */
+
 /* WeddingDetails Layout */
 .wedding-details-page {
   display: flex;
@@ -1008,8 +1011,118 @@ button {
   margin-right: 10px; 
 }
 
+/* House Details Box */
+
+.house-details-content {
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.house-details-box {
+  background: #f9f9f9;
+  padding: 25px;  
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 200%; 
+  max-width: 1000px; 
+  margin: 0 auto; 
+}
+
+/* Blessing Date Box */
+.blessing-date-box {
+  background: #f9f9f9;
+  padding: 25px;  /* More padding for a wider look */
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.blessing-date-box h3 {
+  font-size: 1.5rem;
+  color: #154314;
+}
+
+.blessing-date-box .date {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.house.details-item {
+  background: #f8f8f8;
+  padding: 15px; /* More padding for details items */
+  border-radius: 5px;
+  font-size: 1rem;
+  margin-bottom: 10px; /* Space between each item */
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr; 
+  gap: 20px;
+}
+
+/* Admin Section */
+.admin-section {
+  padding: 1rem;
+  background: #f4f4f4;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.admin-section h2 {
+  font-size: 1.5rem;
+  color: #154314;
+  margin-bottom: 10px;
+}
+
+.admin-section input,
+.admin-section select,
+.admin-section textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.house-section {
+  padding: 1rem;
+  background: #f4f4f4;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  width: 100%; 
+  max-width: 1000px; 
+}
+
+
+.house-section h2 {
+  font-size: 1.5rem;
+  color: #154314;
+  margin-bottom: 10px;
+}
+
+.house-section input,
+.house-section select,
+.house-section textarea {
+  width: 200%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  max-width: 900px; 
+}
+
+
+.house-comments-section, .house-section {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 1000px; 
+}
+
 /* funeral details */
-.funeral-details-page {
+/* .funeral-details-page {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -1074,7 +1187,7 @@ textarea, input, select, button {
   border: 1px solid #ddd; 
   border-radius: 5px; 
   background-color: #fff; 
-}
+} */
 
 
 /* General Styles */
@@ -2137,3 +2250,86 @@ body {
   justify-content: space-between;
 }
 
+/* resource create */
+.create-resource {
+  display: flex;
+  gap: 20px; /* Space between the sidebar and form */
+  padding: 20px;
+}
+
+.sidebar {
+  width: 250px; /* Fixed width for sidebar */
+  background: #f4f4f4;
+  padding: 20px;
+  border-radius: 8px;
+  height: 100vh; /* Make the sidebar full height */
+}
+
+.container {
+  flex: 1; /* Allow the form container to take the remaining space */
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  max-width: 800px; /* Limit the max width of the form */
+  overflow: hidden;
+}
+
+/* Form field styling */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Image Preview */
+.image-preview-container,
+.video-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.image-preview,
+.video-preview {
+  position: relative;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  color: red;
+}
+
+/* Media Query for Responsiveness */
+@media (max-width: 1024px) {
+  .create-resource {
+    flex-direction: column; /* Stack sidebar and form vertically */
+    gap: 20px;
+  }
+
+  .sidebar {
+    width: 100%; /* Make sidebar take full width on smaller screens */
+    height: auto;
+  }
+
+  .container {
+    width: 100%; /* Form takes full width on smaller screens */
+    max-width: 100%;
+  }
+}

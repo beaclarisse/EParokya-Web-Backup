@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const dateSchema = new mongoose.Schema({
     category: {
         type: String,
-        enum: ['Wedding', 'Funeral', 'Christening', 'Counseling'],
+        enum: ['Wedding', 'Funeral'],
         required: true,
     },
     date: {
@@ -16,7 +16,7 @@ const dateSchema = new mongoose.Schema({
     },
     isEnabled: {
         type: Boolean,
-        default: true,
+        default: false,
     },
     maxParticipants: {
         type: Number,

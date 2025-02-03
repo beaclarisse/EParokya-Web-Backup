@@ -19,6 +19,9 @@ import UserCalendar from './Components/User/UserCalendar';
 import NavigationForms from './Components/User/NavigationForms';
 
 // User Forms
+
+import SubmittedForms from './Components/User/Forms/SubmittedFormsNavigation';
+
 import BaptismForm from './Components/User/Forms/PrivateForms/Baptism/BaptismForm';
 import FuneralForm from './Components/User/Forms/PrivateForms/Funeral/FuneralForm';
 import WeddingForm from './Components/User/Forms/PrivateForms/Wedding/WeddingForm';
@@ -26,6 +29,27 @@ import WeddingForm from './Components/User/Forms/PrivateForms/Wedding/WeddingFor
 import CounselingForm from './Components/User/Forms/PrivateForms/Counseling/CounselingForm';
 import PrayerRequestForm from './Components/User/Forms/PrivateForms/Prayer/PrayerRequestForm';
 import HouseBlessingForm from './Components/User/Forms/PrivateForms/PrivateSchedule/HouseBlessingForm';
+
+import MySubmittedWeddingForm from './Components/User/Forms/PrivateForms/Wedding/MySubmittedWeddingForm';
+import SubmittedWeddingList from './Components/User/Forms/PrivateForms/Wedding/SubmittedWeddingList';
+
+import MySubmittedBaptismForm from './Components/User/Forms/PrivateForms/Baptism/MySubmittedBaptismForm';
+import SubmittedBaptismList from './Components/User/Forms/PrivateForms/Baptism/SubmittedBaptismList';
+
+import MySubmittedFuneralForm from './Components/User/Forms/PrivateForms/Funeral/MySubmittedFuneralForm';
+import SubmittedFuneralList from './Components/User/Forms/PrivateForms/Funeral/SubmittedFuneralList';
+
+import MySubmittedCounselingForm from './Components/User/Forms/PrivateForms/Counseling/MySubmittedCounselingForm';
+import SubmittedCounselingList from './Components/User/Forms/PrivateForms/Counseling/SubmittedCounselingList';
+
+import MySubmittedHouseBlessingForm from './Components/User/Forms/PrivateForms/PrivateSchedule/MySubmittedHouseBlessingForm';
+import SubmittedHouseBlessingList from './Components/User/Forms/PrivateForms/PrivateSchedule/SubmittedHouseBlessingList';
+
+// import MySubmittedPrayerRequestForm from './Components/User/Forms/PrivateForms/Prayer/MySubmittedPrayerRequestForm';
+// import SubmittedPrayerRequestList from './Components/User/Forms/PrivateForms/Prayer/SubmittedPrayerRequestList';
+
+// import MySubmittedPrayerWallForm from './Components/User/Forms/PrivateForms/Prayer/MySubmittedPrayerWallForm';
+// import SubmittedPrayerWallList from './Components/User/Forms/PrivateForms/Prayer/SubmittedPrayerWallList';
 
 
 // User Navigations
@@ -62,6 +86,10 @@ import AnnouncementCategory from './Components/Admin/Announcement/CreateAnnounce
 import Announcement from './Components/Admin/Announcement/CreateAnnouncement';
 import AnnouncementList from './Components/Admin/Announcement/AnnouncementList';
 
+
+// resource
+import Resource from './Components/Admin/Resources/Resource';
+
 // Prayer
 import AdminPrayerReview from './Components/Admin/Prayers/AdminPrayerReview';
 
@@ -88,7 +116,7 @@ import HouseBlessingDetails from './Components/Admin/PrivateSchedule/HouseBlessi
 
 //Admin
 import MinistryCategory from './Components/Admin/Ministries/CreateMinistryCategory';
-
+import ResourceCategory from './Components/Admin/Resources/ResourceCategory';
 
 
 //Guest View
@@ -110,6 +138,9 @@ function App() {
         <Route path="/user/calendar" element={<UserCalendar />} exact="true" />
         <Route path="/user/NavigationForms" element={<NavigationForms />} exact="true" />
 
+        <Route path="/user/SubmittedFormsNavigation" element={<SubmittedForms />} exact="true" />
+
+
         <Route path="/user/baptismForm" element={<BaptismForm />} exact="true" />
         <Route path="/user/funeralForm" element={<FuneralForm />} exact="true" />
         <Route path="/user/weddingForm" element={<WeddingForm />} exact="true" />
@@ -117,6 +148,30 @@ function App() {
         <Route path="/user/prayerRequest" element={<PrayerRequestForm />} exact="true" />
         <Route path="/user/houseBlessingForm" element={<HouseBlessingForm />} exact="true" />
 
+        <Route path="/user/mySubmittedWeddingForm/:formId" element={<MySubmittedWeddingForm />} exact="true" />
+        <Route path="/user/mySubmittedBaptismForm/:formId" element={<MySubmittedBaptismForm />} exact="true" />
+        <Route path="/user/mySubmittedFuneralForm/:formId" element={<MySubmittedFuneralForm />} exact="true" />
+        <Route path="/user/mySubmittedCounselingForm/:formId" element={<MySubmittedCounselingForm />} exact="true" />
+        <Route path="/user/mySubmittedHouseBlessingForm/:formId" element={<MySubmittedHouseBlessingForm />} exact="true" />
+
+
+        {/* 
+        <Route path="/user/mySubmittedCounselingForm/:formId" element={<MySubmittedCounselingForm />} exact="true" />
+        <Route path="/user/mySubmittedPrayerRequestForm/:formId" element={<MySubmittedPrayerRequestForm />} exact="true" />
+        <Route path="/user/mySubmittedPrayerWallForm/:formId" element={<MySubmittedPrayerWallForm />} exact="true" /> */}
+
+
+        <Route path="/user/SubmittedWeddingList" element={<SubmittedWeddingList />} exact="true" />
+        <Route path="/user/SubmittedBaptismList" element={<SubmittedBaptismList />} exact="true" />
+        <Route path="/user/SubmittedFuneralList" element={<SubmittedFuneralList />} exact="true" />
+        <Route path="/user/SubmittedCounselingList" element={<SubmittedCounselingList />} exact="true" />
+        <Route path="/user/SubmittedHouseBlessingList" element={<SubmittedHouseBlessingList />} exact="true" />
+
+        {/*
+       
+        <Route path="/user/SubmittedCounselingList" element={<SubmittedCounselingList />} exact="true" />
+        <Route path="/user/SubmittedPrayerRequestList" element={<SubmittedPrayerRequestList />} exact="true" />
+        <Route path="/user/SubmittedPrayerWallList" element={<SubmittedPrayerWallList />} exact="true" /> */}
 
         <Route path="/user/prayerWall" element={<PrayerWall />} exact="true" />
 
@@ -136,8 +191,13 @@ function App() {
 
         {/* announcement - update */}
         <Route path="/admin/announcementCategory/create" element={<ProtectedRoute isAdmin={true}><AnnouncementCategory /></ProtectedRoute>} />
+        <Route path="/admin/resourceCategory/create" element={<ProtectedRoute isAdmin={true}><ResourceCategory /></ProtectedRoute>} />
         <Route path="/admin/create/announcement" element={<ProtectedRoute isAdmin={true}><Announcement /></ProtectedRoute>} />
         <Route path="/admin/announcementList" element={<ProtectedRoute isAdmin={true}><AnnouncementList /></ProtectedRoute>} />
+
+        {/* Resource */}
+        <Route path="/admin/resource/create" element={<ProtectedRoute isAdmin={true}><Resource /></ProtectedRoute>} />
+
 
         {/* counseling */}
         <Route path="/admin/counselingList" element={<ProtectedRoute isAdmin={true}><CounselingList /></ProtectedRoute>} />

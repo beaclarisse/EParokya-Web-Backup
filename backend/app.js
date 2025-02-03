@@ -14,6 +14,8 @@ const prayerRequest = require('./routes/PrayerWall/prayerRequest')
 
 const houseBlessing = require('./routes/PrivateScheduling/houseBlessing')
 // const memberBatchYear = require('./routes/Members/memberBatchYear')
+const resourceCategory = require('./routes/Resources/resourceCategory')
+const resource = require('./routes/Resources/resource')
 
 
 const adminDate = require('./routes/adminDate')
@@ -55,6 +57,9 @@ app.use('/api/v1', announcementComment);
 app.use('/api/v1', counseling);
 app.use('/api/v1', prayerRequest);
 app.use('/api/v1', houseBlessing);
+app.use('/api/v1', resourceCategory);
+app.use('/api/v1', resource);
+
 
 
 

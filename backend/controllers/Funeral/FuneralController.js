@@ -69,6 +69,8 @@ exports.createFuneral = async (req, res) => {
         if (new Date(funeralDate) < new Date()) {
             return res.status(400).json({ message: "Funeral date cannot be in the past." });
         }
+       
+       
 
         const newFuneral = new Funeral({
             name,
@@ -267,6 +269,40 @@ exports.createComment = async (req, res) => {
     }
 };
 
+exports.createPriestComment = async (req, res) => {
+    try {
+        const { funeralId } = req.params;
+        const { name } = req.body; 
+
+        if (!name) {
+            return res.status(400).json({ message: "Priest name is required." });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(funeralId)) {
+            return res.status(400).json({ message: "Invalid funeral ID format." });
+        }
+
+        const funeral = await Funeral.findById(funeralId);
+        if (!funeral) {
+            return res.status(404).json({ message: "Funeral not found." });
+        }
+
+        // Set the priest subdocument
+        funeral.Priest = {
+            name,
+            createdAt: new Date()
+        };
+
+        await funeral.save();
+
+        res.status(200).json({ message: "Priest comment added.", priest: funeral.Priest });
+    } catch (error) {
+        console.error("Error adding priest comment:", error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+
 // exports.addPriest = async (req, res) => {
 //     try {
 //         const { funeralId } = req.params;
@@ -322,7 +358,6 @@ exports.updateFuneralDate = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
-
 
 exports.deleteComment = async (req, res) => {
     try {
@@ -381,24 +416,45 @@ exports.getConfirmedFunerals = async (req, res) => {
     }
 };
 
+// For user fetching
 exports.getMySubmittedForms = async (req, res) => {
     try {
-        const userId = req.user.id;
-        console.log("Authenticated User ID:", userId);
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(400).json({ message: "Invalid User ID" });
-        }
-        const forms = await Funeral.find({ userId: userId });
-
-        if (!forms.length) {
-            return res.status(404).json({ message: "No forms found for this user." });
-        }
-        res.status(200).json({ forms });
+      const userId = req.user.id;
+      console.log("Authenticated User ID:", userId);
+  
+      const forms = await Funeral.find({ userId: userId });
+  
+      if (!forms.length) {
+        return res.status(404).json({ message: "No forms found for this user." });
+      }
+  
+      res.status(200).json({ forms });
     } catch (error) {
-        console.error("Error fetching submitted funeral forms:", error);
-        res.status(500).json({ message: "Failed to fetch submitted funeral forms." });
+      console.error("Error fetching submitted funeral forms:", error);
+      res.status(500).json({ message: "Failed to fetch submitted funeral forms." });
+    }
+  };
+  
+  // details 
+  exports.getFuneralFormById = async (req, res) => {
+    try {
+        const { formId } = req.params; // Extract formId from URL
+
+        const funeralForm = await Funeral.findById(formId)
+            .populate('userId', 'name email') // Populate user info
+            .lean();
+
+        if (!funeralForm) {
+            return res.status(404).json({ message: "Funeral form not found." });
+        }
+
+        res.status(200).json(funeralForm);
+    } catch (error) {
+        console.error("Error fetching funeral form by ID:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
 
 exports.getFuneralsPerMonth = async (req, res) => {
     const data = await Funeral.aggregate([

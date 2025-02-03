@@ -193,6 +193,45 @@ exports.addComment = async (req, res) => {
     }
 };
 
+// For user fetching
+exports.getMySubmittedForms = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      console.log("Authenticated User ID:", userId);
+  
+      const forms = await HouseBlessing.find({ userId: userId });
+  
+      if (!forms.length) {
+        return res.status(404).json({ message: "No forms found for this user." });
+      }
+  
+      res.status(200).json({ forms });
+    } catch (error) {
+      console.error("Error fetching submitted house blessing forms:", error);
+      res.status(500).json({ message: "Failed to fetch submitted house blessing forms." });
+    }
+  };
+  
+  // details 
+  exports.getHouseBlessingFormById = async (req, res) => {
+    try {
+        const { formId } = req.params; 
+
+        const houseBlessingForm = await HouseBlessing.findById(formId)
+            .populate('userId', 'name email') 
+            .lean();
+
+        if (!houseBlessingForm) {
+            return res.status(404).json({ message: "House Blessing form not found." });
+        }
+
+        res.status(200).json(houseBlessingForm);
+    } catch (error) {
+        console.error("Error fetching house blessing form by ID:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
 // Get House Blessing by ID
 exports.getHouseBlessingById = async (req, res) => {
     try {

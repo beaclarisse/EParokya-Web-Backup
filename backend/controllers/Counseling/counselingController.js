@@ -188,6 +188,78 @@ exports.confirmCounseling = async (req, res) => {
     }
   };
 
+  exports.createPriestComment = async (req, res) => {
+    try {
+        const { counselingId } = req.params;
+        const { name } = req.body; 
+
+        if (!name) {
+            return res.status(400).json({ message: "Priest name is required." });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(counselingId)) {
+            return res.status(400).json({ message: "Invalid counseling ID format." });
+        }
+
+        const counseling = await Counseling.findById(counselingId);
+        if (!counseling) {
+            return res.status(404).json({ message: "Counseling not found." });
+        }
+
+        // Set the priest subdocument
+        counseling.priest = {
+            name,
+            createdAt: new Date()
+        };
+
+        await counseling.save();
+
+        res.status(200).json({ message: "Priest comment added.", priest: counseling.priest });
+    } catch (error) {
+        console.error("Error adding priest comment:", error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+// For user fetching
+exports.getMySubmittedForms = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log("Authenticated User ID:", userId);
+
+    const forms = await Counseling.find({ userId: userId });
+
+    if (!forms.length) {
+      return res.status(404).json({ message: "No forms found for this user." });
+    }
+
+    res.status(200).json({ forms });
+  } catch (error) {
+    console.error("Error fetching submitted counseling forms:", error);
+    res.status(500).json({ message: "Failed to fetch submitted counseling forms." });
+  }
+};
+
+// details 
+exports.getCounselingFormById = async (req, res) => {
+  try {
+      const { formId } = req.params; 
+
+      const counselingForm = await Counseling.findById(formId)
+          .populate('userId', 'name email') 
+          .lean();
+
+      if (!counselingForm) {
+          return res.status(404).json({ message: "Counseling form not found." });
+      }
+
+      res.status(200).json(counselingForm);
+  } catch (error) {
+      console.error("Error fetching counseling form by ID:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 // Update counseling status (Approve/Cancel)
 exports.updateCounselingStatus = async (req, res) => {
     try {

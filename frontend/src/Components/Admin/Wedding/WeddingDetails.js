@@ -27,14 +27,8 @@ const WeddingDetails = () => {
   const [updatedWeddingDate, setUpdatedWeddingDate] = useState(weddingDetails?.weddingDate || "");
 
 
-  const [preMarriageSeminar1Date, setPreMarriageSeminar1Date] = useState("");
-  const [preMarriageSeminar1Time, setPreMarriageSeminar1Time] = useState("");
-
-  const [preMarriageSeminar2Date, setPreMarriageSeminar2Date] = useState("");
-  const [preMarriageSeminar2Time, setPreMarriageSeminar2Time] = useState("");
-
-  const [preMarriageSeminar3Date, setPreMarriageSeminar3Date] = useState("");
-  const [preMarriageSeminar3Time, setPreMarriageSeminar3Time] = useState("");
+  const [preMarriageSeminarDate, setPreMarriageSeminarDate] = useState("");
+  const [preMarriageSeminarTime, setPreMarriageSeminarTime] = useState("");
 
   const [canonicalInterviewDate, setCanonicalInterviewDate] = useState("");
   const [canonicalInterviewTime, setCanonicalInterviewTime] = useState("");
@@ -162,17 +156,9 @@ const WeddingDetails = () => {
   const updateAdditionalReq = async () => {
     try {
       const additionalReq = {
-        PreMarriageSeminar1: {
-          date: preMarriageSeminar1Date,
-          time: preMarriageSeminar1Time,
-        },
-        PreMarriageSeminar2: {
-          date: preMarriageSeminar2Date,
-          time: preMarriageSeminar2Time,
-        },
-        PreMarriageSeminar3: {
-          date: preMarriageSeminar3Date,
-          time: preMarriageSeminar3Time,
+        PreMarriageSeminar: {
+          date: preMarriageSeminarDate,
+          time: preMarriageSeminarTime,
         },
         CanonicalInterview: {
           date: canonicalInterviewDate,
@@ -227,7 +213,7 @@ const WeddingDetails = () => {
   const handleDecline = async (weddingId, token) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API}/api/v1/${weddingId}/declineWedding`,
+        `${process.env.REACT_APP_API}/api/v1/${weddingId}/cancelWedding`,
         { withCredentials: true },
         {
           headers: {
@@ -473,7 +459,7 @@ const WeddingDetails = () => {
             <p>No admin comments yet.</p>
           )}
         </div>
-        
+
         {/* for Rescheduling */}
         <div className="wedding-date-box">
           <h3>Updated Wedding Date</h3>
@@ -497,33 +483,11 @@ const WeddingDetails = () => {
               <div className="req-detail">
                 <p>
                   <strong>Pre Marriage Seminar 1 Date and Time:</strong>{" "}
-                  {weddingDetails.additionalReq.PreMarriageSeminar1?.date
-                    ? new Date(weddingDetails.additionalReq.PreMarriageSeminar1.date).toLocaleDateString()
+                  {weddingDetails.additionalReq.PreMarriageSeminar?.date
+                    ? new Date(weddingDetails.additionalReq.PreMarriageSeminar.date).toLocaleDateString()
                     : "N/A"}{" "}
                   at{" "}
-                  {weddingDetails.additionalReq.PreMarriageSeminar1?.time || "N/A"}
-                </p>
-              </div>
-
-              <div className="req-detail">
-                <p>
-                  <strong>Pre Marriage Seminar 2 Date and Time:</strong>{" "}
-                  {weddingDetails.additionalReq.PreMarriageSeminar2?.date
-                    ? new Date(weddingDetails.additionalReq.PreMarriageSeminar2.date).toLocaleDateString()
-                    : "N/A"}{" "}
-                  at{" "}
-                  {weddingDetails.additionalReq.PreMarriageSeminar2?.time || "N/A"}
-                </p>
-              </div>
-
-              <div className="req-detail">
-                <p>
-                  <strong>Pre Marriage Seminar 3 Date and Time:</strong>{" "}
-                  {weddingDetails.additionalReq.PreMarriageSeminar3?.date
-                    ? new Date(weddingDetails.additionalReq.PreMarriageSeminar3.date).toLocaleDateString()
-                    : "N/A"}{" "}
-                  at{" "}
-                  {weddingDetails.additionalReq.PreMarriageSeminar3?.time || "N/A"}
+                  {weddingDetails.additionalReq.PreMarriageSeminar?.time || "N/A"}
                 </p>
               </div>
 
@@ -592,120 +556,88 @@ const WeddingDetails = () => {
           <label>Reason:</label>
           <textarea value={reason} onChange={(e) => setReason(e.target.value)} />
         </div>
-
-        {/* Additional Admin Comment */}
-        <div className="additional-requirements">
-          <h2>Additional Requirements</h2>
-
-          <div className="requirement-section">
-            <h3>Pre Marriage Seminar 1</h3>
-            <div className="input-row">
-              <label>Date:</label>
-              <input
-                type="date"
-                value={preMarriageSeminar1Date}
-                onChange={(e) => setPreMarriageSeminar1Date(e.target.value)}
-              />
-              <label>Time:</label>
-              <input
-                type="time"
-                value={preMarriageSeminar1Time}
-                onChange={(e) => setPreMarriageSeminar1Time(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="requirement-section">
-            <h3>Pre Marriage Seminar 2</h3>
-            <div className="input-row">
-              <label>Date:</label>
-              <input
-                type="date"
-                value={preMarriageSeminar2Date}
-                onChange={(e) => setPreMarriageSeminar2Date(e.target.value)}
-              />
-              <label>Time:</label>
-              <input
-                type="time"
-                value={preMarriageSeminar2Time}
-                onChange={(e) => setPreMarriageSeminar2Time(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="requirement-section">
-            <h3>Pre Marriage Seminar 3</h3>
-            <div className="input-row">
-              <label>Date:</label>
-              <input
-                type="date"
-                value={preMarriageSeminar3Date}
-                onChange={(e) => setPreMarriageSeminar3Date(e.target.value)}
-              />
-              <label>Time:</label>
-              <input
-                type="time"
-                value={preMarriageSeminar3Time}
-                onChange={(e) => setPreMarriageSeminar3Time(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="requirement-section">
-            <h3>Canonical Interview</h3>
-            <div className="input-row">
-              <label>Date:</label>
-              <input
-                type="date"
-                value={canonicalInterviewDate}
-                onChange={(e) => setCanonicalInterviewDate(e.target.value)}
-              />
-              <label>Time:</label>
-              <input
-                type="time"
-                value={canonicalInterviewTime}
-                onChange={(e) => setCanonicalInterviewTime(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="requirement-section">
-            <h3>Confession</h3>
-            <div className="input-row">
-              <label>Date:</label>
-              <input
-                type="date"
-                value={confessionDate}
-                onChange={(e) => setConfessionDate(e.target.value)}
-              />
-              <label>Time:</label>
-              <input
-                type="time"
-                value={confessionTime}
-                onChange={(e) => setConfessionTime(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <button onClick={updateAdditionalReq}>Submit Additional Requirements</button>
-        </div>
-
-
         <div className="button-container">
-          <button onClick={() => handleConfirm(weddingId)}>Confirm Wedding</button>
-          <button onClick={() => handleDecline(weddingId)}>Decline</button>
           <button onClick={handleUpdate} disabled={loading}>
             {loading ? "Updating..." : "Update Wedding Date"}
-          </button>
+          </button><div>
+
+            {/* Additional Admin Comment */}
+            <div className="additional-requirements">
+              <h2>Additional Requirements</h2>
+
+              <div className="requirement-section">
+                <h3>Pre Marriage Seminar </h3>
+                <div className="input-row">
+                  <label>Date:</label>
+                  <input
+                    type="date"
+                    value={preMarriageSeminarDate}
+                    onChange={(e) => setPreMarriageSeminarDate(e.target.value)}
+                  />
+                  <label>Time:</label>
+                  <input
+                    type="time"
+                    value={preMarriageSeminarTime}
+                    onChange={(e) => setPreMarriageSeminarTime(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="requirement-section">
+                <h3>Canonical Interview</h3>
+                <div className="input-row">
+                  <label>Date:</label>
+                  <input
+                    type="date"
+                    value={canonicalInterviewDate}
+                    onChange={(e) => setCanonicalInterviewDate(e.target.value)}
+                  />
+                  <label>Time:</label>
+                  <input
+                    type="time"
+                    value={canonicalInterviewTime}
+                    onChange={(e) => setCanonicalInterviewTime(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="requirement-section">
+                <h3>Confession</h3>
+                <div className="input-row">
+                  <label>Date:</label>
+                  <input
+                    type="date"
+                    value={confessionDate}
+                    onChange={(e) => setConfessionDate(e.target.value)}
+                  />
+                  <label>Time:</label>
+                  <input
+                    type="time"
+                    value={confessionTime}
+                    onChange={(e) => setConfessionTime(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <button onClick={updateAdditionalReq}>Submit Additional Requirements</button>
+            </div>
+
+
+            <div className="button-container">
+              <button onClick={() => handleConfirm(weddingId)}>Confirm Wedding</button>
+              <button onClick={() => handleDecline(weddingId)}>Decline</button>
+              <button onClick={handleUpdate} disabled={loading}>
+                {loading ? "Updating..." : "Update Wedding Date"}
+              </button>
+            </div>
+          </div>
+
+          <div className="wedding-checklist-container">
+            <WeddingChecklist weddingId={weddingId} />
+          </div>
         </div>
       </div>
-
-      <div className="wedding-checklist-container">
-        <WeddingChecklist weddingId={weddingId} />
-      </div>
-
     </div>
-
 
   );
 };

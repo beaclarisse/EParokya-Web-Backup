@@ -276,17 +276,50 @@ exports.updateBaptismChecklist = async (req, res) => {
   }
 };
 
+exports.addAdminNotes = async (req, res) => {
+  try {
+    const { baptismId } = req.params;
+    const { priest, recordedBy, bookNumber, pageNumber, lineNumber} = req.body;
 
+    if (!priest && !recordedBy && !bookNumber && !pageNumber && !lineNumber ) {
+      return res.status(400).json({ message: "Comment cannot be empty." });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(baptismId)) {
+      return res.status(400).json({ message: "Invalid baptism ID format." });
+    }
+
+    const baptism = await Baptism.findById(baptismId);
+    if (!baptism) {
+      return res.status(404).json({ message: "Baptism not found." });
+    }
+
+    const newadminNotes = {
+      priest: priest || "",
+      recordedBy: recordedBy || "",
+      bookNumber: bookNumber || "",
+      pageNumber: pageNumber || "",
+      lineNumber: lineNumber || "",
+      createdAt: new Date(),
+    };
+
+    baptism.adminNotes.push(newadminNotes);
+    await baptism.save();
+
+    res.status(200).json({ message: "Admin notes added.", adminNotes: newadminNotes });
+  } catch (error) {
+    console.error("Error adding admin notes:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// For user fetching
 exports.getMySubmittedForms = async (req, res) => {
   try {
     const userId = req.user.id;
     console.log("Authenticated User ID:", userId);
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: "Invalid User ID" });
-    }
-
-    const forms = await Baptism.find({ userId });
+    const forms = await Baptism.find({ userId: userId });
 
     if (!forms.length) {
       return res.status(404).json({ message: "No forms found for this user." });
@@ -296,6 +329,26 @@ exports.getMySubmittedForms = async (req, res) => {
   } catch (error) {
     console.error("Error fetching submitted baptism forms:", error);
     res.status(500).json({ message: "Failed to fetch submitted baptism forms." });
+  }
+};
+
+// details 
+exports.getBaptismFormById = async (req, res) => {
+  try {
+      const { formId } = req.params;
+
+      const baptismForm = await Baptism.findById(formId)
+          .populate('userId', 'name email') 
+          .lean();
+
+      if (!baptismForm) {
+          return res.status(404).json({ message: "Baptism form not found." });
+      }
+
+      res.status(200).json(baptismForm);
+  } catch (error) {
+      console.error("Error fetching baptism form by ID:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 

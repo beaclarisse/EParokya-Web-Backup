@@ -59,7 +59,7 @@ const Register = () => {
     const submitHandler = (e) => {
         e.preventDefault();
         if (loading) return;
-
+    
         const formData = new FormData();
         formData.set('name', name);
         formData.set('email', email);
@@ -74,17 +74,20 @@ const Register = () => {
         if (avatar) {
             formData.set('avatar', avatar); 
         }
-        ministryCategories.forEach((categoryId) => {
+        
+        // Append only the selected ministry categories
+        user.ministryCategory.forEach((categoryId) => {
             formData.append('ministryCategory', categoryId);
         });
-
-
+    
+        // Log form data entries for debugging
         for (let [key, value] of formData.entries()) {
-            console.log(`${key}:`, value); // Check that the value is the correct ObjectId string
+            console.log(`${key}:`, value);
         }
-
+    
         dispatch(register(formData));
     };
+    
 
     // const onChange = e => {
     //     if (e.target.name === 'avatar') {

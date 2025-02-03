@@ -29,9 +29,7 @@ const WeddingChecklist = ({ weddingId }) => {
     ChildBirthCertificate: false,
 
     // Seminar / Additional
-    PreMarriageSeminar1: false,
-    PreMarriageSeminar2: false,
-    PreMarriageSeminar3: false,
+    PreMarriageSeminar: false,
     CanonicalInterview: false,
     Confession: false,
   });
@@ -298,29 +296,7 @@ const WeddingChecklist = ({ weddingId }) => {
             checked={checklist.PreMarriageSeminar1}
             onChange={handleCheckboxChange}
           />
-          Pre Marriage Seminar 1
-        </label>
-      </div>
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            name="PreMarriageSeminar2"
-            checked={checklist.PreMarriageSeminar2}
-            onChange={handleCheckboxChange}
-          />
-          Pre Marriage Seminar 2
-        </label>
-      </div>
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            name="PreMarriageSeminar3"
-            checked={checklist.PreMarriageSeminar3}
-            onChange={handleCheckboxChange}
-          />
-          Pre Marriage Seminar 3
+          Pre Marriage Seminar 
         </label>
       </div>
       <div>

@@ -25,7 +25,7 @@ router.post(
     { name: 'PermitFromtheParishOftheBride', maxCount: 1 },
     { name: 'ChildBirthCertificate', maxCount: 1 } 
   ]),
-  WeddingFormController.submitWeddingForm
+  isAuthenticatedUser, WeddingFormController.submitWeddingForm
 );
 
 
@@ -48,11 +48,15 @@ router.put('/updateWeddingDate/:weddingId', WeddingFormController.updateWeddingD
 router.post('/:weddingId/commentWedding',  WeddingFormController.addComment);
 router.post('/updateAdditionalReq/:weddingId',  WeddingFormController.updateAdditionalReq);
 
-router.post('/admin/available-dates', isAuthenticatedUser, authorizeAdmin, WeddingFormController.addAvailableDate);
+router.get('/getAllUserSubmittedWedding', isAuthenticatedUser, WeddingFormController.getMySubmittedForms);
+router.get('/getWeddingForm/:formId', isAuthenticatedUser, WeddingFormController.getFuneralFormById);
 
+
+router.post('/admin/available-dates', isAuthenticatedUser, authorizeAdmin, WeddingFormController.addAvailableDate);
 router.get('/getWeddingById/:weddingId',  WeddingFormController.getWeddingById);
+
 router.post('/:weddingId/confirmWedding',  WeddingFormController.confirmWedding);
-router.post('/:weddingId/declineWedding', WeddingFormController.declineWedding);
+router.post('/:weddingId/cancelWedding',isAuthenticatedUser, WeddingFormController.declineWedding);
 router.delete('/admin/available-dates/:weddingId', isAuthenticatedUser, authorizeAdmin, WeddingFormController.removeAvailableDate);
 
 //wedding dates

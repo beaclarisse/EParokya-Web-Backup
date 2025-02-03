@@ -26,9 +26,7 @@ const weddingChecklistSchema = new mongoose.Schema({
   ChildBirthCertificate: { type: Boolean, default: false },
 
   // Seminar / Additional
-  PreMarriageSeminar1: { type: Boolean, default: false },
-  PreMarriageSeminar2: { type: Boolean, default: false },
-  PreMarriageSeminar3: { type: Boolean, default: false },
+  PreMarriageSeminar: { type: Boolean, default: false },
   CanonicalInterview: { type: Boolean, default: false },
   Confession: { type: Boolean, default: false },
 }, { timestamps: true });

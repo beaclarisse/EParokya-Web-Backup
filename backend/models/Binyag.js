@@ -171,6 +171,21 @@ const BaptismSchema = new mongoose.Schema({
     },
   ],
 
+
+  adminNotes: [
+    {
+      priest: String,
+      recordedBy: String,
+      bookNumber: String,
+      pageNumber: String,
+      lineNumber: String,
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
+
   adminRescheduled: {
     date: { type: Date },
     reason: { type: String },

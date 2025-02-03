@@ -224,15 +224,7 @@ const weddingSchema = mongoose.Schema({
 
   // for Admin to fill out
   additionalReq: {
-    PreMarriageSeminar1: {
-      date: { type: Date },
-      time: { type: String },
-    },
-    PreMarriageSeminar2: {
-      date: { type: Date },
-      time: { type: String },
-    },
-    PreMarriageSeminar3: {
+    PreMarriageSeminar: {
       date: { type: Date },
       time: { type: String },
     },

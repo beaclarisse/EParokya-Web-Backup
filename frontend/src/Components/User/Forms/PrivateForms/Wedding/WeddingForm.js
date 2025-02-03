@@ -103,7 +103,8 @@ const WeddingForm = () => {
     };
 
     const handleFileChange = (e) => {
-        const { name } = e.target;
+        const { name, files } = e.target;
+        console.log(`File selected: ${name}`, files[0]); 
         const file = e.target.files[0];
         setFormData((prev) => ({
             ...prev,
@@ -168,11 +169,13 @@ const WeddingForm = () => {
             imageFields.forEach((field) => {
                 const file = formData.images[field];
                 if (file) {
+                    console.log(`Appending ${field} to FormData`, file);
                     formDataObj.append(field, file);
                 } else {
-                    console.log("No file for field:", field);
+                    console.warn(`⚠️ No file found for ${field}`);
                 }
             });
+            
             Object.entries(formData).forEach(([key, value]) => {
                 if (key !== 'images' && !imageFields.includes(key)) {
                     if (Array.isArray(value)) {
@@ -224,6 +227,17 @@ const WeddingForm = () => {
                     type="date"
                     name="dateOfApplication"
                     value={formData.dateOfApplication}
+                    onChange={handleChange}
+                    required
+                />
+            </Form.Group>
+
+            <Form.Group>
+                <Form.Label>Wedding Date</Form.Label>
+                <Form.Control
+                    type="date"
+                    name="weddingDate"
+                    value={formData.weddingDate}
                     onChange={handleChange}
                     required
                 />
@@ -564,6 +578,36 @@ const WeddingForm = () => {
                         onChange={handleFileChange}
                     />
                 </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Groom's Marriage Bans</Form.Label>
+                    <Form.Control
+                        type="file"
+                        name="GroomMarriageBans"
+                        onChange={handleFileChange}
+                    />
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Groom's Original CeNoMar</Form.Label>
+                    <Form.Control
+                        type="file"
+                        name="GroomOrigCeNoMar"
+                        onChange={handleFileChange}
+                    />
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Groom's Original PSA</Form.Label>
+                    <Form.Control
+                        type="file"
+                        name="GroomOrigPSA"
+                        onChange={handleFileChange}
+                    />
+                </Form.Group>
+
+
+
                 <Form.Group>
                     <Form.Label>Bride's Baptismal Certificate</Form.Label>
                     <Form.Control
@@ -588,6 +632,43 @@ const WeddingForm = () => {
                         onChange={handleFileChange}
                     />
                 </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Bride's Marriage Bans</Form.Label>
+                    <Form.Control
+                        type="file"
+                        name="BrideMarriageBans"
+                        onChange={handleFileChange}
+                    />
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Bride's Original CeNoMar</Form.Label>
+                    <Form.Control
+                        type="file"
+                        name="BrideOrigCeNoMar"
+                        onChange={handleFileChange}
+                    />
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Bride's Original PSA</Form.Label>
+                    <Form.Control
+                        type="file"
+                        name="BrideOrigPSA"
+                        onChange={handleFileChange}
+                    />
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Permit From the Parish Of the Bride</Form.Label>
+                    <Form.Control
+                        type="file"
+                        name="PermitFromtheParishOftheBride"
+                        onChange={handleFileChange}
+                    />
+                </Form.Group>
+
                 <Form.Group>
                     <Form.Label>Child's Birth Certificate</Form.Label>
                     <Form.Control
