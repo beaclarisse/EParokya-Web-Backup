@@ -69,7 +69,7 @@ export const Home = () => {
   useEffect(() => {
     fetchAnnouncements(announcements);
     fetchCategories();
-  }, [announcements]);
+  }, []);
 
   const fetchAnnouncements = async () => {
     try {
@@ -93,7 +93,7 @@ export const Home = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API}/api/v1/getAllannouncementCategory`
       );
-      console.log(response.data);
+      // console.log(response.data);
       setCategories(response.data.categories || []);
     } catch (error) {
       console.error("Error fetching categories:", error);

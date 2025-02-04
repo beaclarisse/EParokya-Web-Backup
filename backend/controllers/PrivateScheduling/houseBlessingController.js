@@ -49,6 +49,37 @@ exports.getUserHouseBlessingRequests = async (req, res) => {
     }
 };
 
+exports.createPriestComment = async (req, res) => {
+    try {
+        const { blessingId } = req.params;
+        const { name } = req.body; 
+
+        if (!name) {
+            return res.status(400).json({ message: "Priest name is required." });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(blessingId)) {
+            return res.status(400).json({ message: "Invalid house blessing ID format." });
+        }
+
+        const houseBlessing = await HouseBlessing.findById(blessingId);
+        if (!houseBlessing) {
+            return res.status(404).json({ message: "House blessing not found." });
+        }
+
+        houseBlessing.priest = name;
+
+        await houseBlessing.save();
+
+        res.status(200).json({ message: "Priest added successfully.", priest: houseBlessing.priest });
+    } catch (error) {
+        console.error("Error adding priest:", error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+
+
 // Get All House Blessing Requests
 exports.getAllHouseBlessingRequests = async (req, res) => {
     try {

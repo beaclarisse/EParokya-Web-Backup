@@ -41,24 +41,25 @@ const CounselingDetails = () => {
                     `${process.env.REACT_APP_API}/api/v1/getCounseling/${counselingId}`,
                     { withCredentials: true }
                 );
-
+    
+                console.log("Fetched Counseling Details:", response.data);
+    
                 setCounselingDetails(response.data.counseling);
                 setComments(response.data.counseling.comments || []);
                 setPriest(response.data.counseling.priest);
-
-                if (response.data.counselingDate) {
-                    setUpdatedCounselingDate(response.data.counselingDate);
-                }
-
+    
+                setUpdatedCounselingDate(response.data.counseling?.counselingDate || ""); 
+    
             } catch (err) {
                 setError("Failed to fetch counseling details.");
             } finally {
                 setLoading(false);
             }
         };
-
+    
         fetchCounselingDetails();
-    }, [counselingId]);
+    }, [counselingId, updatedCounselingDate]); 
+    
 
     const handleConfirm = async (counselingId) => {
         try {
@@ -109,15 +110,18 @@ const CounselingDetails = () => {
             alert("Please select a date and provide a reason.");
             return;
         }
-
+    
         try {
             setLoading(true);
             const response = await axios.put(
                 `${process.env.REACT_APP_API}/api/v1/updateCounselingDate/${counselingId}`,
                 { newDate, reason }
             );
-
-            setUpdatedCounselingDate(response.data.counselingDate);
+    
+            console.log("Updated Counseling Response:", response.data); // Debugging
+    
+            setUpdatedCounselingDate(response.data.counseling?.counselingDate || newDate); // Ensure proper update
+    
             alert("Counseling date updated successfully!");
         } catch (error) {
             console.error("Error updating counseling date:", error);
@@ -126,6 +130,7 @@ const CounselingDetails = () => {
             setLoading(false);
         }
     };
+    
 
     const handleSubmitComment = async () => {
         if (!selectedComment && !additionalComment) {

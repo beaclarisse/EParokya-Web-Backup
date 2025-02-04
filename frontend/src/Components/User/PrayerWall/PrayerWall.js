@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import GuestSidebar from '../../GuestSideBar';
 import "../../Layout/styles/style.css";
-import { FaHeart } from "react-icons/fa";
-import { CiHeart } from "react-icons/ci";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 const PrayerWall = () => {
   const [prayers, setPrayers] = useState([]);
@@ -48,7 +47,7 @@ const PrayerWall = () => {
 
         const { prayers, total } = response.data;
 
-        setPrayers(prayers);
+        setPrayers(prayers); // Ensure `includedByUser` is in state
         setTotalPrayers(total);
         setLoading(false);
       } catch (error) {
@@ -59,7 +58,6 @@ const PrayerWall = () => {
 
     fetchPrayers();
   }, [currentPage]);
-
 
   const handleNewPrayerSubmit = async (e) => {
     e.preventDefault();
@@ -94,7 +92,7 @@ const PrayerWall = () => {
             ? {
               ...prayer,
               likes: response.data.likes,
-              likedByUser: !prayer.likedByUser, 
+              likedByUser: response.data.likedByUser, // Update state based on backend response
             }
             : prayer
         )
@@ -112,21 +110,21 @@ const PrayerWall = () => {
     }
 
     try {
+      setLoadingPrayerId(prayerId); // Show processing state
+
       const response = await axios.put(
         `${process.env.REACT_APP_API}/api/v1/toggleInclude/${prayerId}`,
         {},
         { withCredentials: true }
       );
 
-      const { includes, includedByUser } = response.data;
-
       setPrayers((prevPrayers) =>
         prevPrayers.map((prayer) =>
           prayer._id === prayerId
             ? {
               ...prayer,
-              includeCount: response.data.includeCount,
-              includedByUser: true,
+              includeCount: response.data.includeCount, // Update include count
+              includedByUser: response.data.includedByUser, // Persist state
             }
             : prayer
         )
@@ -134,12 +132,9 @@ const PrayerWall = () => {
     } catch (error) {
       console.error("Error including prayer:", error);
     } finally {
-      setLoadingPrayerId(null);
+      setLoadingPrayerId(null); // Reset loading state
     }
   };
-
-
-
 
   return (
     <div className="prayer-wall-container">
@@ -148,14 +143,28 @@ const PrayerWall = () => {
       </div>
 
       <div className="prayer-wall">
-        <div className="prayer-share">
+        <div className="prayer-share" style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
           <button
             onClick={() => setIsModalOpen(true)}
             className="share-button"
+            style={{
+              backgroundColor: "#154314",
+              color: "white",
+              padding: "10px 20px",
+              fontSize: "1.1rem",
+              fontWeight: "bold",
+              border: "none",
+              borderRadius: "5px",
+              width: "60%",
+              maxWidth: "300px",
+              cursor: "pointer",
+              transition: "background-color 0.2s",
+            }}
           >
-            Share a Prayer
+            Click here to Share a Prayer
           </button>
         </div>
+
 
         {isModalOpen && (
           <>
@@ -226,7 +235,7 @@ const PrayerWall = () => {
         ) : (
           prayers.map((prayer) => (
             <div className="prayer-box" key={prayer._id}>
-              <div className="prayer-header">
+              <div className="prayer-header" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <img
                   src={
                     prayer.prayerWallSharing === "anonymous"
@@ -235,48 +244,85 @@ const PrayerWall = () => {
                   }
                   alt="Profile"
                   className="avatar"
+                  style={{ width: "40px", height: "40px", borderRadius: "50%" }}
                 />
-                <span>{prayer.prayerWallSharing === "anonymous" ? "Anonymous" : prayer.user?.name || "Unknown User"}</span>
+                <span style={{ fontSize: "1.1rem", fontWeight: "bold" }}>
+                  {prayer.prayerWallSharing === "anonymous" ? "Anonymous" : prayer.user?.name || "Unknown User"}
+                </span>
               </div>
+
+
 
               <h4 className="prayer-title">{prayer.title}</h4>
               <p className="prayer-description">{prayer.prayerRequest}</p>
               <div className="prayer-actions">
-                
-                <div onClick={() => handleLike(prayer._id)} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "5px" }}>
+
+                {/* Like Button */}
+                <div
+                  onClick={() => handleLike(prayer._id)}
+                  style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "5px" }}
+                >
                   {prayer.likedByUser ? (
-                    <FaHeart style={{ color: "red", fontSize: "1.5rem", transition: "transform 0.2s" }} />
+                    <FaHeart style={{ fontSize: "1.5rem", transition: "transform 0.2s" }} />
                   ) : (
-                    <CiHeart style={{ color: "gray", fontSize: "1.5rem", transition: "transform 0.2s" }} />
+                    <FaRegHeart style={{ fontSize: "1.5rem", transition: "transform 0.2s" }} />
                   )}
                   <span style={{ fontSize: "1.2rem" }}>{prayer.likes || 0}</span>
                 </div>
 
-                <span style={{ marginLeft: "5px", fontSize: "1.2rem" }}>{prayer.likes || 0}</span>
 
-
-                <button
-                  onClick={() => handleInclude(prayer._id)}
-                  disabled={prayer.includedByUser || loadingPrayerId === prayer._id}
-                >
-                  {loadingPrayerId === prayer._id
-                    ? "Processing..."
-                    : prayer.includedByUser
+                <div>
+                  <button
+                    onClick={() => handleInclude(prayer._id)}
+                    disabled={prayer.includedByUser || loadingPrayerId === prayer._id}
+                    style={{
+                      backgroundColor: "#6c757d", 
+                      color: "white",
+                      padding: "10px 20px",
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      border: "none",
+                      borderRadius: "5px",
+                      width: "60%", 
+                      maxWidth: "300px", 
+                      cursor: prayer.includedByUser ? "not-allowed" : "pointer",
+                      textAlign: "center",
+                      transition: "background-color 0.2s",
+                    }}
+                  >
+                    {prayer.includedByUser
                       ? "You have included this in your prayer"
-                      : `Include (${prayer.includeCount || 0})`}
-                </button>;
+                      : loadingPrayerId === prayer._id
+                        ? "Processing..."
+                        : `Include (${prayer.includeCount || 0})`}
+                  </button>
 
-                <span className="included-count">
-                  Users who have included and prayed for you: {prayer.includeCount || 0}
-                </span>
+                  {/* Indicator box */}
+                  {prayer.includedByUser && (
+                    <div style={{
+                      marginTop: "10px",
+                      padding: "8px",
+                      backgroundColor: "#d4edda",
+                      borderRadius: "5px",
+                      color: "#155724",
+                      textAlign: "center",
+                      fontWeight: "bold"
+                    }}>
+                      ✅ You have already included this in your prayer.
+                    </div>
+                  )}
+                </div>
+
+
 
               </div>
-              <div className="prayer-meta">
+              <div className="prayer-meta" style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
                 <span>Created: {new Date(prayer.createdAt).toLocaleDateString()}</span>
                 {prayer.confirmedAt && (
                   <span>Confirmed: {new Date(prayer.confirmedAt).toLocaleDateString()}</span>
                 )}
               </div>
+
             </div>
           ))
         )}

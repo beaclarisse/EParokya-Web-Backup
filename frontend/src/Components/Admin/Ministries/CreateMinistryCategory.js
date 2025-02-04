@@ -33,11 +33,16 @@ const MinistryCategory = () => {
             const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllMinistryCategories`, {
                 withCredentials: true,
             });
-            setCategories(response.data);
+    
+            console.log("Fetched categories:", response.data);
+    
+            // Ensure we're extracting the array properly
+            setCategories(response.data.categories || []); 
         } catch (error) {
             toast.error('Failed to load ministry categories.');
         }
     };
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();

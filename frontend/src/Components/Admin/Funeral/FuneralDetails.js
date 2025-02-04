@@ -54,6 +54,8 @@ const FuneralDetails = () => {
                 setComments(response.data.comments || []);
                 setPriest(response.data.priest);
                 setDeathCertificateImage(response.data.deathCertificate || "");
+                
+                setUpdatedFuneralDate(response.data.funeralDate || ""); 
             } catch (err) {
                 console.error("API Error:", err);
                 setError("Failed to fetch funeral details.");
@@ -63,6 +65,7 @@ const FuneralDetails = () => {
         };
         fetchFuneralDetails();
     }, [funeralId]);
+    
 
     const handleConfirm = async (funeralId) => {
         try {
@@ -117,20 +120,49 @@ const FuneralDetails = () => {
         }
     };
 
+    // const handleUpdate = async () => {
+    //     if (!newDate || !reason) {
+    //         alert("Please select a date and provide a reason.");
+    //         return;
+    //     }
+
+    //     try {
+    //         setLoading(true);
+    //         const response = await axios.put(
+    //             `${process.env.REACT_APP_API}/api/v1/updateFuneralDate/${funeralDetails._id}`,
+    //             { newDate, reason }
+    //         );
+
+    //         setUpdatedFuneralDate(response.data.funeral.funeralDate);
+    //         alert("Funeral date updated successfully!");
+    //     } catch (error) {
+    //         console.error("Error updating funeral date:", error);
+    //         alert("Failed to update funeral date.");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+
     const handleUpdate = async () => {
         if (!newDate || !reason) {
             alert("Please select a date and provide a reason.");
             return;
         }
-
+    
         try {
             setLoading(true);
             const response = await axios.put(
                 `${process.env.REACT_APP_API}/api/v1/updateFuneralDate/${funeralDetails._id}`,
                 { newDate, reason }
             );
-
+    
             setUpdatedFuneralDate(response.data.funeral.funeralDate);
+            setFuneralDetails(prevDetails => ({
+                ...prevDetails,
+                funeralDate: response.data.funeral.funeralDate
+            }));
+    
             alert("Funeral date updated successfully!");
         } catch (error) {
             console.error("Error updating funeral date:", error);
@@ -139,7 +171,7 @@ const FuneralDetails = () => {
             setLoading(false);
         }
     };
-
+    
     const handleSubmitComment = async () => {
         if (!selectedComment && !additionalComment) {
             alert("Please select or enter a comment.");

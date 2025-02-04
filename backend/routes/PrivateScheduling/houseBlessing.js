@@ -11,12 +11,13 @@ router.get('/getHouseBlessing/:blessingId', houseBlessingController.getHouseBles
 router.put('/updateHouseBlessingDate/:blessingId', houseBlessingController.updateBlessingDate);
 router.post('/:blessingId/commentBlessing',  houseBlessingController.addComment);
 
+router.post('/addPriestBlessing/:blessingId', houseBlessingController.createPriestComment);
+
 router.post('/:blessingId/confirmBlessing',  houseBlessingController.confirmBlessing);
 router.post('/:blessingId/declinelessing',  houseBlessingController.declineBlessing);
 
 router.get('/getAllUserSubmittedHouseBlessing', isAuthenticatedUser, houseBlessingController.getMySubmittedForms);
 router.get('/getHouseBlessingForm/:formId', isAuthenticatedUser, houseBlessingController.getHouseBlessingFormById);
-
 
 // router.post('/updateAdditionalReq/:blessingId',  houseBlessingController.updateAdditionalReq);
 

@@ -1011,6 +1011,61 @@ button {
   margin-right: 10px; 
 }
 
+/* baptism checklist */
+.baptism-checklist-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.baptism-checklist-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.baptism-checklist-item label {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  cursor: pointer;
+}
+
+.baptism-checklist-item input {
+  margin-left: 10px;
+}
+
+/* user bapstism checklist */
+.baptism-checklist-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.baptism-checklist-item {
+  margin-bottom: 15px;
+}
+
+.baptism-checklist-item label {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+
+.baptism-checklist-item input {
+  margin-left: 10px;
+}
+
+h2, h3 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+
 /* House Details Box */
 
 .house-details-content {
@@ -1590,13 +1645,15 @@ form {
 }
 
 .sidebar {
-  width: 20%; 
+  width: 20%; /* Keep the sidebar width fixed */
   background-color: #f8f9fa;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   box-sizing: border-box;
+  flex-shrink: 0; /* Prevents sidebar from resizing */
 }
+
 
 .categories {
   width: 20%; 
@@ -1639,22 +1696,38 @@ form {
   background-color: #f1f3f5;
   overflow-y: auto;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
+
 /* Announcement List Grid */
+.admin-announcement-list {
+  display: flex;
+  gap: 20px;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+  align-items: flex-start; /* Prevents items from centering */
+}
+
+
 .announcement-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); 
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
   gap: 20px;
-  margin: 0 auto;  /* Center the grid */
-  width: 100%;  /* Ensure it takes full width */
+  width: 700%;
 }
+
+
 
 /* Announcement Box Styling */
 .announcement-box {
   background-color: white;
-  min-height: 450px; /* Consistent height */
+  min-height: 450px;
   max-height: 450px;
+  max-width: 700px; /* Adjust to control width */
+  width: 300%;
   border: 1px solid #dee2e6;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -1662,7 +1735,10 @@ form {
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
+  margin: auto; /* Center it properly */
 }
+
+
 
 .announcement-header {
   display: flex;
@@ -1787,6 +1863,60 @@ form {
   }
 }
 
+/* Resource List - Main Layout */
+.admin-resource-list {
+  display: flex;  
+  gap: 20px;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.resource-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+  gap: 20px;
+  width: 700%;
+}
+
+/* Resource Box Styling */
+.resource-box {
+  background-color: white;
+  min-height: 900px;
+  max-height: 900px;
+  max-width: 900px; 
+  width: 300%;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  margin: auto; /* Center it properly */
+}
+
+.resource-header {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.resource-body {
+  padding: 15px;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.resource-footer {
+  padding: 15px;
+  border-top: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  font-size: 14px;
+  color: #6c757d;
+}
+
 /* announcementDetails */
 
 body {
@@ -1865,8 +1995,10 @@ body {
   background: #fff;
   padding: 20px;
   border-radius: 10px;
+  width: 900px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+
 
 .announcement-image {
   width: 100%;
@@ -2194,6 +2326,15 @@ body {
   transform: scale(1.2);
 }
 
+button:disabled {
+  background-color: #adb5bd; /* Lighter gray when disabled */
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  background-color: #5a6268; /* Darker gray on hover */
+}
+
 
 
 /* admin pryaer review */
@@ -2333,3 +2474,120 @@ body {
     max-width: 100%;
   }
 }
+
+/* House Blessing User Submitted List */
+.houseBlessing-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.houseBlessing-filter-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex: 1;
+}
+
+.houseBlessing-filter-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+}
+
+.houseBlessing-filter-button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Prayer List */
+.adminPrayerReview-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.prayer-box {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.status-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.status-badge.pending {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.status-badge.confirmed {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.status-badge.cancelled {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.card-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.card-details {
+  font-size: 14px;
+  color: #555;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.edit-icon, .delete-icon {
+  cursor: pointer;
+  color: #555;
+}
+
+.delete-icon:hover {
+  color: #dc3545;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+}
+
+.pagination button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #1c5739;
+}
+
+

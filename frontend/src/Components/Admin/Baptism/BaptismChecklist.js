@@ -34,7 +34,6 @@ const BaptismChecklist = ({ baptismId }) => {
     }
   }, [baptismId]);
 
-  // Handle checkbox toggle
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
     setChecklist((prevState) => ({
@@ -43,7 +42,6 @@ const BaptismChecklist = ({ baptismId }) => {
     }));
   };
 
-  // Save updated checklist data
   const handleSave = async () => {
     try {
       await axios.put(
@@ -59,86 +57,90 @@ const BaptismChecklist = ({ baptismId }) => {
   };
 
   return (
-    <div className="baptism-checklist">
+    <div className="baptism-checklist-container">
       <h2>Baptism Checklist</h2>
   
       {/* Baptism Checklist Fields */}
-      <div>
+      <div className="baptism-checklist-item">
         <label>
+          Photocopy of Birth Certificate
           <input
             type="checkbox"
             name="PhotocopyOfBirthCertificate"
             checked={checklist.PhotocopyOfBirthCertificate}
             onChange={handleCheckboxChange}
           />
-          Photocopy of Birth Certificate
         </label>
       </div>
-      <div>
+  
+      <div className="baptism-checklist-item">
         <label>
+          Photocopy of Marriage Certificate
           <input
             type="checkbox"
             name="PhotocopyOfMarriageCertificate"
             checked={checklist.PhotocopyOfMarriageCertificate}
             onChange={handleCheckboxChange}
           />
-          Photocopy of Marriage Certificate
         </label>
       </div>
   
       {/* Additional Fields */}
       <h3>Additional Documents</h3>
-      <div>
+      <div className="baptism-checklist-item">
         <label>
+          Baptismal Permit
           <input
             type="checkbox"
             name="BaptismalPermit"
             checked={checklist.BaptismalPermit}
             onChange={handleCheckboxChange}
           />
-          Baptismal Permit
         </label>
       </div>
-      <div>
+  
+      <div className="baptism-checklist-item">
         <label>
+          Certificate of No Record of Baptism
           <input
             type="checkbox"
             name="CertificateOfNoRecordBaptism"
             checked={checklist.CertificateOfNoRecordBaptism}
             onChange={handleCheckboxChange}
           />
-          Certificate of No Record of Baptism
         </label>
       </div>
   
       {/* Seminar Fields */}
       <h3>Seminars</h3>
-      <div>
+      <div className="baptism-checklist-item">
         <label>
+          Pre-Baptism Seminar 1
           <input
             type="checkbox"
             name="PreBaptismSeminar1"
             checked={checklist.PreBaptismSeminar1}
             onChange={handleCheckboxChange}
           />
-          Pre-Baptism Seminar 1
         </label>
       </div>
-      <div>
+  
+      <div className="baptism-checklist-item">
         <label>
+          Pre-Marriage Seminar 2
           <input
             type="checkbox"
             name="PreMarriageSeminar2"
             checked={checklist.PreMarriageSeminar2}
             onChange={handleCheckboxChange}
           />
-          Pre-Marriage Seminar 2
         </label>
       </div>
   
       <button onClick={handleSave}>Save Checklist</button>
     </div>
   );
+  
 };
 
 export default BaptismChecklist;

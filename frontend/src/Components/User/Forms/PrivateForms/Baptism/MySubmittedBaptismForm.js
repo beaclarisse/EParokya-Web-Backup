@@ -5,11 +5,13 @@ import Modal from 'react-modal';
 import "../../../../Layout/styles/style.css";
 import GuestSideBar from "../../../../GuestSideBar";
 import { useParams } from "react-router-dom";
+import UserBaptismChecklist from "./UserBaptismChecklist";
 
 Modal.setAppElement('#root');
 
 const MySubmittedBaptismForm = () => {
     const navigate = useNavigate();
+    const { baptismId } = useParams();
     const [baptismDetails, setBaptismDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -331,6 +333,9 @@ const MySubmittedBaptismForm = () => {
                         <button onClick={handleCancel}>Cancel Baptism Request</button>
                     </div>
                 </div>
+            </div>
+            <div className="wedding-checklist-container">
+                <UserBaptismChecklist baptismId={baptismId} />
             </div>
         </div>
     );

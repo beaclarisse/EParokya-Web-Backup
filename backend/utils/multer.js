@@ -103,7 +103,7 @@
         cloudinary: cloudinary,
         params: {
             folder: "eparokya/uploads",
-            allowed_formats: ["jpg", "jpeg", "png", "mp4", "mov"],
+            allowed_formats: ["jpg", "jpeg", "png", "mp4", "mov", "pdf"],
         },
     });
 
@@ -112,7 +112,7 @@
         limits: { fileSize: 50 * 1024 * 1024 },
         fileFilter: (req, file, cb) => {
             const ext = path.extname(file.originalname).toLowerCase();
-            if (![".jpg", ".jpeg", ".png", ".mp4", ".mov"].includes(ext)) {
+            if (![".jpg", ".jpeg", ".png", ".mp4", ".mov", ".pdf"].includes(ext)) {
                 cb(new Error("Unsupported file type!"), false);
             } else {
                 cb(null, true);

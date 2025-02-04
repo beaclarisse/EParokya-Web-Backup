@@ -222,19 +222,47 @@ exports.addBaptismComment = async (req, res) => {
 };
 
 // Baptism Checklist
+// exports.getBaptismChecklist = async (req, res) => {
+//   try {
+//     const { baptismId } = req.params;
+//     const baptism = await Baptism.findById(baptismId).populate('checklistId');
+//     if (!baptism) {
+//       return res.status(404).json({ message: 'Baptism not found' });
+//     }
+//     res.json({ checklist: baptism.checklistId });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
+
 exports.getBaptismChecklist = async (req, res) => {
   try {
     const { baptismId } = req.params;
-    const baptism = await Baptism.findById(baptismId).populate('checklistId');
+
+    // Ensure proper population of the checklistId
+    const baptism = await Baptism.findById(baptismId)
+      .populate({
+        path: 'checklistId',
+        model: 'BaptismChecklist', // Ensure this matches your model name
+      });
+
     if (!baptism) {
       return res.status(404).json({ message: 'Baptism not found' });
     }
+
+    if (!baptism.checklistId) {
+      return res.status(404).json({ message: 'Checklist not found' });
+    }
+
     res.json({ checklist: baptism.checklistId });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 // update Baptism Checklist
 exports.updateBaptismChecklist = async (req, res) => {

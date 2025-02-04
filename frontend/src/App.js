@@ -20,6 +20,8 @@ import NavigationForms from './Components/User/NavigationForms';
 
 // User Forms
 
+import ResourcePage from './Components/ResourcePage';
+
 import SubmittedForms from './Components/User/Forms/SubmittedFormsNavigation';
 
 import BaptismForm from './Components/User/Forms/PrivateForms/Baptism/BaptismForm';
@@ -32,9 +34,11 @@ import HouseBlessingForm from './Components/User/Forms/PrivateForms/PrivateSched
 
 import MySubmittedWeddingForm from './Components/User/Forms/PrivateForms/Wedding/MySubmittedWeddingForm';
 import SubmittedWeddingList from './Components/User/Forms/PrivateForms/Wedding/SubmittedWeddingList';
+// import UserWeddingChecklist from './Components/User/Forms/PrivateForms/Wedding/UserWeddingChecklist';
 
 import MySubmittedBaptismForm from './Components/User/Forms/PrivateForms/Baptism/MySubmittedBaptismForm';
 import SubmittedBaptismList from './Components/User/Forms/PrivateForms/Baptism/SubmittedBaptismList';
+import UserBaptismChecklist from './Components/User/Forms/PrivateForms/Baptism/UserBaptismChecklist';
 
 import MySubmittedFuneralForm from './Components/User/Forms/PrivateForms/Funeral/MySubmittedFuneralForm';
 import SubmittedFuneralList from './Components/User/Forms/PrivateForms/Funeral/SubmittedFuneralList';
@@ -49,7 +53,7 @@ import SubmittedHouseBlessingList from './Components/User/Forms/PrivateForms/Pri
 // import SubmittedPrayerRequestList from './Components/User/Forms/PrivateForms/Prayer/SubmittedPrayerRequestList';
 
 // import MySubmittedPrayerWallForm from './Components/User/Forms/PrivateForms/Prayer/MySubmittedPrayerWallForm';
-// import SubmittedPrayerWallList from './Components/User/Forms/PrivateForms/Prayer/SubmittedPrayerWallList';
+import SubmittedPrayerWallList from './Components/User/PrayerWall/SubmittedPrayerWallList';
 
 
 // User Navigations
@@ -86,9 +90,9 @@ import AnnouncementCategory from './Components/Admin/Announcement/CreateAnnounce
 import Announcement from './Components/Admin/Announcement/CreateAnnouncement';
 import AnnouncementList from './Components/Admin/Announcement/AnnouncementList';
 
-
 // resource
 import Resource from './Components/Admin/Resources/Resource';
+import ResourceList from './Components/Admin/Resources/ResourceList';
 
 // Prayer
 import AdminPrayerReview from './Components/Admin/Prayers/AdminPrayerReview';
@@ -135,6 +139,8 @@ function App() {
         <Route path="/profile" element={<Profile />} exact="true" />
         <Route path="/announcementDetails/:id" element={<AnnouncementDetails />} exact="true" />
 
+        <Route path="/resourcePage" element={<ResourcePage />} exact="true" />
+
         <Route path="/user/calendar" element={<UserCalendar />} exact="true" />
         <Route path="/user/NavigationForms" element={<NavigationForms />} exact="true" />
 
@@ -166,12 +172,15 @@ function App() {
         <Route path="/user/SubmittedFuneralList" element={<SubmittedFuneralList />} exact="true" />
         <Route path="/user/SubmittedCounselingList" element={<SubmittedCounselingList />} exact="true" />
         <Route path="/user/SubmittedHouseBlessingList" element={<SubmittedHouseBlessingList />} exact="true" />
+        <Route path="/user/SubmittedPrayerWallList" element={<SubmittedPrayerWallList />} exact="true" />
 
         {/*
-       
         <Route path="/user/SubmittedCounselingList" element={<SubmittedCounselingList />} exact="true" />
         <Route path="/user/SubmittedPrayerRequestList" element={<SubmittedPrayerRequestList />} exact="true" />
-        <Route path="/user/SubmittedPrayerWallList" element={<SubmittedPrayerWallList />} exact="true" /> */}
+        */}
+
+        <Route path="/user/UserBaptismChecklist" element={<UserBaptismChecklist />} exact="true" />
+        {/* <Route path="/user/UserWeddingChecklist" element={<UserWeddingCheklist />} exact="true" /> */}
 
         <Route path="/user/prayerWall" element={<PrayerWall />} exact="true" />
 
@@ -197,6 +206,7 @@ function App() {
 
         {/* Resource */}
         <Route path="/admin/resource/create" element={<ProtectedRoute isAdmin={true}><Resource /></ProtectedRoute>} />
+        <Route path="/admin/resourceList" element={<ProtectedRoute isAdmin={true}><ResourceList /></ProtectedRoute>} />
 
 
         {/* counseling */}

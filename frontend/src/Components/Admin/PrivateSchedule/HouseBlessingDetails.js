@@ -156,11 +156,11 @@ const HouseBlessingsDetails = () => {
             return;
         }
         const commentData = {
-            priest: priest || "",
+            name: priest,
         };
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_API}/api/v1/addPriest/${blessingId}`,
+                `${process.env.REACT_APP_API}/api/v1/addPriestBlessing/${blessingId}`,
                 {
                     method: "POST",
                     headers: {

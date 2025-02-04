@@ -109,13 +109,13 @@ const GuestSideBar = () => {
 
         <li style={styles.menuItem}>
           <Link
-            to="/events"
+            to="/resourcePage"
             style={{
               ...styles.link,
-              ...(location.pathname === '/events' ? styles.activeLink : {}),
+              ...(location.pathname === '/resourcePage' ? styles.activeLink : {}),
             }}
           >
-            <FaCalendarAlt style={styles.icon} /> Events
+            <FaCalendarAlt style={styles.icon} /> Resources
           </Link>
         </li>
 

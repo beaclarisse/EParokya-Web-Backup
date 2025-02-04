@@ -54,12 +54,13 @@ const BaptismDetails = () => {
                 const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getBaptism/${baptismId}`,
                     { withCredentials: true });
 
-                console.log("API Response:", response.data); 
+                console.log("API Response:", response.data);
 
                 setBaptismDetails(response.data);
                 setSelectedDate(response.data.baptismDate || "");
                 setComments(response.data.comments || []);
-                setAdminNotes(response.data.adminNotes);
+
+                setUpdatedBaptismDate(response.data.baptismDate || " ");
                 setbirthCertificateImage(response.data.birthCertificate || "");
                 setmarriageCertificateImage(response.data.marriageCertificate || "");
                 setbaptismPermitImage(response.data.baptismPermit || "");
@@ -72,7 +73,7 @@ const BaptismDetails = () => {
             }
         };
         fetchBaptismDetails();
-    }, [baptismId]);
+    }, []);
 
 
     const openModal = (image) => {
@@ -133,7 +134,8 @@ const BaptismDetails = () => {
     const handleAdminNotes = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem("jwt");
-        const newadminNotes = {
+
+        const newAdminNote = {
             priest,
             recordedBy,
             bookNumber,
@@ -144,20 +146,25 @@ const BaptismDetails = () => {
         try {
             const response = await axios.post(
                 `${process.env.REACT_APP_API}/api/v1/adminAdditionalNotes/${baptismId}`,
-                newadminNotes,
+                newAdminNote
             );
-            setAdminNotes([...adminNotes, response.data]);
+
+            // Added
+            setAdminNotes(prevNotes => [...prevNotes, response.data]);
+
             setPriest("");
             setrecordedBy("");
             setbookNumber("");
             setpageNumber("");
             setlineNumber("");
+
             alert("Additional notes submitted.");
         } catch (error) {
             console.error("Error submitting additional notes:", error.response || error);
             alert("Failed to submit the additional notes.");
         }
     };
+
 
     const handleConfirm = async () => {
         try {
@@ -356,6 +363,66 @@ const BaptismDetails = () => {
 
                 </div>
 
+                {/* Display Updated Date  */}
+                <div className="wedding-date-box">
+                    <h3>Updated Baptism Date</h3>
+                    <p className="date">
+                        {updatedBaptismDate ? new Date(updatedBaptismDate).toLocaleDateString() : "N/A"}
+                    </p>
+
+                    {baptismDetails?.adminRescheduled?.reason && (
+                        <div className="reschedule-reason">
+                            <h3>Reason for Rescheduling</h3>
+                            <p>{baptismDetails.adminRescheduled.reason}</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Admin Comments Section */}
+                <div className="house-comments-section">
+                    <h2>Admin Comments</h2>
+                    {comments.length > 0 ? (
+                        comments.map((comment, index) => (
+                            <div key={index} className="admin-comment">
+                                <p><strong>Selected Comment:</strong> {comment?.selectedComment || "N/A"}</p>
+                                <p><strong>Additional Comment:</strong> {comment?.additionalComment || "N/A"}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No admin comments yet.</p>
+                    )}
+                </div>
+
+                {/* Display of Additional Notes */}
+                <div className="admin-comments-section">
+                    <h2>Additional Notes</h2>
+                    {baptismDetails?.adminNotes?.length > 0 ? (
+                        baptismDetails.adminNotes.map((note, index) => (
+                            <div key={index} className="admin-comment">
+                                {note.priest && (
+                                    <p><strong>Priest:</strong> {note.priest}</p>
+                                )}
+                                {note.recordedBy && (
+                                    <p><strong>Recorded By:</strong> {note.recordedBy}</p>
+                                )}
+                                {note.bookNumber && (
+                                    <p><strong>Book Number:</strong> {note.bookNumber}</p>
+                                )}
+                                {note.pageNumber && (
+                                    <p><strong>Page Number:</strong> {note.pageNumber}</p>
+                                )}
+                                {note.lineNumber && (
+                                    <p><strong>Line Number:</strong> {note.lineNumber}</p>
+                                )}
+                                <hr />
+                            </div>
+                        ))
+                    ) : (
+                        <p>No additional notes available.</p>
+                    )}
+                </div>
+
+                {/* Creating Comments */}
                 <form onSubmit={handleSubmitComment}>
                     <h3>Add Comment</h3>
                     <label>
@@ -382,93 +449,17 @@ const BaptismDetails = () => {
                     <button type="submit">Submit Comment</button>
                 </form>
 
-                {/* Admin wedding Date  */}
+                {/*  Updated Date Create  */}
                 <div className="admin-section">
                     <h2>Select Updated Baptism Date:</h2>
                     <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
                     <label>Reason:</label>
                     <textarea value={reason} onChange={(e) => setReason(e.target.value)} />
                 </div>
-
-                <h3>Comments</h3>
-                <ul>
-                    {comments.map((comments, index) => (
-                        <li key={index}>
-                            <p>Selected Comment: {comments.selectedComment}</p>
-                            <p>Additional Comment: {comments.additionalComment}</p>
-                        </li>
-                    ))}
-                </ul>
-
-                {/* Display of Additional Notes */}
-                <div className="admin-comments-section">
-                    <h2>Additional Notes</h2>
-                    {baptismDetails?.adminNotes?.priest ? (
-                        <div className="admin-comment">
-                            <p>
-                                <strong>Priest:</strong> {baptismDetails.adminNotes.priest}
-                            </p>
-                        </div>
-                    ) : (
-                        <p>No priest.</p>
-                    )}
-
-                    {baptismDetails?.adminNotes?.recordedBy ? (
-                        <div className="admin-comment">
-                            <p>
-                                <strong>Recorded By:</strong> {baptismDetails.adminNotes.recordedBy}
-                            </p>
-                        </div>
-                    ) : (
-                        <p>No record.</p>
-                    )}
-
-                    {baptismDetails?.adminNotes?.bookNumber ? (
-                        <div className="admin-comment">
-                            <p>
-                                <strong>Book Number:</strong> {baptismDetails.adminNotes.bookNumber}
-                            </p>
-                        </div>
-                    ) : (
-                        <p>No book number.</p>
-                    )}
-
-                    {baptismDetails?.adminNotes?.pageNumber ? (
-                        <div className="admin-comment">
-                            <p>
-                                <strong>Page Number:</strong> {baptismDetails.adminNotes.pageNumber}
-                            </p>
-                        </div>
-                    ) : (
-                        <p>No page number.</p>
-                    )}
-
-                    {baptismDetails?.adminNotes?.lineNumber ? (
-                        <div className="admin-comment">
-                            <p>
-                                <strong>Line Number:</strong> {baptismDetails.adminNotes.lineNumber}
-                            </p>
-                        </div>
-                    ) : (
-                        <p>No line number.</p>
-                    )}
-
-
-                </div>
-
-                {/* for Rescheduling */}
-                <div className="wedding-date-box">
-                    <h3>Updated Baptism Date</h3>
-                    <p className="date">
-                        {updatedBaptismDate ? new Date(updatedBaptismDate).toLocaleDateString() : "N/A"}
-                    </p>
-
-                    {baptismDetails?.adminRescheduled?.reason && (
-                        <div className="reschedule-reason">
-                            <h3>Reason for Rescheduling</h3>
-                            <p>{baptismDetails.adminRescheduled.reason}</p>
-                        </div>
-                    )}
+                <div className="button-container">
+                    <button onClick={handleUpdate} disabled={loading}>
+                        {loading ? "Updating..." : "Update Baptism Date"}
+                    </button>
                 </div>
 
                 {/* Adding of additional notes */}
@@ -507,17 +498,16 @@ const BaptismDetails = () => {
                         value={lineNumber}
                         onChange={(e) => setlineNumber(e.target.value)}
                     />
-
-                    <button onClick={handleAdminNotes}>Add Notes</button>
+                    <div className="button-container">
+                        <button onClick={handleAdminNotes}>Add Notes</button>
+                    </div>
                 </div>
 
-                <div className="actions">
+                <div className="button-container">
                     <button onClick={handleConfirm}>Confirm</button>
                     <button onClick={handleDecline}>Decline</button>
-                    <button onClick={handleUpdate} disabled={loading}>
-                        {loading ? "Updating..." : "Update Baptism Date"}
-                    </button>
                 </div>
+
             </div>
             <div className="wedding-checklist-container">
                 <BaptismChecklist baptismId={baptismId} />
